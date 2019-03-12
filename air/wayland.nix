@@ -87,12 +87,21 @@ in
     xdg.configFile."waybar/config".text = (builtins.readFile ./conf.d/waybar.json);
     xdg.configFile."waybar/style.css".text = (builtins.readFile ./conf.d/waybar.css);
 
-    # Give termite a little padding
-    xdg.configFile."gtk-3.0/gtk.css".text = ''
-      VteTerminal, vte-terminal {
-          padding: 15px;
-      }
-    '';
+    gtk = {
+      enable = true;
+      font.package = pkgs.dejavu_fonts;
+      font.name = "DejaVu Sans 10";
+      theme.package = pkgs.pantheon.elementary-gtk-theme;
+      theme.name = "elementary";
+      iconTheme.package = pkgs.pantheon.elementary-icon-theme;
+      iconTheme.name = "elementary";
+      gtk3.extraConfig = { gtk-application-prefer-dark-theme = true; };
+      gtk3.extraCss = ''
+        VteTerminal, vte-terminal {
+            padding: 15px;
+        }
+      '';
+    };
 
     programs.termite = {
       enable = true;
@@ -102,6 +111,7 @@ in
       urgentOnBell = true;
       dynamicTitle = true;
       scrollbar = "off";
+      font = "DejaVu Sans Mono 11";
       browser = "${pkgs.xdg_utils}/xdg-open";
 
       # Darktooth
