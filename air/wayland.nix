@@ -24,7 +24,7 @@ in
       kanshi   # dynamic display configuration helper
       redshift-wayland # patched to work with wayland gamma protocol
 
-      dmenu
+      rofi
       xwayland
       libnl
       libpulseaudio

@@ -6,7 +6,7 @@ set $up k
 set $right l
 set $term termite
 set $editor emacsclient -c
-set $menu dmenu_path | dmenu | xargs swaymsg exec
+set $menu rofi -show run | xargs swaymsg exec
 
 ### Outputs
 output * bg @wallpaper@ fill
