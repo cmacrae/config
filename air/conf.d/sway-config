@@ -59,9 +59,8 @@ floating_modifier $mod normal
 bindsym $mod+Shift+c reload
 
 # exit sway (logs you out of your Wayland session)
-# TODO: Use swaynag when available
-# bindsym $mod+Shift+e exec swaynag -t warning -m 'Exit sway?' -b 'Yes' 'swaymsg exit'
-bindsym $mod+Shift+e exec swaymsg exit
+bindsym $mod+Shift+e exec swaynag -t warning -m 'Exit sway?' -b 'Yes' 'swaymsg exit'
+
 #
 # Movement
 #
