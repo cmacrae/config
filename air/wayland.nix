@@ -31,6 +31,7 @@ in
     ];
     extraSessionCommands = ''
       # Tell toolkits to use wayland
+      export GDK_BACKEND=wayland
       export CLUTTER_BACKEND=wayland
       export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
       export SDL_VIDEODRIVER=wayland
