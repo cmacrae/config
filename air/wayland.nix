@@ -49,7 +49,17 @@ in
     '';
   };
 
+  # location svc for redshift
+  services.avahi.enable = true;
+  services.geoclue2.enable = true;
+
   home-manager.users.cmacrae = {
+    services.redshift = {
+      enable = true;
+      provider = "geoclue2";
+      package = pkgs.redshift-wayland;
+    };
+
     xdg.enable = true;
     xdg.configFile."sway/config" = {
         source = pkgs.substituteAll {
