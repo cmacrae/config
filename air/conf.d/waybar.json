@@ -10,7 +10,8 @@
         "interface": "wlp2s0",
         "format-wifi": "{essid} ",
         "format-ethernet": "{ifname}: {ipaddr}/{cidr} ",
-        "format-disconnected": "no conn ⚠"
+        "format-disconnected": "no conn ⚠",
+	"tooltip": false
     },
     "pulseaudio": {
         "format": "{volume}% {icon}",
@@ -23,9 +24,11 @@
     },
     "battery": {
         "format": "{capacity}% {icon}",
-        "format-icons": ["", "", "", "", ""]
+        "format-icons": ["", "", "", "", ""],
+	"tooltip": false
     },
     "clock": {
-        "format-alt": "{:%a, %d. %b  %H:%M}"
+        "format-alt": "{:%a, %d. %b  %H:%M}",
+	"tooltip": false
     }
 }
