@@ -1,7 +1,12 @@
 { config, lib, pkgs, ... }:
 let
-  swayAssets = "https://raw.githubusercontent.com/swaywm/sway/master/assets";
-  wall = (builtins.fetchurl "${swayAssets}/Sway_Wallpaper_Blue_1920x1080.png");
+  # some nice wallpapers
+  # 751150 748463 745470 751188 751223 644594 573093
+  wallHaven = "https://wallpapers.wallhaven.cc";
+  wallId = "644594";
+  wallUrl = "${wallHaven}/wallpapers/full/wallhaven-${wallId}.jpg";
+  wall = (builtins.fetchurl "${wallUrl}");
+
   url = "https://github.com/colemickens/nixpkgs-wayland/archive/master.tar.gz";
   waylandOverlay = (import (builtins.fetchTarball url));
 in
