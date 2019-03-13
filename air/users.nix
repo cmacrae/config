@@ -22,6 +22,7 @@ in
       jq
       mpv
       pass
+      ranger
       ripgrep
       vim
       youtube-dl
