@@ -7,58 +7,49 @@
 }
 
 window#waybar {
-    background: rgba(43, 48, 59, 0.5);
-    border-bottom: 3px solid rgba(100, 114, 125, 0.5);
-    color: white;
+    background: rgba(29, 32, 33, 1);
+    border-bottom: 3px solid #665C54;
+    color: #A89984;
 }
 
-/* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
 #workspaces button {
     padding: 0 5px;
     background: transparent;
-    color: white;
+    color: #A89984;
     border-bottom: 3px solid transparent;
 }
 
 #workspaces button.focused {
-    background: #64727D;
-    border-bottom: 3px solid white;
+    border-bottom: 3px solid #A89984;
 }
 
 #mode {
     background: #64727D;
-    border-bottom: 3px solid white;
+    border-bottom: 3px solid #A89984;
 }
 
 #clock, #battery, #cpu, #memory, #backlight, #network, #pulseaudio, #custom-spotify, #tray, #mode, #idle_inhibitor {
-    padding: 0 10px;
+    padding: 0 5px;
     margin: 0 5px;
 }
 
-#clock {
-    background-color: #64727D;
-}
-
 #battery {
-    background-color: #ffffff;
-    color: black;
+    color: #A89984;
 }
 
 #battery.charging {
-    color: white;
-    background-color: #26A65B;
+    color: #95C085;
 }
 
 @keyframes blink {
     to {
-        background-color: #ffffff;
-        color: black;
+	background-color: rgba(29, 32, 33, 1);
+        color: #A89984;
     }
 }
 
 #battery.critical:not(.charging) {
-    background: #f53c3c;
-    color: white;
+    color: #FB543F;
     animation-name: blink;
     animation-duration: 0.5s;
     animation-timing-function: linear;
@@ -66,51 +57,14 @@ window#waybar {
     animation-direction: alternate;
 }
 
-#cpu {
-    background: #2ecc71;
-    color: #000000;
-}
-
-#memory {
-    background: #9b59b6;
-}
-
-#backlight {
-    background: #90b1b1;
-}
-
-#network {
-    background: #2980b9;
-}
-
 #network.disconnected {
-    background: #f53c3c;
+    color: #665C54;
 }
 
 #pulseaudio {
-    background: #f1c40f;
-    color: black;
+    color: #A89984;
 }
 
 #pulseaudio.muted {
-    background: #90b1b1;
-    color: #2a5c45;
-}
-
-#custom-spotify {
-    background: #66cc99;
-    color: #2a5c45;
-}
-
-#tray {
-    background-color: #2980b9;
-}
-
-#idle_inhibitor {
-    background-color: #2d3436;
-}
-
-#idle_inhibitor.activated {
-    background-color: #ecf0f1;
-    color: #2d3436;
+    color: #665C54;
 }
