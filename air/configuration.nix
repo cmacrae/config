@@ -69,7 +69,7 @@
       # Prompts
       if [[ ! -n $INSIDE_EMACS ]]; then
           export "PROMPT=
-      %{$fg[blue]%}%n %{$fg[red]%}$ %{$reset_color%}"
+      %{$fg[red]%}$ %{$reset_color%}"
           export "RPROMPT=%{$fg[blue]%}%~%f%b"
       else
           export "PROMPT=
