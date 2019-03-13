@@ -24,11 +24,12 @@ in
       mako     # notification daemon
       wlstream # screen recorder
       kanshi   # dynamic display configuration helper
-      redshift-wayland # patched to work with wayland gamma protocol
+      imv      # image viewer
+      redshift-wayland # patched to work with wayland
 
-      xwayland
-      libnl
-      libpulseaudio
+      xwayland          # for X apps
+      libnl             # waybar wifi
+      libpulseaudio     # waybar audio
     ];
     extraSessionCommands = ''
       # Tell toolkits to use wayland
