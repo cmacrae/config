@@ -39,6 +39,7 @@
   time.timeZone = "Europe/London";
 
   nixpkgs.config.allowUnfree = true;
+  environment.systemPackages = with pkgs; [ nfs-utils ];
 
   services.openssh.enable = true;
   services.emacs.enable = true;
