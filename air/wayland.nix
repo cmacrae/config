@@ -68,10 +68,17 @@ in
           src = ./conf.d/sway-config;
           wallpaper = "${wall}";
         };
+        # NOTE
+        # - $SWAYSOCK unavailable
+        # - $(sway --get-socketpath) doesn't work
+        # A bit hacky, but since we always know our uid
+        # this works consistently
         onChange = ''
           echo "Reloading sway"
-          # FIXME: swaymsg reload
-          #   ERR: 'sway socket not detected'
+          swaymsg -s \
+          $(find /run/user/''${UID}/ \
+            -name "sway-ipc.''${UID}.*.sock") \
+          reload
         '';
     };
 
