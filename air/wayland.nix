@@ -113,6 +113,12 @@ in
       default-timeout=15000
     '';
 
+    xdg.configFile."imv/config".text = ''
+      [options]
+      background=#1D2021
+      overlay_font=DejaVu Sans Mono:14
+    '';
+
     xdg.configFile."waybar/config".text = (builtins.readFile ./conf.d/waybar.json);
     xdg.configFile."waybar/style.css".text = (builtins.readFile ./conf.d/waybar.css);
 
