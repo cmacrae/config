@@ -11,12 +11,16 @@ set $menu rofi -show run | xargs swaymsg exec
 ### Outputs
 output * bg @wallpaper@ fill
 
-### Idle
+### Tasks
+# handle idle
 exec swayidle -w \
          timeout 300 'swaylock -f -c 000000' \
          timeout 600 'swaymsg "output * dpms off"' \
          resume 'swaymsg "output * dpms on"' \
          before-sleep 'swaylock -f -c 000000'
+
+# notifications
+exec mako
 
 ### Input
 input "1452:586:Apple_Inc._Apple_Internal_Keyboard_\/_Trackpad" {

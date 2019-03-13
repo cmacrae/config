@@ -92,6 +92,29 @@ in
       }
     '';
 
+    xdg.configFile."mako/config".text = ''
+      font=DejaVu Sans 11
+      text-color=#1D2021D9
+      background-color=#8BA59BD9
+      border-color=#0D6678D9
+      border-size=3
+      max-visible=3
+      default-timeout=10000
+      progress-color=source #8BA59B00
+      group-by=app-name
+      sort=-priority
+      
+      [urgency=high]
+      border-color=#FB543FD9
+      ignore-timeout=1
+      default-timeout=0
+      
+      [actionable=true]
+      border-color=#FAC03BD9
+      ignore-timeout=1
+      default-timeout=15000
+    '';
+
     xdg.configFile."waybar/config".text = (builtins.readFile ./conf.d/waybar.json);
     xdg.configFile."waybar/style.css".text = (builtins.readFile ./conf.d/waybar.css);
 
