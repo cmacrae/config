@@ -59,6 +59,14 @@ in
       package = pkgs.redshift-wayland;
     };
 
+    home.file.".zshrc".text = ''
+      . /etc/zshrc
+      # If running from tty1 start sway
+      if [ "$(tty)" = "/dev/tty1" ]; then
+        exec sway
+      fi
+    '';
+
     xdg.enable = true;
     xdg.configFile."sway/config" = {
         source = pkgs.substituteAll {
