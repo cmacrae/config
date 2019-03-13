@@ -13,18 +13,14 @@ in
       swayidle
       swaylock
 
-      waybar        # polybar-alike
-      i3status-rust # simpler bar written in Rust
-
+      waybar   # polybar-alike
       grim     # screen image capture
       slurp    # screen are selection tool
       mako     # notification daemon
       wlstream # screen recorder
-      oguri    # animated background utility
       kanshi   # dynamic display configuration helper
       redshift-wayland # patched to work with wayland gamma protocol
 
-      rofi
       xwayland
       libnl
       libpulseaudio
