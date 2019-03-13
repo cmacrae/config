@@ -45,9 +45,6 @@ in
       # https://wiki.archlinux.org/index.php/HiDPI#GUI_toolkits
       export GDK_SCALE=1
       export QT_AUTO_SCREEN_SCALE_FACTOR=0
-      
-      # capslock as ctrl
-      export XKB_DEFAULT_OPTIONS=ctrl:nocaps
     '';
   };
 
