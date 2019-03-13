@@ -159,5 +159,10 @@ in
         color21 = #D5C4A1
       '';
     };
+
+    programs.rofi = {
+      enable = true;
+      terminal = "${pkgs.termite}/bin/termite";
+    };
   };
 }
