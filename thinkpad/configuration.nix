@@ -12,22 +12,21 @@ in
 {
   nix.nixPath = [
     "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
-    "nixos-config=/home/cmacrae/dev/nix/air/configuration.nix:/nix/var/nix/profiles/per-user/root/channels"
+    "nixos-config=/home/cmacrae/dev/nix/thinkpad/configuration.nix:/nix/var/nix/profiles/per-user/root/channels"
   ];
 
   imports = [
-     # Shared
-     ../common.nix
+    # Shared
+    ../common.nix
     (import ../users.nix {
       wallpaper = "${wall}";
       inputs = ''
-        input "1452:586:Apple_Inc._Apple_Internal_Keyboard_/_Trackpad" {
+        input "1:1:AT_Translated_Set_2_keyboard" {
             xkb_layout gb
-            xkb_variant mac
             xkb_options ctrl:nocaps
         }
         
-        input "1452:586:bcm5974" {
+        input "1739:0:Synaptics_TM3381-002" {
             tap enabled
             dwt enabled
             natural_scroll enabled
@@ -38,36 +37,29 @@ in
         {
           output eDP-1
         }
-        {
-          output HDMI-A-1 resolution 1920x1080 pos 0 0
-          output eDP-1 position 330 1080
-        }
       '';
     })
 
-     # Sys Specific
+    # Sys Specific
     ./hardware-configuration.nix
   ];
 
   boot.cleanTmpDir = true;
   boot.loader.grub.efiSupport = true;
+  boot.loader.grub.zfsSupport = true;
   boot.loader.grub.device = "nodev";
   boot.loader.efi.canTouchEfiVariables = true;
   boot.initrd.checkJournalingFS = false;
-  boot.initrd.kernelModules = [ "fbcon" ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.kernelParams = [ 
-    "i915.enable_fbc=1"
-  ];
+  boot.supportedFilesystems = [ "zfs" ];
 
-  hardware.enableAllFirmware = true;
-  hardware.bluetooth.enable = false;
-  
   powerManagement.enable = true;
 
   networking = {
-    hostName = "air";
-    networkmanager.enable = true;
+    hostId = "9938e3e0";
+    hostName = "thinkpad";
+    # networkmanager.enable = true;
+    wireless.enable = true;
   };
 
   system.stateVersion = "18.09";

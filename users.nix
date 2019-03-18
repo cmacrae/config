@@ -1,36 +1,27 @@
+{ wallpaper, inputs, outputs }:
 { config, lib, pkgs, ... }:
 let
-  # some nice wallpapers
-  # 751150 748463 745470 751188 751223 644594 573093
-  wallHaven = "https://wallpapers.wallhaven.cc";
-  wallId = "644594";
-  wallUrl = "${wallHaven}/wallpapers/full/wallhaven-${wallId}.jpg";
-  wall = (builtins.fetchurl "${wallUrl}");
+  home-manager = builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz;
 
   url = "https://github.com/colemickens/nixpkgs-wayland/archive/master.tar.gz";
   waylandOverlay = (import (builtins.fetchTarball url));
 in
 {
   nixpkgs.overlays = [ waylandOverlay ];
-  programs.sway-beta = {
+
+  imports = [ "${home-manager}/nixos" ];
+
+  users.users.cmacrae = {
+    description = "Calum MacRae";
+    isNormalUser = true;
+    uid = 1000;
+    extraGroups = [ "wheel" "sway" "networkmanager" ];
+    shell = pkgs.zsh;
+  };
+
+  programs.sway = {
     enable = true;
-    extraPackages = with pkgs; [
-      swayidle
-      swaylock
-
-      waybar   # polybar-alike
-      grim     # screen image capture
-      slurp    # screen are selection tool
-      mako     # notification daemon
-      wlstream # screen recorder
-      kanshi   # dynamic display configuration helper
-      imv      # image viewer
-      redshift-wayland # patched to work with wayland
-
-      xwayland          # for X apps
-      libnl             # waybar wifi
-      libpulseaudio     # waybar audio
-    ];
+    extraPackages = []; # handled via home-manager
     extraSessionCommands = ''
       # Tell toolkits to use wayland
       export GDK_BACKEND=wayland
@@ -53,6 +44,36 @@ in
   services.geoclue2.enable = true;
 
   home-manager.users.cmacrae = {
+    home.packages = with pkgs; [
+      firefox
+      fzf
+      git
+      gnupg
+      jq
+      mpv
+      pass
+      ranger
+      ripgrep
+      vim
+      youtube-dl
+
+      swayidle # idle handling
+      swaylock # screen locking
+      waybar   # polybar-alike
+      grim     # screen image capture
+      slurp    # screen are selection tool
+      mako     # notification daemon
+      wlstream # screen recorder
+      kanshi   # dynamic display configuration helper
+      imv      # image viewer
+      redshift-wayland # patched to work with wayland
+
+      xdg_utils     # for xdg_open
+      xwayland      # for X apps
+      libnl         # waybar wifi
+      libpulseaudio # waybar audio
+    ];
+
     services.redshift = {
       enable = true;
       provider = "geoclue2";
@@ -72,7 +93,8 @@ in
         source = pkgs.substituteAll {
           name = "sway-config";
           src = ./conf.d/sway-config;
-          wallpaper = "${wall}";
+          wallpaper = "${wallpaper}";
+          inputs = "${inputs}";
         };
         # NOTE
         # - $SWAYSOCK unavailable
@@ -88,15 +110,7 @@ in
         '';
     };
 
-    xdg.configFile."kanshi/config".text = ''
-      {
-        output eDP-1
-      }
-      {
-        output HDMI-A-1 resolution 1920x1080 pos 0 0
-        output eDP-1 position 330 1080
-      }
-    '';
+    xdg.configFile."kanshi/config".text = "${outputs}";
 
     xdg.configFile."mako/config".text = ''
       font=DejaVu Sans 11
@@ -207,5 +221,7 @@ in
       enable = true;
       terminal = "${pkgs.termite}/bin/termite";
     };
+
+    programs.browserpass.enable = true;
   };
 }

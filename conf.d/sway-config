@@ -23,17 +23,7 @@ exec swayidle -w \
 exec mako
 
 ### Input
-input "1452:586:Apple_Inc._Apple_Internal_Keyboard_/_Trackpad" {
-    xkb_layout gb
-    xkb_variant mac
-    xkb_options ctrl:nocaps
-}
-
-input "1452:586:bcm5974" {
-    tap enabled
-    dwt enabled
-    natural_scroll enabled
-}
+@inputs@
 
 ### Appearance
 default_border pixel 3
