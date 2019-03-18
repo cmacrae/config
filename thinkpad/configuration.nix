@@ -2,6 +2,7 @@
 let
   # some nice wallpapers
   # 751150 748463 745470 751188 751223 644594 573093
+  # 636345 640342 656431 638670 643158 644744
   wallHaven = "https://wallpapers.wallhaven.cc";
   wallId = "573093";
   wallUrl = "${wallHaven}/wallpapers/full/wallhaven-${wallId}.jpg";
