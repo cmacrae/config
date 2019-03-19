@@ -39,6 +39,10 @@ in
         {
           output eDP-1
         }
+        {
+          output HDMI-A-2 position 0,0
+          output eDP-1 position 320,1440
+        }
       '';
     })
 
