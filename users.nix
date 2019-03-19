@@ -47,6 +47,7 @@ in
       pass
       ranger
       ripgrep
+      rsync
       vim
       youtube-dl
 
