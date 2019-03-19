@@ -1,1 +1,7 @@
 * ThinkPad X280
+** Notes
+*** Untracked data
+    Part of this configuration relies on untracked data, living outside the nix store, mannaged manually.
+    Although the nix expression will evaluate successfully, the target service will not function
+    correctly without the presence of this data:  
+    ~/home/cmacrae/dev/nix/thinkpad/moo.ovpn~

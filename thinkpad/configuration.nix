@@ -64,5 +64,12 @@ in
     wireless.enable = true;
   };
 
+  services.openvpn.servers.moo = {
+    autoStart = false;
+    config = "config /home/cmacrae/dev/nix/thinkpad/moo.ovpn";
+    up = "echo nameserver $nameserver | ${pkgs.openresolv}/sbin/resolvconf -m 0 -a $dev";
+    down = "${pkgs.openresolv}/sbin/resolvconf -d $dev";
+  };
+
   system.stateVersion = "18.09";
 }
