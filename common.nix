@@ -34,6 +34,9 @@
   services.emacs.install = true;
   services.emacs.defaultEditor = true;
 
+  virtualisation.docker.enable = true;
+  virtualisation.docker.autoPrune.enable = true;
+
   security.sudo.enable = true;
 
   programs.zsh = {
