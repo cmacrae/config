@@ -1,4 +1,4 @@
-{ wallpaper, inputs, outputs }:
+{ wallpaper, inputs, outputs, extraPkgs }:
 { config, lib, pkgs, ... }:
 let
   home-manager = builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz;
@@ -72,7 +72,7 @@ in
       xwayland      # for X apps
       libnl         # waybar wifi
       libpulseaudio # waybar audio
-    ];
+    ] ++ extraPkgs;
 
     services.redshift = {
       enable = true;
