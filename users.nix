@@ -39,7 +39,6 @@ in
 
   home-manager.users.cmacrae = {
     home.packages = with pkgs; [
-      firefox
       fzf
       git
       gnupg
@@ -153,6 +152,19 @@ in
         }
       '';
     };
+
+    programs.chromium = {
+      enable = true;
+      extensions = [
+        "dbepggeogbaibhgnhhndojpepiihcmeb" # vimium
+        "cjpalhdlnbpafiamejdnhcphjbkeiagm" # ublock origin
+        "naepdomgkenhinolocfifgehidddafch" # browser-pass
+      ];
+    };
+
+    xdg.configFile."chromium-flags.conf".text = ''
+        --force-device-scale-factor=1
+    '';
 
     programs.termite = {
       enable = true;
