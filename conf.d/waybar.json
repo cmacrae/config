@@ -7,10 +7,9 @@
         "max-length": 50
     },
     "network": {
-        "interface": "wlp2s0",
         "format-wifi": "{essid} ",
-        "format-ethernet": "{ifname}: {ipaddr}/{cidr} ",
-        "format-disconnected": "no conn ⚠",
+        "format-ethernet": "{ipaddr}/{cidr} ",
+        "format-disconnected": "",
 	"tooltip": false
     },
     "pulseaudio": {

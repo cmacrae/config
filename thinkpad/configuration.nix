@@ -64,8 +64,7 @@ in
   networking = {
     hostId = "9938e3e0";
     hostName = "thinkpad";
-    # networkmanager.enable = true;
-    wireless.enable = true;
+    networkmanager.enable = true;
   };
 
   services.openvpn.servers.moo = {

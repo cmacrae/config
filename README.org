@@ -16,3 +16,50 @@
           -I nixos-config=/home/cmacrae/dev/nix/<target system>/configuration.nix
     #+end_src
     /Note: ~<target system>~ here should point to the relevant directory for the system to build/
+
+** Notes ✍
+*** ~nmcli~ examples
+**** List nearby wifi networks
+     #+begin_example
+     $ nmcli device wifi list
+     #+end_example
+
+**** Connect to a wifi network
+     #+begin_example
+     $ nmcli device wifi connect SSID password password
+     #+end_example
+
+**** Connect to a hidden network
+     #+begin_example
+     $ nmcli device wifi connect SSID password password hidden yes
+     #+end_example
+
+**** Connect to a wifi on the wlan1 wifi interface
+     #+begin_example shell
+     $ nmcli device wifi connect SSID password password ifname wlan1 profile_name
+     #+end_example
+
+**** Disconnect an interface
+     #+begin_example
+     $ nmcli device disconnect ifname eth0
+     #+end_example
+
+**** Reconnect an interface marked as disconnected
+     #+begin_example
+     $ nmcli connection up uuid UUID
+     #+end_example
+
+**** Get a list of UUIDs
+     #+begin_example
+     $ nmcli connection show
+     #+end_example
+
+**** See a list of network devices and their state
+     #+begin_example
+     $ nmcli device
+     #+end_example
+
+**** Turn off wifi
+     #+begin_example
+     $ nmcli radio wifi off
+     #+end_example
