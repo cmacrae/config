@@ -48,6 +48,7 @@ in
       ranger
       ripgrep
       rsync
+      usbutils
       vim
       youtube-dl
 
