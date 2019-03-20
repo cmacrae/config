@@ -44,6 +44,10 @@ in
           output eDP-1 position 320,1440
         }
       '';
+
+      extraConfig = ''
+        bindsym $mod+Print exec slurp | grim -g - - | wl-copy
+      '';
     })
 
     # Sys Specific

@@ -158,3 +158,8 @@ bar {
     position top
     swaybar_command waybar
 }
+
+#
+# Extra config:
+#
+@extraConfig@

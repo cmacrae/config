@@ -1,4 +1,4 @@
-{ wallpaper, inputs, outputs, extraPkgs }:
+{ wallpaper, inputs, outputs, extraConfig, extraPkgs }:
 { config, lib, pkgs, ... }:
 let
   home-manager = builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz;
@@ -61,6 +61,7 @@ in
       wlstream # screen recorder
       kanshi   # dynamic display configuration helper
       imv      # image viewer
+      wl-clipboard  # wayland vers of xclip
       redshift-wayland # patched to work with wayland
 
       xdg_utils     # for xdg_open
@@ -90,6 +91,7 @@ in
           src = ./conf.d/sway-config;
           wallpaper = "${wallpaper}";
           inputs = "${inputs}";
+          extraConfig = "${extraConfig}";
         };
         # NOTE
         # - $SWAYSOCK unavailable
