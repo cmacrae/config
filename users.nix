@@ -255,5 +255,14 @@ in
     };
 
     programs.browserpass.enable = true;
+
+    services.gpg-agent = {
+      enable = true;
+      enableSshSupport = true;
+      extraConfig = ''
+        allow-emacs-pinentry
+        allow-loopback-pinentry
+      '';
+    };
   };
 }
