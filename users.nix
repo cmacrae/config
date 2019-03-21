@@ -5,6 +5,19 @@ let
 
   url = "https://github.com/colemickens/nixpkgs-wayland/archive/master.tar.gz";
   waylandOverlay = (import (builtins.fetchTarball url));
+
+  # NOTE
+  # - $SWAYSOCK unavailable
+  # - $(sway --get-socketpath) doesn't work
+  # A bit hacky, but since we always know our uid
+  # this works consistently
+  reloadSway = ''
+    echo "Reloading sway"
+    swaymsg -s \
+    $(find /run/user/''${UID}/ \
+      -name "sway-ipc.''${UID}.*.sock") \
+    reload
+  '';
 in
 {
   nixpkgs.overlays = [ waylandOverlay ];
@@ -93,18 +106,7 @@ in
           inputs = "${inputs}";
           extraConfig = "${extraConfig}";
         };
-        # NOTE
-        # - $SWAYSOCK unavailable
-        # - $(sway --get-socketpath) doesn't work
-        # A bit hacky, but since we always know our uid
-        # this works consistently
-        onChange = ''
-          echo "Reloading sway"
-          swaymsg -s \
-          $(find /run/user/''${UID}/ \
-            -name "sway-ipc.''${UID}.*.sock") \
-          reload
-        '';
+        onChange = "${reloadSway}";
     };
 
     xdg.configFile."kanshi/config".text = "${outputs}";
@@ -138,8 +140,15 @@ in
       overlay_font=DejaVu Sans Mono:14
     '';
 
-    xdg.configFile."waybar/config".text = (builtins.readFile ./conf.d/waybar.json);
-    xdg.configFile."waybar/style.css".text = (builtins.readFile ./conf.d/waybar.css);
+    xdg.configFile."waybar/config" = {
+      text = (builtins.readFile ./conf.d/waybar.json);
+      onChange = "${reloadSway}";
+    };
+
+    xdg.configFile."waybar/style.css" = {
+      text = (builtins.readFile ./conf.d/waybar.css);
+      onChange = "${reloadSway}";
+    };
 
     gtk = {
       enable = true;
