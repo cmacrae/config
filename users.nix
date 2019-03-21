@@ -104,14 +104,6 @@ in
       package = pkgs.redshift-wayland;
     };
 
-    home.file.".zshrc".text = ''
-      . /etc/zshrc
-      # If running from tty1 start sway
-      if [ "$(tty)" = "/dev/tty1" ]; then
-         /run/current-system/sw/bin/sway
-      fi
-    '';
-
     xdg.enable = true;
     xdg.configFile."sway/config" = {
         source = pkgs.substituteAll {
@@ -178,6 +170,47 @@ in
         VteTerminal, vte-terminal {
             padding: 15px;
         }
+      '';
+    };
+
+    programs.zsh = {
+      enable = true;
+      enableAutosuggestions = true;
+      enableCompletion = true;
+      defaultKeymap = "emacs";
+      history = {
+        extended = true;
+        ignoreDups = true;
+      };
+      initExtra = ''
+        autoload -Uz promptinit && promptinit
+        autoload -Uz zutil
+        autoload -Uz complist
+        autoload -Uz colors && colors
+
+        setopt   correct always_to_end notify
+        setopt   nobeep autolist autocd print_eight_bit
+        setopt   append_history share_history globdots
+        setopt   pushdtohome cdablevars recexact longlistjobs
+        setopt   autoresume histignoredups pushdsilent noclobber
+        setopt   autopushd pushdminus extendedglob rcquotes
+        unsetopt bgnice autoparamslash
+
+        # Prompts
+        if [[ ! -n $INSIDE_EMACS ]]; then
+            export "PROMPT=
+        %{$fg[red]%}$ %{$reset_color%}"
+            export "RPROMPT=%{$fg[blue]%}%~%f%b"
+        else
+            export "PROMPT=
+        %{$fg[blue]%}%~ %{$fg[red]%}$ %f%b"
+        fi
+
+        source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+        if [ "$(tty)" = "/dev/tty1" ]; then
+           /run/current-system/sw/bin/sway
+        fi
       '';
     };
 

@@ -39,41 +39,6 @@
 
   security.sudo.enable = true;
 
-  programs.zsh = {
-    enable = true;
-    enableCompletion = true;
-    promptInit = "autoload -Uz promptinit && promptinit";
-    interactiveShellInit = ''
-      autoload -Uz zutil
-      autoload -Uz complist
-      autoload -Uz colors && colors
-
-      setopt   correct always_to_end notify
-      setopt   nobeep autolist autocd print_eight_bit
-      setopt   append_history share_history globdots
-      setopt   pushdtohome cdablevars recexact longlistjobs
-      setopt   autoresume histignoredups pushdsilent noclobber
-      setopt   autopushd pushdminus extendedglob rcquotes
-      unsetopt bgnice autoparamslash
-
-      # Emacs bindings
-      bindkey -e
-
-      # Prompts
-      if [[ ! -n $INSIDE_EMACS ]]; then
-          export "PROMPT=
-      %{$fg[red]%}$ %{$reset_color%}"
-          export "RPROMPT=%{$fg[blue]%}%~%f%b"
-      else
-          export "PROMPT=
-      %{$fg[blue]%}%~ %{$fg[red]%}$ %f%b"
-      fi
-
-      source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-      source ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-    '';
-  };
-
   programs.tmux = {
     enable = true;
     shortcut = "b";
