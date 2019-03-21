@@ -18,6 +18,16 @@ let
       -name "sway-ipc.''${UID}.*.sock") \
     reload
   '';
+
+  # systemd service checker for waybar
+  waycheck = pkgs.writeShellScriptBin "waycheck"
+  (builtins.readFile (pkgs.substituteAll {
+    src = ./scripts/waycheck.sh;
+    jq = "${pkgs.jq}/bin/jq";
+    grep = "${pkgs.gnugrep}/bin/grep";
+    systemctl = "${pkgs.systemd}/bin/systemctl";
+    })
+  );
 in
 {
   nixpkgs.overlays = [ waylandOverlay ];
@@ -64,6 +74,9 @@ in
       usbutils
       vim
       youtube-dl
+
+      # custom scripts
+      waycheck # waybar systemd svc checker
 
       swayidle # idle handling
       swaylock # screen locking

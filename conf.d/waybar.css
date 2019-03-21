@@ -2,7 +2,7 @@
     border: none;
     border-radius: 0;
     font-family: Roboto, Helvetica, Arial, sans-serif;
-    font-size: 13px;
+    font-size: 18px;
     min-height: 0;
 }
 
@@ -19,6 +19,13 @@ window#waybar {
     border-bottom: 3px solid transparent;
 }
 
+#workspaces button.urgent {
+    padding: 0 5px;
+    background: transparent;
+    color: #FB543F;
+    border-bottom: 3px solid transparent;
+}
+
 #workspaces button.focused {
     border-bottom: 3px solid #A89984;
 }
@@ -28,7 +35,7 @@ window#waybar {
     border-bottom: 3px solid #A89984;
 }
 
-#clock, #battery, #cpu, #memory, #backlight, #network, #pulseaudio, #custom-spotify, #tray, #mode, #idle_inhibitor {
+#clock, #battery, #cpu, #memory, #backlight, #network, #pulseaudio, #custom-spotify, #tray, #mode, #idle_inhibitor, #openvpn {
     padding: 0 5px;
     margin: 0 5px;
 }
@@ -66,5 +73,29 @@ window#waybar {
 }
 
 #pulseaudio.muted {
+    color: #665C54;
+}
+
+#idle_inhibitor.activated {
+    color: #A89984;
+}
+
+#idle_inhibitor.deactivated {
+    color: #665C54;
+}
+
+#openvpn {
+    color: #665C54;
+}
+
+#openvpn.active {
+    color: #95C085;
+}
+
+#openvpn.inactive {
+    color: #FAC03B;
+}
+
+#openvpn.disabled {
     color: #665C54;
 }

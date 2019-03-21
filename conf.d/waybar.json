@@ -2,15 +2,41 @@
     "layer": "top",
     "modules-left": ["sway/workspaces", "sway/mode"],
     "modules-center": ["sway/window"],
-    "modules-right": ["pulseaudio", "network", "battery", "clock"],
+    "modules-right": ["idle_inhibitor", "custom/openvpn", "pulseaudio", "network", "battery", "clock"],
     "sway/window": {
         "max-length": 50
     },
+    "sway/workspaces": {
+	"disable-scroll": true,
+	"all-outputs": true,
+	"format": "{icon}",
+	"format-icons": {
+            "1": "",
+            "2": "",
+            "3": "",
+            "4": "",
+            "5": "",
+	    "6": "",
+	    "7": "",
+	    "8": "",
+	    "9": "",
+	    "10": ""
+	}
+    },
+    "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": {
+            "activated": "",
+            "deactivated": ""
+        }
+    },
     "network": {
-        "format-wifi": "{essid} ",
-        "format-ethernet": "{ipaddr}/{cidr} ",
+        "format-wifi": "",
+        "format-ethernet": "",
         "format-disconnected": "",
-	"tooltip": false
+	"tooltip-format-wifi": "{essid} ({signalStrength}%) ",
+	"tooltip-format-ethernet": "{ipaddr}/{cidr} ",
+	"tooltip-format-disconnected": "disconnected "
     },
     "pulseaudio": {
         "format": "{volume}% {icon}",
@@ -23,11 +49,19 @@
     },
     "battery": {
         "format": "{capacity}% {icon}",
+        "format-charging": "{capacity}% ",
         "format-icons": ["", "", "", "", ""],
 	"tooltip": false
     },
     "clock": {
         "format-alt": "{:%a, %d. %b  %H:%M}",
 	"tooltip": false
+    },
+    "custom/openvpn": {
+	"format": "{}",
+	"max-length": 40,
+	"interval": 10,
+	"return-type": "json",
+	"exec": "waycheck openvpn-moo"
     }
 }
