@@ -29,6 +29,7 @@ in
         }
         
         input "1739:0:Synaptics_TM3381-002" {
+            pointer_accel 0.7
             tap enabled
             dwt enabled
             natural_scroll enabled
