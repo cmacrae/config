@@ -62,8 +62,10 @@ in
 
   home-manager.users.cmacrae = {
     home.packages = with pkgs; [
+      ansible
       fzf
       git
+      gnumake
       gnupg
       jq
       mpv
