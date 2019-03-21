@@ -108,7 +108,7 @@ in
     xdg.configFile."sway/config" = {
         source = pkgs.substituteAll {
           name = "sway-config";
-          src = ./conf.d/sway-config;
+          src = ./conf.d/sway.conf;
           wallpaper = "${wallpaper}";
           inputs = "${inputs}";
           extraConfig = "${extraConfig}";
