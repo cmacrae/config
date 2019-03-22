@@ -61,7 +61,6 @@ in
   services.geoclue2.enable = true;
 
   home-manager.users.cmacrae = {
-    home.sessionVariables = { TERM = "screen-256color"; };
     home.packages = with pkgs; [
       ansible
       fzf
@@ -212,6 +211,9 @@ in
         if [ "$(tty)" = "/dev/tty1" ]; then
            /run/current-system/sw/bin/sway
         fi
+        
+        # set TERM here to override any 'pollution'
+        export TERM=screen-256color
       '';
     };
 
