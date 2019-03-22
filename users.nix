@@ -72,6 +72,7 @@ in
       pass
       ranger
       ripgrep
+      rofi-systemd
       rsync
       usbutils
       vim
