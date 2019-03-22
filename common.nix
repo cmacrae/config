@@ -30,10 +30,6 @@
 
   services.openssh.enable = true;
 
-  services.emacs.enable = true;
-  services.emacs.install = true;
-  services.emacs.defaultEditor = true;
-
   virtualisation.docker.enable = true;
   virtualisation.docker.autoPrune.enable = true;
 

@@ -98,6 +98,9 @@ in
       libpulseaudio # waybar audio
     ] ++ extraPkgs;
 
+    services.emacs.enable = true;
+    programs.emacs.enable = true;
+
     services.redshift = {
       enable = true;
       provider = "geoclue2";
