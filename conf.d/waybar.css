@@ -35,7 +35,7 @@ window#waybar {
     border-bottom: 3px solid #A89984;
 }
 
-#clock, #battery, #cpu, #memory, #backlight, #network, #pulseaudio, #custom-spotify, #tray, #mode, #idle_inhibitor, #openvpn {
+#clock, #battery, #cpu, #memory, #backlight, #network, #pulseaudio, #custom-spotify, #tray, #mode, #idle_inhibitor, #custom-openvpn {
     padding: 0 5px;
     margin: 0 5px;
 }
@@ -84,18 +84,18 @@ window#waybar {
     color: #665C54;
 }
 
-#openvpn {
+#custom-openvpn {
     color: #665C54;
 }
 
-#openvpn.active {
+#custom-openvpn.active {
     color: #95C085;
 }
 
-#openvpn.inactive {
+#custom-openvpn.inactive {
     color: #FAC03B;
 }
 
-#openvpn.disabled {
+#custom-openvpn.disabled {
     color: #665C54;
 }
