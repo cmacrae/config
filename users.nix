@@ -61,6 +61,7 @@ in
   services.geoclue2.enable = true;
 
   home-manager.users.cmacrae = {
+    home.sessionVariables = { TERM = "screen-256color"; };
     home.packages = with pkgs; [
       ansible
       fzf
