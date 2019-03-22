@@ -291,7 +291,7 @@ in
       dynamicTitle = true;
       scrollbar = "off";
       font = "DejaVu Sans Mono 11";
-      browser = "${pkgs.xdg_utils}/xdg-open";
+      browser = "${pkgs.xdg_utils}/bin/xdg-open";
 
       # Darktooth
       backgroundColor = "rgba(29, 32, 33)";
