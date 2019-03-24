@@ -66,6 +66,7 @@ in
   boot.supportedFilesystems = [ "zfs" ];
 
   powerManagement.enable = true;
+  services.tlp.enable = true;
 
   networking = {
     hostId = "9938e3e0";
