@@ -70,6 +70,7 @@ in
       jq
       mpv
       pass
+      powertop
       ranger
       ripgrep
       rofi-systemd
