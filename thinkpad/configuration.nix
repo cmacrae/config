@@ -58,6 +58,7 @@ in
   boot.cleanTmpDir = true;
   boot.loader.grub.efiSupport = true;
   boot.loader.grub.zfsSupport = true;
+  boot.loader.grub.copyKernels = true;
   boot.loader.grub.device = "nodev";
   boot.loader.efi.canTouchEfiVariables = true;
   boot.initrd.checkJournalingFS = false;
