@@ -63,6 +63,7 @@ in
   home-manager.users.cmacrae = {
     home.packages = with pkgs; [
       ansible
+      ffmpeg-full
       fzf
       git
       gnumake
