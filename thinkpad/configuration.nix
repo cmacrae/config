@@ -21,7 +21,7 @@ in
     ../common.nix
     (import ../users.nix {
       wallpaper = "${wall}";
-      extraPkgs = with pkgs; [ docker-compose kubernetes kubernetes-helm slack];
+      extraPkgs = with pkgs; [ awscli docker-compose kubernetes kubernetes-helm slack];
       inputs = ''
         input "1:1:AT_Translated_Set_2_keyboard" {
             xkb_layout gb
