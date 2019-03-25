@@ -76,6 +76,7 @@ in
       ripgrep
       rofi-systemd
       rsync
+      up
       usbutils
       vim
       youtube-dl
