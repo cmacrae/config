@@ -20,3 +20,19 @@
       "system-local-login".fprintAuth = true;
     };
     #+end_src
+*** NOPASSWD sudo rules
+    ~sudo~ rules can be nicely implemented using ~security.sudo.extraRules~, like so:
+    #+begin_src nix
+    security.sudo.extraRules = [{
+      runAs = "root";
+      groups = [ "wheel" ];
+      commands = [{
+        command = "${pkgs.systemd}/bin/systemctl * openvpn-moo";
+        options = [ "NOPASSWD" ];
+      }];
+    }];
+    #+end_src
+
+    However, it seems there's a bug with ~extraRules~ which causes the resulting ~sudo~ expressions to be ineffective.
+    Reported here: https://github.com/NixOS/nixpkgs/issues/58276
+    For now, ~extraConfig~ can be used to achieve the desired behaviour.

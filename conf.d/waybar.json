@@ -62,6 +62,8 @@
 	"max-length": 40,
 	"interval": 10,
 	"return-type": "json",
-	"exec": "waycheck openvpn-moo"
+	"exec": "waycheck openvpn-moo",
+	"on-click": "sudo systemctl start openvpn-moo",
+	"on-click-right": "sudo systemctl stop openvpn-moo"
     }
 }

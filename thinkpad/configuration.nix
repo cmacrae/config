@@ -84,5 +84,9 @@ in
     down = "${pkgs.openresolv}/sbin/resolvconf -d $dev";
   };
 
+  security.sudo.extraConfig = ''
+    %wheel	ALL=(root)	NOPASSWD: ${pkgs.systemd}/bin/systemctl * openvpn-moo
+  '';
+
   system.stateVersion = "18.09";
 }
