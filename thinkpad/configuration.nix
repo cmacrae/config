@@ -67,6 +67,9 @@ in
 
   powerManagement.enable = true;
   services.tlp.enable = true;
+  services.logind.extraConfig = ''
+    HandlePowerKey=ignore
+  '';
 
   networking = {
     hostId = "9938e3e0";
