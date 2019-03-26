@@ -9,7 +9,7 @@
   hardware.pulseaudio.enable = true;
 
   nixpkgs.config.allowUnfree = true;
-  environment.systemPackages = with pkgs; [ vim nfs-utils ];
+  environment.systemPackages = with pkgs; [ file vim nfs-utils ];
   fonts = {
     enableDefaultFonts = true;
     fonts = with pkgs; [
