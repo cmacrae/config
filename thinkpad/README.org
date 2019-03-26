@@ -35,4 +35,5 @@
 
     However, it seems there's a bug with ~extraRules~ which causes the resulting ~sudo~ expressions to be ineffective.
     Reported here: https://github.com/NixOS/nixpkgs/issues/58276
+    PR raised here: https://github.com/NixOS/nixpkgs/pull/58396
     For now, ~extraConfig~ can be used to achieve the desired behaviour.
