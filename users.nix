@@ -90,9 +90,9 @@ in
       grim     # screen image capture
       slurp    # screen are selection tool
       mako     # notification daemon
-      wlstream # screen recorder
       kanshi   # dynamic display configuration helper
       imv      # image viewer
+      wf-recorder # screen recorder
       wl-clipboard  # wayland vers of xclip
       redshift-wayland # patched to work with wayland
 
