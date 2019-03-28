@@ -294,7 +294,6 @@ in
     programs.termite = {
       enable = true;
       clickableUrl = true;
-      mouseAutohide = true;
       audibleBell = false;
       urgentOnBell = true;
       dynamicTitle = true;
