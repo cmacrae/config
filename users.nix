@@ -296,6 +296,7 @@ in
       scrollbar = "off";
       font = "DejaVu Sans Mono 11";
       browser = "${pkgs.xdg_utils}/bin/xdg-open";
+      cursorBlink = "off";
 
       # Darktooth
       backgroundColor = "rgba(29, 32, 33)";
