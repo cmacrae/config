@@ -70,6 +70,7 @@ in
       gnupg
       jq
       mpv
+      p7zip
       pass
       powertop
       ranger
