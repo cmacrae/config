@@ -133,7 +133,7 @@ in
       border-color=#0D6678D9
       border-size=3
       max-visible=3
-      default-timeout=10000
+      default-timeout=15000
       progress-color=source #8BA59B00
       group-by=app-name
       sort=-priority
@@ -142,11 +142,6 @@ in
       border-color=#FB543FD9
       ignore-timeout=1
       default-timeout=0
-      
-      [actionable=true]
-      border-color=#FAC03BD9
-      ignore-timeout=1
-      default-timeout=15000
     '';
 
     xdg.configFile."imv/config".text = ''
