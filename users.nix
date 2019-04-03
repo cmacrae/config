@@ -70,6 +70,7 @@ in
       gnupg
       jq
       mpv
+      nixops
       p7zip
       pass
       powertop
