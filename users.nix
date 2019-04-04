@@ -78,6 +78,7 @@ in
       ripgrep
       rofi-systemd
       rsync
+      terraform
       up
       usbutils
       vim
