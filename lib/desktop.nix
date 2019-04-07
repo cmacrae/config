@@ -35,8 +35,7 @@ let
   wallHaven = "https://wallpapers.wallhaven.cc";
   wallId = "636345";
   wallUrl = "${wallHaven}/wallpapers/full/wallhaven-${wallId}.jpg";
-  wall = (builtins.fetchurl "${wallUrl}");
-  wallpaper = "${wall}";
+  wallpaper = (builtins.fetchurl "${wallUrl}");
 
 in
 {
