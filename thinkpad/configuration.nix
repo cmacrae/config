@@ -1,15 +1,4 @@
 { config, pkgs, ... }:
-let
-  # some nice wallpapers
-  # 751150 748463 745470 751188 751223 644594 573093
-  # 636345 640342 656431 638670 643158 644744
-  wallHaven = "https://wallpapers.wallhaven.cc";
-  wallId = "636345";
-  wallUrl = "${wallHaven}/wallpapers/full/wallhaven-${wallId}.jpg";
-  wall = (builtins.fetchurl "${wallUrl}");
-  wallpaper = "${wall}";
-in
-
 {
   nix.nixPath = [
     "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
@@ -17,11 +6,8 @@ in
   ];
 
   imports = [
-    # Shared
-    ../common.nix
-    (import ../users.nix {
-      wallpaper = "${wall}";
-      extraPkgs = with pkgs; [ awscli docker-compose kubernetes kubernetes-helm slack];
+    (import ../lib/desktop.nix {
+      extraPkgs = with pkgs; [ awscli docker-compose kubernetes kubernetes-helm slack ];
       inputs = ''
         input "1:1:AT_Translated_Set_2_keyboard" {
             xkb_layout gb
@@ -83,6 +69,9 @@ in
     up = "echo nameserver $nameserver | ${pkgs.openresolv}/sbin/resolvconf -m 0 -a $dev";
     down = "${pkgs.openresolv}/sbin/resolvconf -d $dev";
   };
+
+  virtualisation.virtualbox.host.enable = true;
+  users.groups.vboxusers.members = [ "cmacrae" ];
 
   security.sudo.extraConfig = ''
     %wheel	ALL=(root)	NOPASSWD: ${pkgs.systemd}/bin/systemctl * openvpn-moo

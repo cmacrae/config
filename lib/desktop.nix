@@ -1,4 +1,4 @@
-{ wallpaper, inputs, outputs, extraConfig, extraPkgs }:
+{  inputs, outputs, extraConfig, extraPkgs }:
 { config, lib, pkgs, ... }:
 let
   home-manager = builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz;
@@ -22,14 +22,58 @@ let
   # systemd service checker for waybar
   waycheck = pkgs.writeShellScriptBin "waycheck"
   (builtins.readFile (pkgs.substituteAll {
-    src = ./scripts/waycheck.sh;
+    src = ../scripts/waycheck.sh;
     jq = "${pkgs.jq}/bin/jq";
     grep = "${pkgs.gnugrep}/bin/grep";
     systemctl = "${pkgs.systemd}/bin/systemctl";
     })
   );
+
+  # some nice wallpapers
+  # 751150 748463 745470 751188 751223 644594 573093
+  # 636345 640342 656431 638670 643158 644744
+  wallHaven = "https://wallpapers.wallhaven.cc";
+  wallId = "636345";
+  wallUrl = "${wallHaven}/wallpapers/full/wallhaven-${wallId}.jpg";
+  wall = (builtins.fetchurl "${wallUrl}");
+  wallpaper = "${wall}";
+
 in
 {
+  nix.trustedUsers = [ "root" "@wheel" ];
+
+  time.timeZone = "Europe/London";
+
+  sound.enable = true;
+  hardware.pulseaudio.enable = true;
+
+  nixpkgs.config.allowUnfree = true;
+  environment.systemPackages = with pkgs; [ file vim nfs-utils ];
+  fonts = {
+    enableDefaultFonts = true;
+    fonts = with pkgs; [
+      noto-fonts
+      noto-fonts-cjk
+      noto-fonts-emoji
+      liberation_ttf
+      fira-code
+      fira-code-symbols
+      mplus-outline-fonts
+      dina-font
+      proggyfonts
+      emacs-all-the-icons-fonts
+    ];
+   };
+
+  services.illum.enable = true;
+
+  services.openssh.enable = true;
+
+  virtualisation.docker.enable = true;
+  virtualisation.docker.autoPrune.enable = true;
+
+  security.sudo.enable = true;
+  security.rtkit.enable = true;
   nixpkgs.overlays = [ waylandOverlay ];
 
   imports = [ "${home-manager}/nixos" ];
@@ -40,6 +84,7 @@ in
     uid = 1000;
     extraGroups = [
       "audio"
+      "cdrom"
       "docker"
       "input"
       "networkmanager"
@@ -63,14 +108,19 @@ in
   home-manager.users.cmacrae = {
     home.packages = with pkgs; [
       ansible
+      audacity
+      cdparanoia
       ffmpeg-full
       fzf
       git
       gnumake
       gnupg
       jq
+      lame
       mpv
       nixops
+      nix-prefetch-git
+      nmap
       p7zip
       pass
       powertop
@@ -83,6 +133,17 @@ in
       usbutils
       vim
       youtube-dl
+
+      # Go
+      go
+      gocode
+      godef
+      gotools
+      golint
+      go2nix
+      gometalinter
+      errcheck
+      gotags
 
       # custom scripts
       waycheck # waybar systemd svc checker
@@ -105,6 +166,11 @@ in
       libpulseaudio # waybar audio
     ] ++ extraPkgs;
 
+    home.sessionVariables = {
+      GOROOT = "${pkgs.go}/share/go";
+      GOPATH = "/home/cmacrae/dev/go";
+    };
+
     services.emacs.enable = true;
     programs.emacs.enable = true;
 
@@ -118,7 +184,7 @@ in
     xdg.configFile."sway/config" = {
         source = pkgs.substituteAll {
           name = "sway-config";
-          src = ./conf.d/sway.conf;
+          src = ../conf.d/sway.conf;
           wallpaper = "${wallpaper}";
           inputs = "${inputs}";
           extraConfig = "${extraConfig}";
@@ -153,12 +219,12 @@ in
     '';
 
     xdg.configFile."waybar/config" = {
-      text = (builtins.readFile ./conf.d/waybar.json);
+      text = (builtins.readFile ../conf.d/waybar.json);
       onChange = "${reloadSway}";
     };
 
     xdg.configFile."waybar/style.css" = {
-      text = (builtins.readFile ./conf.d/waybar.css);
+      text = (builtins.readFile ../conf.d/waybar.css);
       onChange = "${reloadSway}";
     };
 

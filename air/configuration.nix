@@ -1,14 +1,4 @@
 { config, pkgs, ... }:
-let
-  # some nice wallpapers
-  # 751150 748463 745470 751188 751223 644594 573093
-  wallHaven = "https://wallpapers.wallhaven.cc";
-  wallId = "573093";
-  wallUrl = "${wallHaven}/wallpapers/full/wallhaven-${wallId}.jpg";
-  wall = (builtins.fetchurl "${wallUrl}");
-  wallpaper = "${wall}";
-in
-
 {
   nix.nixPath = [
     "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
@@ -16,10 +6,7 @@ in
   ];
 
   imports = [
-     # Shared
-     ../common.nix
-    (import ../users.nix {
-      wallpaper = "${wall}";
+    (import ../lib/desktop.nix {
       extraPkgs = [];
       inputs = ''
         input "1452:586:Apple_Inc._Apple_Internal_Keyboard_/_Trackpad" {
