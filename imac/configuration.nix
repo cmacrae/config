@@ -34,6 +34,12 @@
         output eDP-1 position 1920,30
         output DP-2 position 0,1080
         output DP-3 position 0,0
+
+        workspace 1 output DP-2
+        workspace 2 output eDP-1
+        workspace 3 output DP-3
+        workspace 5 output eDP-1
+        workspace 6 output eDP-1
       '';
     })
 
