@@ -1,4 +1,4 @@
-{ inputs ? "", outputs ? "", extraConfig ? "", extraPkgs ? [] }:
+{ inputs ? "", outputs ? "", extraSwayConfig ? "", extraPkgs ? [] }:
 { config, lib, pkgs, ... }:
 let
   home-manager = builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz;
@@ -177,7 +177,7 @@ in
           src = ../conf.d/sway.conf;
           wallpaper = "${wallpaper}";
           inputs = "${inputs}";
-          extraConfig = "${extraConfig}";
+          extraConfig = "${extraSwayConfig}";
         };
         onChange = "${reloadSway}";
     };

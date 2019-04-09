@@ -32,7 +32,7 @@
         }
       '';
 
-      extraConfig = ''
+      extraSwayConfig = ''
         bindsym $mod+Print exec slurp | grim -g - - | wl-copy
       '';
     })

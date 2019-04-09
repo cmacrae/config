@@ -22,7 +22,7 @@
         }
       '';
 
-      extraConfig = ''
+      extraSwayConfig = ''
         bindsym $mod+Print exec slurp | grim -g - - | wl-copy
 
         output eDP-1 position 1920,30
