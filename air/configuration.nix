@@ -7,7 +7,6 @@
 
   imports = [
     (import ../lib/desktop.nix {
-      extraPkgs = [];
       inputs = ''
         input "1452:586:Apple_Inc._Apple_Internal_Keyboard_/_Trackpad" {
             xkb_layout gb
@@ -31,7 +30,6 @@
           output eDP-1 position 330 1080
         }
       '';
-      extraConfig = "";
     })
 
      # Sys Specific

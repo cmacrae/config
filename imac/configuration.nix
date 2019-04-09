@@ -7,8 +7,6 @@
 
   imports = [
     (import ../lib/desktop.nix {
-      outputs = "";
-      extraPkgs = [];
       inputs = ''
         input "1452:615:Apple_Inc._Magic_Keyboard" {
             xkb_layout gb
