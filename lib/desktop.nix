@@ -98,7 +98,6 @@ in
     home.packages = with pkgs; [
       ansible
       audacity
-      cdparanoia
       ffmpeg-full
       fzf
       git
@@ -116,8 +115,6 @@ in
       pass
       powertop
       ranger
-      # TODO: renoise.override { releasePath = ./path/to/download; }
-      renoise
       ripgrep
       rofi-systemd
       rsync

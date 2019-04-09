@@ -7,6 +7,12 @@
 
   imports = [
     (import ../lib/desktop.nix {
+      extraPkgs = with pkgs; [
+        cdparanoia
+        # TODO: renoise.override { releasePath = ./path/to/download; }
+        renoise
+      ];
+
       inputs = ''
         input "1452:615:Apple_Inc._Magic_Keyboard" {
             xkb_layout gb
