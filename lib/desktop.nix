@@ -111,9 +111,12 @@ in
       nix-prefetch-git
       nmap
       p7zip
+      pantheon.elementary-music
       pass
       powertop
       ranger
+      # TODO: renoise.override { releasePath = ./path/to/download; }
+      renoise
       ripgrep
       rofi-systemd
       rsync
