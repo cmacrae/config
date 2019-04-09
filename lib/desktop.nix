@@ -104,6 +104,7 @@ in
       git
       gnumake
       gnupg
+      htop
       jq
       lame
       mpv
