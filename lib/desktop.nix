@@ -19,16 +19,6 @@ let
     reload
   '';
 
-  # systemd service checker for waybar
-  waycheck = pkgs.writeShellScriptBin "waycheck"
-  (builtins.readFile (pkgs.substituteAll {
-    src = ../scripts/waycheck.sh;
-    jq = "${pkgs.jq}/bin/jq";
-    grep = "${pkgs.gnugrep}/bin/grep";
-    systemctl = "${pkgs.systemd}/bin/systemctl";
-    })
-  );
-
   # some nice wallpapers
   # 751150 748463 745470 751188 751223 644594 573093
   # 636345 640342 656431 638670 643158 644744
@@ -144,9 +134,6 @@ in
       errcheck
       gotags
 
-      # custom scripts
-      waycheck # waybar systemd svc checker
-
       swayidle # idle handling
       swaylock # screen locking
       waybar   # polybar-alike
@@ -218,8 +205,14 @@ in
     '';
 
     xdg.configFile."waybar/config" = {
-      text = (builtins.readFile ../conf.d/waybar.json);
       onChange = "${reloadSway}";
+      text = builtins.toJSON (
+        import ./waybar-config.nix {
+          inherit (config.networking) hostName;
+          inherit pkgs;
+          inherit lib;
+        }
+      );
     };
 
     xdg.configFile."waybar/style.css" = {
