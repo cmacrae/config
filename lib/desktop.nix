@@ -278,6 +278,16 @@ in
         
         # set TERM here to override any 'pollution'
         export TERM=screen-256color
+
+        # for capturing video from webcam/audio from soundcard
+        ffrecord() {
+          ${pkgs.ffmpeg-full}/bin/ffmpeg -y -thread_queue_size 2048 \
+          -f v4l2 -input_format h264 -video_size hd1080 \
+          -i /dev/video2 -f alsa -thread_queue_size 130064 \
+          -i plughw:CARD=CODEC,DEV=0 \
+          -c:v libx264 -ar 44100 -crf 17 -c:a aac \
+          $@
+        }
       '';
     };
 
