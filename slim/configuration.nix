@@ -30,7 +30,7 @@
     
     nixpkgs.config.allowUnfree = true;
     environment.systemPackages = with pkgs; [
-      file vim nfs-utils p7zip
+      file vim p7zip
     ];
     
     services.openssh.enable = true;
