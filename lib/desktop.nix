@@ -99,7 +99,6 @@ in
       ansible
       audacity
       ffmpeg-full
-      fzf
       git
       gnumake
       gnupg
@@ -344,6 +343,9 @@ in
         setw -g window-status-current-format "#[fg=blue,bg=default] #I #[fg=red,bg=default] #W "
       '';
     };
+
+    programs.fzf.enable = true;
+    programs.fzf.enableZshIntegration = true;
 
     programs.chromium = {
       enable = true;
