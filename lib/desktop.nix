@@ -98,6 +98,7 @@ in
     home.packages = with pkgs; [
       ansible
       audacity
+      bc
       ffmpeg-full
       git
       gnumake
