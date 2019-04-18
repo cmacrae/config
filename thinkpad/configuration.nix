@@ -7,7 +7,15 @@
 
   imports = [
     (import ../lib/desktop.nix {
-      extraPkgs = with pkgs; [ awscli docker-compose kubernetes kubernetes-helm slack ];
+      extraPkgs = with pkgs; [
+        awscli
+        aws-iam-authenticator
+        docker-compose
+        kubernetes
+        kubernetes-helm
+        slack
+      ];
+
       inputs = ''
         input "1:1:AT_Translated_Set_2_keyboard" {
             xkb_layout gb
