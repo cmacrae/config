@@ -424,6 +424,7 @@ in
     };
 
     programs.browserpass.enable = true;
+    programs.browserpass.browsers = [ "chromium" ];
 
     services.gpg-agent = {
       enable = true;
