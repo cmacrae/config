@@ -6,6 +6,8 @@
   ];
 
   imports = [
+    ../lib/home.nix
+
     (import ../lib/desktop.nix {
       extraPkgs = with pkgs; [
         awscli
@@ -77,9 +79,6 @@
     up = "echo nameserver $nameserver | ${pkgs.openresolv}/sbin/resolvconf -m 0 -a $dev";
     down = "${pkgs.openresolv}/sbin/resolvconf -d $dev";
   };
-
-  virtualisation.virtualbox.host.enable = true;
-  users.groups.vboxusers.members = [ "cmacrae" ];
 
   security.sudo.extraConfig = ''
     %wheel	ALL=(root)	NOPASSWD: ${pkgs.systemd}/bin/systemctl * openvpn-moo
