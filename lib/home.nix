@@ -8,8 +8,6 @@ in {
     home.packages = import ./packages.nix { inherit pkgs;};
 
     home.sessionVariables = {
-      GOROOT = "${pkgs.go}/share/go";
-      GOPATH = "/home/cmacrae/dev/go";
       PAGER = "less -R";
       EDITOR = "emacsclient";
     };
@@ -26,49 +24,43 @@ in {
         extended = true;
         ignoreDups = true;
       };
-      initExtra = ''
-        autoload -Uz promptinit && promptinit
-        autoload -Uz zutil
-        autoload -Uz complist
-        autoload -Uz colors && colors
 
-        setopt   correct always_to_end notify
-        setopt   nobeep autolist autocd print_eight_bit
-        setopt   append_history share_history globdots
-        setopt   pushdtohome cdablevars recexact longlistjobs
-        setopt   autoresume histignoredups pushdsilent noclobber
-        setopt   autopushd pushdminus extendedglob rcquotes
-        unsetopt bgnice autoparamslash
+      oh-my-zsh = {
+        enable = true;
+      };
 
-        # Prompts
-        if [[ ! -n $INSIDE_EMACS ]]; then
-            export "PROMPT=
-        %{$fg[red]%}$ %{$reset_color%}"
-            export "RPROMPT=%{$fg[blue]%}%~%f%b"
-        else
-            export "PROMPT=
-        %{$fg[blue]%}%~ %{$fg[red]%}$ %f%b"
-        fi
-
-        source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-        if [ "$(tty)" = "/dev/tty1" ]; then
-           /run/current-system/sw/bin/sway
-        fi
-        
-        # set TERM here to override any 'pollution'
-        export TERM=screen-256color
-
-        # for capturing video from webcam/audio from soundcard
-        ffrecord() {
-          ${pkgs.ffmpeg-full}/bin/ffmpeg -y -thread_queue_size 2048 \
-          -f v4l2 -input_format h264 -video_size hd1080 \
-          -i /dev/video2 -f alsa -thread_queue_size 130064 \
-          -i plughw:CARD=CODEC,DEV=0 \
-          -c:v libx264 -ar 44100 -crf 17 -c:a aac \
-          $@
+      plugins = [
+        {
+          name = "autopair";
+          file = "autopair.zsh";
+          src = pkgs.fetchFromGitHub {
+            owner = "hlissner";
+            repo = "zsh-autopair";
+            rev = "4039bf142ac6d264decc1eb7937a11b292e65e24";
+            sha256 = "02pf87aiyglwwg7asm8mnbf9b2bcm82pyi1cj50yj74z4kwil6d1";
+          };
         }
-      '';
+        {
+          name = "fast-syntax-highlighting";
+          file = "fast-syntax-highlighting.plugin.zsh";
+          src = pkgs.fetchFromGitHub {
+            owner = "zdharma";
+            repo = "fast-syntax-highlighting";
+            rev = "v1.28";
+            sha256 = "106s7k9n7ssmgybh0kvdb8359f3rz60gfvxjxnxb4fg5gf1fs088";
+          };
+        }
+        {
+          name = "pi-theme";
+          file = "pi.zsh-theme";
+          src = pkgs.fetchFromGitHub {
+            owner = "tobyjamesthomas";
+            repo = "pi";
+            rev = "96778f903b79212ac87f706cfc345dd07ea8dc85";
+            sha256 = "0zjj1pihql5cydj1fiyjlm3163s9zdc63rzypkzmidv88c2kjr1z";
+          };
+        }
+      ];
     };
 
     programs.tmux = {
