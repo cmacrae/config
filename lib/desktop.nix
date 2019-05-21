@@ -90,10 +90,6 @@ in
     extraPackages = []; # handled via home-manager
   };
 
-  # location svc for redshift
-  services.avahi.enable = true;
-  services.geoclue2.enable = true;
-
   home-manager.users.cmacrae = {
     home.packages = with pkgs; [
       swayidle # idle handling
@@ -106,7 +102,6 @@ in
       imv      # image viewer
       wf-recorder # screen recorder
       wl-clipboard  # wayland vers of xclip
-      redshift-wayland # patched to work with wayland
 
       xdg_utils     # for xdg_open
       xwayland      # for X apps
@@ -116,12 +111,6 @@ in
 
     services.emacs.enable = true;
     programs.emacs.enable = true;
-
-    services.redshift = {
-      enable = true;
-      provider = "geoclue2";
-      package = pkgs.redshift-wayland;
-    };
 
     xdg.enable = true;
     xdg.configFile."sway/config" = {
