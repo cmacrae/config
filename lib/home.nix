@@ -3,6 +3,7 @@ let
   home-manager = builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz;
 
 in {
+  environment.systemPackages = [ pkgs.zsh ];
   users.users.cmacrae.shell = pkgs.zsh;
   home-manager.users.cmacrae = {
     home.packages = import ./packages.nix { inherit pkgs;};
