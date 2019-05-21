@@ -202,7 +202,7 @@ in
       urgentOnBell = true;
       dynamicTitle = true;
       scrollbar = "off";
-      font = "DejaVu Sans Mono 11";
+      font = "DejaVu Sans Mono 12";
       browser = "${pkgs.xdg_utils}/bin/xdg-open";
       cursorBlink = "off";
 
