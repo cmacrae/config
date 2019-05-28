@@ -3,6 +3,7 @@
 with pkgs; [
   ansible
   bc
+  emacs
   ffmpeg-full
   git
   gnumake

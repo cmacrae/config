@@ -34,11 +34,11 @@ in
       Clicking = true;
       TrackpadThreeFingerDrag = true;
     };
+  };
 
-    keyboard = {
-      enableKeyMapping = true;
-      remapCapsLockToControl = true;
-    };
+  system.keyboard = {
+    enableKeyMapping = true;
+    remapCapsLockToControl = true;
   };
 
   # Recreate /run/current-system symlink after boot
