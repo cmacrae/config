@@ -1,8 +1,6 @@
 { inputs ? "", outputs ? "", extraSwayConfig ? "", extraPkgs ? [] }:
 { config, lib, pkgs, ... }:
 let
-  home-manager = builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz;
-
   url = "https://github.com/colemickens/nixpkgs-wayland/archive/master.tar.gz";
   waylandOverlay = (import (builtins.fetchTarball url));
 
@@ -66,7 +64,7 @@ in
   security.rtkit.enable = true;
   nixpkgs.overlays = [ waylandOverlay ];
 
-  imports = [ ./home.nix "${home-manager}/nixos" ];
+  imports = [ ./home.nix ];
 
   users.users.cmacrae = {
     description = "Calum MacRae";
@@ -256,9 +254,6 @@ in
       enable = true;
       terminal = "${pkgs.termite}/bin/termite";
     };
-
-    programs.browserpass.enable = true;
-    programs.browserpass.browsers = [ "chromium" ];
 
     services.gpg-agent = {
       enable = true;

@@ -1,12 +1,12 @@
 { config, lib, pkgs, ... }:
-let
-  home-manager = builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz;
-
-in {
+{
   environment.systemPackages = [ pkgs.zsh ];
   users.users.cmacrae.shell = pkgs.zsh;
+  users.users.cmacrae.home = if pkgs.stdenv.isDarwin
+    then "/Users/cmacrae"
+    else "/home/cmacrae";
   home-manager.users.cmacrae = {
-    home.packages = import ./packages.nix { inherit pkgs;};
+    home.packages = import ./packages.nix { inherit pkgs; };
 
     home.sessionVariables = {
       PAGER = "less -R";
@@ -15,6 +15,13 @@ in {
 
     programs.fzf.enable = true;
     programs.fzf.enableZshIntegration = true;
+    programs.fzf.defaultOptions = if pkgs.stdenv.isDarwin then [
+      "--color fg:240,bg:230,hl:33,fg+:241,bg+:221,hl+:33"
+      "--color info:33,prompt:33,pointer:166,marker:166,spinner:33"
+    ] else [];
+
+    programs.browserpass.enable = true;
+    programs.browserpass.browsers = [ "chrome" "chromium" ];
 
     programs.zsh = {
       enable = true;
@@ -60,6 +67,14 @@ in {
           };
         }
       ];
+
+      initExtra = if pkgs.stdenv.isDarwin then ''
+        if test -n "$IN_NIX_SHELL"; then return; fi
+
+        if [ -z "$__NIX_DARWIN_SET_ENVIRONMENT_DONE" ]; then
+            . /nix/store/gy9s3969mgq2flj1mc1zr4ic09hf1fvi-set-environment
+        fi
+      '' else "";
     };
 
     programs.tmux = {
