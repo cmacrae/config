@@ -21,6 +21,7 @@ with pkgs; [
   ripgrep
   rsync
   terraform
+  triton
   up
   vim
   youtube-dl
