@@ -3,6 +3,7 @@
 with pkgs; [
   ansible
   bc
+  bind
   emacs
   ffmpeg-full
   git
@@ -21,7 +22,6 @@ with pkgs; [
   ripgrep
   rsync
   terraform
-  triton
   up
   vim
   youtube-dl
