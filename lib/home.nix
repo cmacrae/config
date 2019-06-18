@@ -67,14 +67,6 @@
           };
         }
       ];
-
-      initExtra = if pkgs.stdenv.isDarwin then ''
-        if test -n "$IN_NIX_SHELL"; then return; fi
-
-        if [ -z "$__NIX_DARWIN_SET_ENVIRONMENT_DONE" ]; then
-            . /nix/store/gy9s3969mgq2flj1mc1zr4ic09hf1fvi-set-environment
-        fi
-      '' else "";
     };
 
     programs.tmux = {
