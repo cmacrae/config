@@ -1,6 +1,11 @@
 { config, lib, pkgs, ... }:
 let
+  homeDir = "/Users/cmacrae";
   home-manager = builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz;
+  buildslave = pkgs.writeShellScriptBin "start-nixops-buildslave"
+    (builtins.readFile
+      (builtins.fetchurl https://raw.githubusercontent.com/LnL7/nix-docker/master/start-docker-nix-build-slave)
+    );
 in
 {
   imports = [ ../lib/home.nix "${home-manager}/nix-darwin" ];
@@ -8,10 +13,54 @@ in
   system.stateVersion = 4;
   nix.maxJobs = 8;
   nix.buildCores = 0;
+  nix.package = pkgs.nix;
   nixpkgs.config.allowUnfree = true;
 
+  # Remote builder for linux
+  services.nix-daemon.enable = true;
+  nix.distributedBuilds = true;
+  nix.buildMachines = [
+    # {
+    #   hostName = "nix-docker-build-slave";
+    #   sshUser = "root";
+    #   sshKey = "${homeDir}/.nix-docker-build-slave/insecure_rsa";
+    #   systems = [ "x86_64-linux" ];
+    #   maxJobs = 2;
+    # }
+    {
+      hostName = "compute1";
+      sshUser = "root";
+      sshKey = "${homeDir}/.ssh/id_rsa";
+      systems = [ "x86_64-linux" ];
+      maxJobs = 16;
+    }
+    {
+      hostName = "compute2";
+      sshUser = "root";
+      sshKey = "${homeDir}/.ssh/id_rsa";
+      systems = [ "x86_64-linux" ];
+      maxJobs = 16;
+    }
+    {
+      hostName = "compute3";
+      sshUser = "root";
+      sshKey = "${homeDir}/.ssh/id_rsa";
+      systems = [ "x86_64-linux" ];
+      maxJobs = 16;
+    }
+    {
+      hostName = "net1";
+      sshUser = "root";
+      sshKey = "${homeDir}/.ssh/id_rsa";
+      systems = [ "aarch64-linux" ];
+      maxJobs = 4;
+    }
+  ];
+
   environment.shells = [ pkgs.zsh ];
-  environment.darwinConfig = "/Users/cmacrae/dev/nix/darwin/configuration.nix";
+  programs.zsh.enable = true;
+  environment.darwinConfig = "${homeDir}/dev/nix/darwin/configuration.nix";
+  environment.systemPackages = [ buildslave ];
 
   time.timeZone = "Europe/London";
 

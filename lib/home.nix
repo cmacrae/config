@@ -1,10 +1,20 @@
 { config, lib, pkgs, ... }:
-{
+
+let kubeTmux = pkgs.fetchFromGitHub {
+      owner = "jonmosco";
+      repo = "kube-tmux";
+      rev = "7f196eeda5f42b6061673825a66e845f78d2449c";
+      sha256 = "1dvyb03q2g250m0bc8d2621xfnbl18ifvgmvf95nybbwyj2g09cm";
+    };
+
+in with pkgs.stdenv; {
   environment.systemPackages = [ pkgs.zsh ];
   users.users.cmacrae.shell = pkgs.zsh;
-  users.users.cmacrae.home = if pkgs.stdenv.isDarwin
-    then "/Users/cmacrae"
-    else "/home/cmacrae";
+  users.users.cmacrae.home = if isDarwin then
+    "/Users/cmacrae"
+    else
+    "/home/cmacrae";
+
   home-manager.users.cmacrae = {
     home.packages = import ./packages.nix { inherit pkgs; };
 
@@ -15,10 +25,6 @@
 
     programs.fzf.enable = true;
     programs.fzf.enableZshIntegration = true;
-    programs.fzf.defaultOptions = if pkgs.stdenv.isDarwin then [
-      "--color fg:240,bg:230,hl:33,fg+:241,bg+:221,hl+:33"
-      "--color info:33,prompt:33,pointer:166,marker:166,spinner:33"
-    ] else [];
 
     programs.browserpass.enable = true;
     programs.browserpass.browsers = [ "chrome" "chromium" ];
@@ -76,24 +82,25 @@
       clock24 = true;
       terminal = "screen-256color";
       customPaneNavigationAndResize = true;
+      secureSocket = false;
       extraConfig = ''
         unbind [
         unbind ]
-        
+
         bind ] next-window
         bind [ previous-window
         bind Escape copy-mode
-        
+
         bind-key -r C-k resize-pane -U
         bind-key -r C-j resize-pane -D
         bind-key -r C-h resize-pane -L
         bind-key -r C-l resize-pane -R
-        
+
         bind-key -r C-M-k resize-pane -U 5
         bind-key -r C-M-j resize-pane -D 5
         bind-key -r C-M-h resize-pane -L 5
         bind-key -r C-M-l resize-pane -R 5
-        
+
         set -g pane-border-fg black
         set -g pane-active-border-fg red
         set -g display-panes-colour white
@@ -105,7 +112,7 @@
         set -g repeat-time 100
         set -g renumber-windows on
         set -g renumber-windows on
-        
+
         setw -g monitor-activity on
         setw -g automatic-rename on
         setw -g clock-mode-colour red
@@ -113,14 +120,65 @@
         setw -g alternate-screen on
         setw -g window-status-fg white
         setw -g window-status-attr none
-        
-        set -g status-left ""
-        set -g status-right "#[fg=red,bg=default] %b %d #[fg=blue,bg=default] %R "
+
+        set -g status-left-length 100
+        set -g status-left "#(${pkgs.bash}/bin/bash ${kubeTmux}/kube.tmux 250 green colour3)  "
         set -g status-right-length 100
+        set -g status-right "#[fg=red,bg=default] %b %d #[fg=blue,bg=default] %R "
         set -g status-bg default
         setw -g window-status-format "#[fg=blue,bg=black] #I #[fg=blue,bg=black] #W "
         setw -g window-status-current-format "#[fg=blue,bg=default] #I #[fg=red,bg=default] #W "
       '';
     };
+
+    home.file."Library/KeyBindings/DefaultKeyBinding.dict".text = lib.mkIf isDarwin ''
+      {
+          /* Ctrl shortcuts */
+          "^l"        = "centerSelectionInVisibleArea:";  /* C-l          Recenter */
+          "^/"        = "undo:";                          /* C-/          Undo */
+          "^_"        = "undo:";                          /* C-_          Undo */
+          "^ "        = "setMark:";                       /* C-Spc        Set mark */
+          "^\@"       = "setMark:";                       /* C-@          Set mark */
+          "^w"        = "deleteToMark:";                  /* C-w          Delete to mark */
+
+          /* Meta shortcuts */
+          "~f"        = "moveWordForward:";               /* M-f          Move forward word */
+          "~b"        = "moveWordBackward:";              /* M-b          Move backward word */
+          "~<"        = "moveToBeginningOfDocument:";     /* M-<          Move to beginning of document */
+          "~>"        = "moveToEndOfDocument:";           /* M->          Move to end of document */
+          "~v"        = "pageUp:";                        /* M-v          Page Up */
+          "~/"        = "complete:";                      /* M-/          Complete */
+          "~c"        = ( "capitalizeWord:",              /* M-c          Capitalize */
+                          "moveForward:",
+                          "moveForward:");
+          "~u"        = ( "uppercaseWord:",               /* M-u          Uppercase */
+                          "moveForward:",
+                          "moveForward:");
+          "~l"        = ( "lowercaseWord:",               /* M-l          Lowercase */
+                          "moveForward:",
+                          "moveForward:");
+          "~d"        = "deleteWordForward:";             /* M-d          Delete word forward */
+          "^~h"       = "deleteWordBackward:";            /* M-C-h        Delete word backward */
+          "~\U007F"   = "deleteWordBackward:";            /* M-Bksp       Delete word backward */
+          "~t"        = "transposeWords:";                /* M-t          Transpose words */
+          "~\@"       = ( "setMark:",                     /* M-@          Mark word */
+                          "moveWordForward:",
+                          "swapWithMark");
+          "~h"        = ( "setMark:",                     /* M-h          Mark paragraph */
+                          "moveToEndOfParagraph:",
+                          "swapWithMark");
+
+          /* C-x shortcuts */
+          "^x" = {
+              "u"     = "undo:";                          /* C-x u        Undo */
+              "k"     = "performClose:";                  /* C-x k        Close */
+              "^f"    = "openDocument:";                  /* C-x C-f      Open (find file) */
+              "^x"    = "swapWithMark:";                  /* C-x C-x      Swap with mark */
+              "^m"    = "selectToMark:";                  /* C-x C-m      Select to mark*/
+              "^s"    = "saveDocument:";                  /* C-x C-s      Save */
+              "^w"    = "saveDocumentAs:";                /* C-x C-w      Save as */
+          };
+      }
+    '';
   };
 }
