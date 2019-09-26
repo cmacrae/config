@@ -39,6 +39,12 @@ in with pkgs.stdenv; {
         ignoreDups = true;
       };
 
+      shellAliases = {
+        k = "kubectl";
+        kp = "kube-prompt";
+        kc = "kubectx";
+      };
+
       oh-my-zsh.enable = true;
 
       plugins = [

@@ -36,4 +36,9 @@ with pkgs; [
   go2nix
   errcheck
   gotags
+
+  # k8s
+  kubectl
+  kubectx
+  kube-prompt
 ]
