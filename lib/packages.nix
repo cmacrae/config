@@ -41,4 +41,5 @@ with pkgs; [
   kubectl
   kubectx
   kube-prompt
+  fluxctl
 ]
