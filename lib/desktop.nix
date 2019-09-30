@@ -129,7 +129,7 @@ in
       progress-color=source #8BA59B00
       group-by=app-name
       sort=-priority
-      
+
       [urgency=high]
       border-color=#FB543FD9
       ignore-timeout=1
@@ -198,49 +198,50 @@ in
       browser = "${pkgs.xdg_utils}/bin/xdg-open";
       cursorBlink = "off";
 
-      # Darktooth
-      backgroundColor = "rgba(29, 32, 33)";
-      cursorColor = "#D5C4A1";
-      cursorForegroundColor = "#1D2021";
-      foregroundColor = "#A89984";
-      foregroundBoldColor = "#D5C4A1";
+      # Atom One Dark
+      backgroundColor = "rgba(40, 44, 52)";
+      cursorColor = "#b6bdca";
+      cursorForegroundColor = "#282c34";
+      foregroundColor = "#abb2bf";
+      foregroundBoldColor = "#b6bdca";
       colorsExtra = ''
         # Black, Gray, Silver, White
-        color0  = #1D2021
-        color8  = #665C54
-        color7  = #A89984
-        color15 = #FDF4C1
+        color0  = #282c34
+        color8  = #545862
+        color7  = #abb2bf
+        color15 = #c8ccd4
 
         # Red
-        color1  = #FB543F
-        color9  = #FB543F
+        color1  = #e06c75
+        color9  = #e06c75
 
         # Green
-        color2  = #95C085
-        color10 = #95C085
+        color2  = #98c379
+        color10 = #98c379
 
         # Yellow
-        color3  = #FAC03B
-        color11 = #FAC03B
+        color3  = #e5c07b
+        color11 = #e5c07b
 
         # Blue
-        color4  = #0D6678
-        color12 = #0D6678
+        color4  = #61afef
+        color12 = #61afef
+
         # Purple
-        color5  = #8F4673
-        color13 = #8F4673
+        color5  = #c678dd
+        color13 = #c678dd
 
         # Teal
-        color6  = #8BA59B
-        color14 = #8BA59B
+        color6  = #56b6c2
+        color14 = #56b6c2
 
         # Extra colors
-        color16 = #FE8625
-        color17 = #A87322
-        color18 = #32302F
-        color19 = #504945
-        color20 = #928374
-        color21 = #D5C4A1
+        color16 = #d19a66
+        color17 = #be5046
+        color18 = #353b45
+        color19 = #3e4451
+        color20 = #565c64
+        color21 = #b6bdca
       '';
     };
 
