@@ -68,6 +68,7 @@ in
       "cdrom"
       "docker"
       "input"
+      "libvirtd"
       "networkmanager"
       "sway"
       "tty"
