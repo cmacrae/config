@@ -49,6 +49,11 @@ in
           output HDMI-A-2 position 0,0
           output eDP-1 position 320,1440
         }
+        {
+          output DP-1 position 0,0
+          output HDMI-A-2 position 2560,0
+          output eDP-1 position 1596,1440
+        }
       '';
 
       extraSwayConfig = ''
