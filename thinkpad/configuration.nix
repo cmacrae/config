@@ -93,6 +93,8 @@ in
     down = "${pkgs.openresolv}/sbin/resolvconf -d $dev";
   };
 
+  virtualisation.libvirtd.enable = true;
+
   security.sudo.extraConfig = ''
     %wheel	ALL=(root)	NOPASSWD: ${pkgs.systemd}/bin/systemctl * openvpn-moo
   '';
