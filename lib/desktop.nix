@@ -33,6 +33,7 @@ in
   fonts = {
     enableDefaultFonts = true;
     fonts = with pkgs; [
+      iosevka
       noto-fonts
       noto-fonts-cjk
       noto-fonts-emoji
