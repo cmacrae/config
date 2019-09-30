@@ -17,9 +17,14 @@ in
         awscli
         aws-iam-authenticator
         docker-compose
+        eksctl
         kubernetes
         kubernetes-helm
+        minikube
+        nfs-utils
+        pantheon.elementary-files
         slack
+        spotify
       ];
 
       inputs = ''
