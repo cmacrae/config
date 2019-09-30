@@ -2,7 +2,6 @@
 { config, lib, pkgs, ... }:
 let
   url = "https://github.com/colemickens/nixpkgs-wayland/archive/master.tar.gz";
-  waylandOverlay = (import (builtins.fetchTarball url));
 
   # NOTE
   # - $SWAYSOCK unavailable
@@ -17,13 +16,7 @@ let
     reload
   '';
 
-  # some nice wallpapers
-  # 751150 748463 745470 751188 751223 644594 573093
-  # 636345 640342 656431 638670 643158 644744
-  wallHaven = "https://wallpapers.wallhaven.cc";
-  wallId = "636345";
-  wallUrl = "${wallHaven}/wallpapers/full/wallhaven-${wallId}.jpg";
-  wallpaper = (builtins.fetchurl "${wallUrl}");
+  wallpaper = (builtins.fetchurl "https://w.wallhaven.cc/full/ox/wallhaven-ox1om5.jpg");
 
 in
 {
@@ -62,7 +55,6 @@ in
 
   security.sudo.enable = true;
   security.rtkit.enable = true;
-  nixpkgs.overlays = [ waylandOverlay ];
 
   imports = [ ./home.nix ];
 
