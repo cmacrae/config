@@ -21,6 +21,7 @@ in with pkgs.stdenv; {
     home.sessionVariables = {
       PAGER = "less -R";
       EDITOR = "emacsclient";
+      GDK_SCALE = "-1";
     };
 
     programs.fzf.enable = true;

@@ -17,9 +17,14 @@ in
         awscli
         aws-iam-authenticator
         docker-compose
+        eksctl
         kubernetes
         kubernetes-helm
+        minikube
+        nfs-utils
+        pantheon.elementary-files
         slack
+        spotify
       ];
 
       inputs = ''
@@ -44,6 +49,11 @@ in
           output HDMI-A-2 position 0,0
           output eDP-1 position 320,1440
         }
+        {
+          output DP-1 position 0,0
+          output HDMI-A-2 position 2560,0
+          output eDP-1 position 1596,1440
+        }
       '';
 
       extraSwayConfig = ''
@@ -62,7 +72,6 @@ in
   boot.loader.grub.device = "nodev";
   boot.loader.efi.canTouchEfiVariables = true;
   boot.initrd.checkJournalingFS = false;
-  boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.supportedFilesystems = [ "zfs" ];
 
   powerManagement.enable = true;
@@ -83,6 +92,8 @@ in
     up = "echo nameserver $nameserver | ${pkgs.openresolv}/sbin/resolvconf -m 0 -a $dev";
     down = "${pkgs.openresolv}/sbin/resolvconf -d $dev";
   };
+
+  virtualisation.libvirtd.enable = true;
 
   security.sudo.extraConfig = ''
     %wheel	ALL=(root)	NOPASSWD: ${pkgs.systemd}/bin/systemctl * openvpn-moo

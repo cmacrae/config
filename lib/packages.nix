@@ -4,13 +4,13 @@ with pkgs; [
   ansible
   bc
   bind
-  emacs
   ffmpeg-full
   git
   gnumake
   gnupg
   htop
   jq
+  kind
   lame
   mpv
   nixops
@@ -22,8 +22,10 @@ with pkgs; [
   ripgrep
   rsync
   terraform
+  unzip
   up
   vim
+  wget
   youtube-dl
 
   # Go
