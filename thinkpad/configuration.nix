@@ -98,5 +98,5 @@ in
     %wheel	ALL=(root)	NOPASSWD: ${pkgs.systemd}/bin/systemctl * openvpn-moo
   '';
 
-  system.stateVersion = "19.03";
+  system.stateVersion = "19.09";
 }
