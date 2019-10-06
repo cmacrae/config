@@ -4,6 +4,7 @@ with pkgs; [
   ansible
   bc
   bind
+  emacs
   ffmpeg-full
   git
   gnumake
@@ -44,4 +45,6 @@ with pkgs; [
   kubectx
   kube-prompt
   fluxctl
+  kubernetes-helm
+  kustomize
 ]
