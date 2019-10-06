@@ -14,7 +14,6 @@ in
   nix.maxJobs = 8;
   nix.buildCores = 0;
   nix.package = pkgs.nix;
-  nix.trustedUsers = [ "root" "cmacrae" ];
   nixpkgs.config.allowUnfree = true;
 
   # Remote builder for linux
