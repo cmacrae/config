@@ -108,8 +108,6 @@ in with pkgs.stdenv; {
         bind-key -r C-M-h resize-pane -L 5
         bind-key -r C-M-l resize-pane -R 5
 
-        set -g pane-border-fg black
-        set -g pane-active-border-fg red
         set -g display-panes-colour white
         set -g display-panes-active-colour red
         set -g display-panes-time 1000
@@ -125,8 +123,6 @@ in with pkgs.stdenv; {
         setw -g clock-mode-colour red
         setw -g clock-mode-style 24
         setw -g alternate-screen on
-        setw -g window-status-fg white
-        setw -g window-status-attr none
 
         set -g status-left-length 100
         set -g status-left "#(${pkgs.bash}/bin/bash ${kubeTmux}/kube.tmux 250 green colour3)  "
