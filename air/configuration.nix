@@ -1,4 +1,7 @@
 { config, pkgs, ... }:
+let
+  home-manager = builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz;
+in
 {
   nix.nixPath = [
     "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
@@ -6,6 +9,9 @@
   ];
 
   imports = [
+    "${home-manager}/nixos"
+    ../lib/home.nix
+
     (import ../lib/desktop.nix {
       inputs = ''
         input "1452:586:Apple_Inc._Apple_Internal_Keyboard_/_Trackpad" {
@@ -57,5 +63,5 @@
     networkmanager.enable = true;
   };
 
-  system.stateVersion = "18.09";
+  system.stateVersion = "19.09";
 }
