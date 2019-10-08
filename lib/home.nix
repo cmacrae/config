@@ -35,6 +35,7 @@ in with pkgs.stdenv; {
       enableAutosuggestions = true;
       enableCompletion = true;
       defaultKeymap = "emacs";
+      sessionVariables = { RPROMPT = ""; };
       history = {
         extended = true;
         ignoreDups = true;
