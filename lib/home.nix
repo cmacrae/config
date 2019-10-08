@@ -80,6 +80,16 @@ in with pkgs.stdenv; {
             sha256 = "0zjj1pihql5cydj1fiyjlm3163s9zdc63rzypkzmidv88c2kjr1z";
           };
         }
+        {
+          name = "z";
+          file = "zsh-z.plugin.zsh";
+          src = pkgs.fetchFromGitHub {
+            owner = "agkozak";
+            repo = "zsh-z";
+            rev = "41439755cf06f35e8bee8dffe04f728384905077";
+            sha256 = "1dzxbcif9q5m5zx3gvrhrfmkxspzf7b81k837gdb93c4aasgh6x6";
+          };
+        }
       ];
     };
 
