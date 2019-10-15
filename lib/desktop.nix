@@ -98,9 +98,6 @@ in
       libpulseaudio # waybar audio
     ] ++ extraPkgs;
 
-    services.emacs.enable = true;
-    programs.emacs.enable = true;
-
     xdg.enable = true;
     xdg.configFile."sway/config" = {
         source = pkgs.substituteAll {
@@ -181,7 +178,7 @@ in
     };
 
     xdg.configFile."chromium-flags.conf".text = ''
-        --force-device-scale-factor=1
+      --force-device-scale-factor=1
     '';
 
     programs.termite = {

@@ -4,7 +4,6 @@ with pkgs; [
   ansible
   bc
   bind
-  emacs
   ffmpeg-full
   git
   gnumake
@@ -12,7 +11,6 @@ with pkgs; [
   htop
   jq
   kind
-  lame
   mpv
   nixops
   nix-prefetch-git

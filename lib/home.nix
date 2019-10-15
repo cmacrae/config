@@ -24,6 +24,9 @@ in with pkgs.stdenv; {
       GDK_SCALE = "-1";
     };
 
+    programs.emacs.enable = true;
+    services.emacs.enable = if isDarwin then false else true;
+
     programs.fzf.enable = true;
     programs.fzf.enableZshIntegration = true;
 
