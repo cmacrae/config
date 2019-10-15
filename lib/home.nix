@@ -148,7 +148,7 @@ in with pkgs.stdenv; {
       '';
     };
 
-    home.file."Library/KeyBindings/DefaultKeyBinding.dict".text = lib.mkIf isDarwin ''
+    home.file."Library/KeyBindings/DefaultKeyBinding.dict".text =  lib.optionalString isDarwin ''
       {
           /* Ctrl shortcuts */
           "^l"        = "centerSelectionInVisibleArea:";  /* C-l          Recenter */
