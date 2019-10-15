@@ -1,8 +1,6 @@
 { inputs ? "", outputs ? "", extraSwayConfig ? "", extraPkgs ? [] }:
 { config, lib, pkgs, ... }:
 let
-  url = "https://github.com/colemickens/nixpkgs-wayland/archive/master.tar.gz";
-
   # NOTE
   # - $SWAYSOCK unavailable
   # - $(sway --get-socketpath) doesn't work
@@ -16,9 +14,8 @@ let
     reload
   '';
 
-  wallpaper = (builtins.fetchurl "https://w.wallhaven.cc/full/ox/wallhaven-ox1om5.jpg");
-
 in
+
 {
   nix.trustedUsers = [ "root" "@wheel" ];
 
@@ -109,7 +106,7 @@ in
         source = pkgs.substituteAll {
           name = "sway-config";
           src = ../conf.d/sway.conf;
-          wallpaper = "${wallpaper}";
+          wallpaper = "${pkgs.pantheon.elementary-wallpapers}/share/backgrounds/elementary/Photo by SpaceX.jpg";
           inputs = "${inputs}";
           extraConfig = "${extraSwayConfig}";
         };
