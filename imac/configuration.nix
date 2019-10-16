@@ -31,9 +31,9 @@ in
       extraSwayConfig = ''
         bindsym $mod+Print exec slurp | grim -g - - | wl-copy
 
-        output eDP-1 position 1920,30
-        output DP-2 position 0,1080
-        output DP-3 position 0,0
+        output DP-2 transform 270 position 0,0
+        output eDP-1 position 1080,0
+        output DP-3 transform 90 position 4920,0
 
         workspace 1 output DP-2
         workspace 2 output eDP-1
