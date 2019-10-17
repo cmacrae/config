@@ -7,6 +7,7 @@
     ];
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" "sdhci_pci" ];
+  boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
@@ -15,14 +16,14 @@
       fsType = "zfs";
     };
 
+  fileSystems."/efi" =
+    { device = "/dev/disk/by-uuid/F2AE-806D";
+      fsType = "vfat";
+    };
+
   fileSystems."/home" =
     { device = "rpool/home";
       fsType = "zfs";
-    };
-
-  fileSystems."/efi" =
-    { device = "/dev/disk/by-uuid/67E3-17ED";
-      fsType = "vfat";
     };
 
   swapDevices = [ ];

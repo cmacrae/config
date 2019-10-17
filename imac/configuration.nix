@@ -1,4 +1,7 @@
 { config, pkgs, ... }:
+let
+  home-manager = builtins.fetchTarball https://github.com/rycee/home-manager/archive/release-19.09.tar.gz;
+in
 {
   nix.nixPath = [
     "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
@@ -6,13 +9,10 @@
   ];
 
   imports = [
-    (import ../lib/desktop.nix {
-      extraPkgs = with pkgs; [
-        cdparanoia
-        # TODO: renoise.override { releasePath = ./path/to/download; }
-        renoise
-      ];
+    "${home-manager}/nixos"
+    ../lib/home.nix
 
+    (import ../lib/desktop.nix {
       inputs = ''
         input "1452:615:Apple_Inc._Magic_Keyboard" {
             xkb_layout gb
@@ -31,9 +31,9 @@
       extraSwayConfig = ''
         bindsym $mod+Print exec slurp | grim -g - - | wl-copy
 
-        output eDP-1 position 1920,30
-        output DP-2 position 0,1080
-        output DP-3 position 0,0
+        output DP-2 transform 270 position 0,0
+        output eDP-1 position 1080,0
+        output DP-3 transform 90 position 4920,0
 
         workspace 1 output DP-2
         workspace 2 output eDP-1
@@ -53,16 +53,17 @@
   boot.loader.grub.zfsSupport = true;
   boot.loader.grub.copyKernels = true;
   boot.loader.grub.device = "nodev";
-  boot.loader.grub.useOSProber = true;
   boot.loader.efi.efiSysMountPoint = "/efi";
   boot.initrd.checkJournalingFS = false;
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.supportedFilesystems = [ "zfs" ];
   hardware.enableAllFirmware = true;
+  hardware.cpu.amd.updateMicrocode = true;
 
   networking = {
     hostId = "60f7ad36";
     hostName = "imac";
+    domain = "cmacr.ae";
     networkmanager.enable = true;
   };
 
