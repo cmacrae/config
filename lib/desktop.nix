@@ -14,9 +14,9 @@ let
     reload
   '';
 
-in
+  wallpaperCmd = "${pkgs.wallutils}/bin/setrandom -v ${pkgs.pantheon.elementary-wallpapers}/share/backgrounds/elementary";
 
-{
+in {
   nix.trustedUsers = [ "root" "@wheel" ];
 
   time.timeZone = "Europe/London";
@@ -79,6 +79,26 @@ in
     extraPackages = []; # handled via home-manager
   };
 
+  systemd.user = {
+    targets.sway-session = {
+      description = "sway compositor session";
+      documentation = ["man:systemd.special(7)"];
+      bindsTo = ["graphical-session.target"];
+      wants = ["graphical-session-pre.target"];
+      after = ["graphical-session-pre.target"];
+    };
+
+    services.wallpaper = {
+      description = "Timed random wallpapers";
+      wantedBy = ["sway-session.target"];
+      partOf = ["graphical-session.target"];
+      startAt = "*:0/15";
+      serviceConfig = {
+        ExecStart = wallpaperCmd;
+      };
+    };
+  };
+
   home-manager.users.cmacrae = {
     home.packages = with pkgs; [
       swayidle # idle handling
@@ -105,7 +125,7 @@ in
         source = pkgs.substituteAll {
           name = "sway-config";
           src = ../conf.d/sway.conf;
-          wallpaper = "${pkgs.pantheon.elementary-wallpapers}/share/backgrounds/elementary/Photo by SpaceX.jpg";
+          wallpaperCmd = wallpaperCmd;
           inputs = "${inputs}";
           extraConfig = "${extraSwayConfig}";
         };
