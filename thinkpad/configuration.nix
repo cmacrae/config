@@ -23,7 +23,6 @@ in
         nfs-utils
         pantheon.elementary-files
         slack
-        spotify
       ];
 
       inputs = ''

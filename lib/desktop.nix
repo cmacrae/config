@@ -96,6 +96,8 @@ in
       xwayland      # for X apps
       libnl         # waybar wifi
       libpulseaudio # waybar audio
+
+      spotify
     ] ++ extraPkgs;
 
     xdg.enable = true;
