@@ -39,15 +39,12 @@ in with pkgs.stdenv; {
       enableCompletion = true;
       defaultKeymap = "emacs";
       sessionVariables = { RPROMPT = ""; };
-      history = {
-        extended = true;
-        ignoreDups = true;
-      };
 
       shellAliases = {
         k = "kubectl";
         kp = "kube-prompt";
         kc = "kubectx";
+        kn = "kubens";
       };
 
       oh-my-zsh.enable = true;
