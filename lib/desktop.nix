@@ -44,7 +44,7 @@ in {
       proggyfonts
       emacs-all-the-icons-fonts
     ];
-   };
+  };
 
   services.illum.enable = true;
 

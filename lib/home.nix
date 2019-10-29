@@ -1,11 +1,21 @@
 { config, lib, pkgs, ... }:
 
-let kubeTmux = pkgs.fetchFromGitHub {
-      owner = "jonmosco";
-      repo = "kube-tmux";
-      rev = "7f196eeda5f42b6061673825a66e845f78d2449c";
-      sha256 = "1dvyb03q2g250m0bc8d2621xfnbl18ifvgmvf95nybbwyj2g09cm";
-    };
+let
+  kubeTmux = pkgs.fetchFromGitHub {
+    owner = "jonmosco";
+    repo = "kube-tmux";
+    rev = "7f196eeda5f42b6061673825a66e845f78d2449c";
+    sha256 = "1dvyb03q2g250m0bc8d2621xfnbl18ifvgmvf95nybbwyj2g09cm";
+  };
+
+  tmuxYank = pkgs.fetchFromGitHub {
+    owner = "tmux-plugins";
+    repo = "tmux-yank";
+    # rev = "v2.3.0";
+    # sha256 = "0yqar2y58p4h9k8jzkb8i8ph0mdmha0909cpgb0qyfpi26q0410d";
+    rev = "ce21dafd9a016ef3ed4ba3988112bcf33497fc83";
+    sha256 = "04ldklkmc75azs6lzxfivl7qs34041d63fan6yindj936r4kqcsp";
+  };
 
 in with pkgs.stdenv; {
   environment.systemPackages = [ pkgs.zsh ];
@@ -107,7 +117,13 @@ in with pkgs.stdenv; {
 
         bind ] next-window
         bind [ previous-window
+
         bind Escape copy-mode
+        bind P paste-buffer
+        bind-key -T copy-mode-vi v send-keys -X begin-selection
+        bind-key -T copy-mode-vi y send-keys -X copy-selection
+        bind-key -T copy-mode-vi r send-keys -X rectangle-toggle
+        set -g mouse on
 
         bind-key -r C-k resize-pane -U
         bind-key -r C-j resize-pane -D
@@ -142,6 +158,8 @@ in with pkgs.stdenv; {
         set -g status-bg default
         setw -g window-status-format "#[fg=blue,bg=black] #I #[fg=blue,bg=black] #W "
         setw -g window-status-current-format "#[fg=blue,bg=default] #I #[fg=red,bg=default] #W "
+
+        run-shell ${tmuxYank}/yank.tmux
       '';
     };
 
