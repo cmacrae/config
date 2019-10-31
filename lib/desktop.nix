@@ -199,6 +199,7 @@ in {
         "dbepggeogbaibhgnhhndojpepiihcmeb" # vimium
         "cjpalhdlnbpafiamejdnhcphjbkeiagm" # ublock origin
         "naepdomgkenhinolocfifgehidddafch" # browser-pass
+        "bhloflhklmhfpedakmangadcdofhnnoh" # Google Earth view
       ];
     };
 
