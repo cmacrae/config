@@ -11,10 +11,15 @@ let
   tmuxYank = pkgs.fetchFromGitHub {
     owner = "tmux-plugins";
     repo = "tmux-yank";
-    # rev = "v2.3.0";
-    # sha256 = "0yqar2y58p4h9k8jzkb8i8ph0mdmha0909cpgb0qyfpi26q0410d";
     rev = "ce21dafd9a016ef3ed4ba3988112bcf33497fc83";
     sha256 = "04ldklkmc75azs6lzxfivl7qs34041d63fan6yindj936r4kqcsp";
+  };
+
+  tmuxFpp = pkgs.fetchFromGitHub {
+    owner = "tmux-plugins";
+    repo = "tmux-fpp";
+    rev = "ca125d5a9c80bb156ac114ac3f3d5951a795c80e";
+    sha256 = "1b89s6mfzifi7s5iwf22w7niddpq28w48nmqqy00dv38z4yga5ws";
   };
 
 in with pkgs.stdenv; {
@@ -160,6 +165,7 @@ in with pkgs.stdenv; {
         setw -g window-status-current-format "#[fg=blue,bg=default] #I #[fg=red,bg=default] #W "
 
         run-shell ${tmuxYank}/yank.tmux
+        run-shell ${tmuxFpp}/fpp.tmux
       '';
     };
 

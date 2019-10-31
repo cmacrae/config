@@ -5,6 +5,7 @@ with pkgs; [
   bc
   bind
   ffmpeg-full
+  fpp
   git
   gnumake
   gnupg
