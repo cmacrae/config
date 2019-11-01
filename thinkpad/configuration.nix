@@ -56,6 +56,10 @@ in
 
       extraSwayConfig = ''
         bindsym $mod+Print exec slurp | grim -g - - | wl-copy
+        workspace 1 output eDP-1
+        workspace 2 output DP-1
+        workspace 3 output HDMI-A-2
+        workspace 5 output eDP-1
       '';
     })
 
