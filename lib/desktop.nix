@@ -214,7 +214,9 @@ in {
       urgentOnBell = true;
       dynamicTitle = true;
       scrollbar = "off";
-      font = "DejaVu Sans Mono 12";
+      font = ''
+        DejaVu Sans Mono ${if (config.networking.hostName == "air") then "10" else "12"}
+      '';
       browser = "${pkgs.xdg_utils}/bin/xdg-open";
       cursorBlink = "off";
 
