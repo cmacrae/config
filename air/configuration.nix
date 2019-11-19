@@ -57,6 +57,8 @@ in
   hardware.bluetooth.enable = false;
   
   powerManagement.enable = true;
+  services.tlp.enable = true;
+  services.logind.extraConfig = "HandlePowerKey=ignore";
 
   networking = {
     hostName = "air";
