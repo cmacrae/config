@@ -59,6 +59,7 @@ in
         workspace 1 output eDP-1
         workspace 2 output DP-1
         workspace 3 output HDMI-A-2
+        workspace 4 output eDP-1
         workspace 5 output eDP-1
       '';
     })
