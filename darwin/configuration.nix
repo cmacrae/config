@@ -60,7 +60,7 @@ in
   environment.shells = [ pkgs.zsh ];
   programs.zsh.enable = true;
   environment.darwinConfig = "${homeDir}/dev/nix/darwin/configuration.nix";
-  environment.systemPackages = [ buildslave ];
+  environment.systemPackages = [ buildslave pkgs.gcc ];
 
   time.timeZone = "Europe/London";
 
