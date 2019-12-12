@@ -1,5 +1,0 @@
-#! /usr/bin/env bash
-
-OUTFILE=${1:-/dev/stdout}
-
-nix-env -f '<nixos>' -qaP | awk '{print "nixos."$1}' > $OUTFILE

@@ -16,8 +16,6 @@ let
 
   wallpaperCmd = "${pkgs.wallutils}/bin/setrandom -v ${pkgs.pantheon.elementary-wallpapers}/share/backgrounds/elementary";
 
-  nixSearch = pkgs.callPackage ../pkgs/nix-search {};
-
 in {
   nix.trustedUsers = [ "root" "@wheel" ];
 
@@ -120,7 +118,6 @@ in {
       libpulseaudio # waybar audio
 
       spotify
-      nixSearch
     ] ++ extraPkgs;
 
     xdg.enable = true;
