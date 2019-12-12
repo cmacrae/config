@@ -1,11 +1,6 @@
 { config, lib, pkgs, ... }:
 let
-  homeDir = "/Users/cmacrae";
-  home-manager = builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz;
-  buildslave = pkgs.writeShellScriptBin "start-nixops-buildslave"
-    (builtins.readFile
-      (builtins.fetchurl https://raw.githubusercontent.com/LnL7/nix-docker/master/start-docker-nix-build-slave)
-    );
+  home-manager = builtins.fetchTarball https://github.com/rycee/home-manager/archive/release-19.09.tar.gz;
 in
 {
   imports = [ ../lib/home.nix "${home-manager}/nix-darwin" ];
@@ -17,50 +12,43 @@ in
   nixpkgs.config.allowUnfree = true;
 
   # Remote builder for linux
-  services.nix-daemon.enable = true;
   nix.distributedBuilds = true;
   nix.buildMachines = [
-    # {
-    #   hostName = "nix-docker-build-slave";
-    #   sshUser = "root";
-    #   sshKey = "${homeDir}/.nix-docker-build-slave/insecure_rsa";
-    #   systems = [ "x86_64-linux" ];
-    #   maxJobs = 2;
-    # }
     {
       hostName = "compute1";
       sshUser = "root";
-      sshKey = "${homeDir}/.ssh/id_rsa";
+      sshKey = "${builtins.getEnv("HOME")}/.ssh/id_rsa";
       systems = [ "x86_64-linux" ];
       maxJobs = 16;
     }
     {
       hostName = "compute2";
       sshUser = "root";
-      sshKey = "${homeDir}/.ssh/id_rsa";
+      sshKey = "${builtins.getEnv("HOME")}/.ssh/id_rsa";
       systems = [ "x86_64-linux" ];
       maxJobs = 16;
     }
     {
       hostName = "compute3";
       sshUser = "root";
-      sshKey = "${homeDir}/.ssh/id_rsa";
+      sshKey = "${builtins.getEnv("HOME")}/.ssh/id_rsa";
       systems = [ "x86_64-linux" ];
       maxJobs = 16;
     }
     {
       hostName = "net1";
       sshUser = "root";
-      sshKey = "${homeDir}/.ssh/id_rsa";
+      sshKey = "${builtins.getEnv("HOME")}/.ssh/id_rsa";
       systems = [ "aarch64-linux" ];
       maxJobs = 4;
     }
   ];
 
   environment.shells = [ pkgs.zsh ];
+  programs.bash.enable = false;
   programs.zsh.enable = true;
-  environment.darwinConfig = "${homeDir}/dev/nix/darwin/configuration.nix";
-  environment.systemPackages = [ buildslave pkgs.gcc ];
+  environment.darwinConfig = "${builtins.getEnv("HOME")}/dev/nix/darwin/configuration.nix";
+  environment.systemPackages = [ pkgs.gcc ];
 
   time.timeZone = "Europe/London";
 
