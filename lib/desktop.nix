@@ -180,11 +180,6 @@ in {
       iconTheme.package = pkgs.pantheon.elementary-icon-theme;
       iconTheme.name = "elementary";
       gtk3.extraConfig = { gtk-application-prefer-dark-theme = true; };
-      gtk3.extraCss = ''
-        VteTerminal, vte-terminal {
-            padding: 15px;
-        }
-      '';
     };
 
     programs.chromium = {
@@ -201,70 +196,7 @@ in {
       --force-device-scale-factor=1
     '';
 
-    programs.termite = {
-      enable = true;
-      clickableUrl = true;
-      audibleBell = false;
-      urgentOnBell = true;
-      dynamicTitle = true;
-      scrollbar = "off";
-      font = ''
-        DejaVu Sans Mono ${if (config.networking.hostName == "air") then "10" else "12"}
-      '';
-      browser = "${pkgs.xdg_utils}/bin/xdg-open";
-      cursorBlink = "off";
-
-      # Atom One Dark
-      backgroundColor = "rgba(40, 44, 52)";
-      cursorColor = "#b6bdca";
-      cursorForegroundColor = "#282c34";
-      foregroundColor = "#abb2bf";
-      foregroundBoldColor = "#b6bdca";
-      colorsExtra = ''
-        # Black, Gray, Silver, White
-        color0  = #282c34
-        color8  = #545862
-        color7  = #abb2bf
-        color15 = #c8ccd4
-
-        # Red
-        color1  = #e06c75
-        color9  = #e06c75
-
-        # Green
-        color2  = #98c379
-        color10 = #98c379
-
-        # Yellow
-        color3  = #e5c07b
-        color11 = #e5c07b
-
-        # Blue
-        color4  = #61afef
-        color12 = #61afef
-
-        # Purple
-        color5  = #c678dd
-        color13 = #c678dd
-
-        # Teal
-        color6  = #56b6c2
-        color14 = #56b6c2
-
-        # Extra colors
-        color16 = #d19a66
-        color17 = #be5046
-        color18 = #353b45
-        color19 = #3e4451
-        color20 = #565c64
-        color21 = #b6bdca
-      '';
-    };
-
-    programs.rofi = {
-      enable = true;
-      terminal = "${pkgs.termite}/bin/termite";
-    };
+    programs.rofi.enable = true;
 
     services.gpg-agent = {
       enable = true;
