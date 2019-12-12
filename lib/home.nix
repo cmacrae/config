@@ -23,6 +23,8 @@ let
   };
 
 in with pkgs.stdenv; {
+  time.timeZone = "Europe/London";
+
   environment.systemPackages = [ pkgs.zsh ];
   users.users.cmacrae.shell = pkgs.zsh;
   users.users.cmacrae.home = if isDarwin then

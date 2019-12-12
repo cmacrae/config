@@ -50,8 +50,6 @@ in
   environment.darwinConfig = "${builtins.getEnv("HOME")}/dev/nix/darwin/configuration.nix";
   environment.systemPackages = [ pkgs.gcc ];
 
-  time.timeZone = "Europe/London";
-
   system.defaults = {
     dock = {
       autohide = true;

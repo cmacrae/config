@@ -19,8 +19,6 @@ let
 in {
   nix.trustedUsers = [ "root" "@wheel" ];
 
-  time.timeZone = "Europe/London";
-
   sound.enable = true;
   hardware.pulseaudio.enable = true;
   hardware.pulseaudio.package = pkgs.pulseaudioFull;
