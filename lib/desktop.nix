@@ -23,7 +23,6 @@ in {
   hardware.pulseaudio.enable = true;
   hardware.pulseaudio.package = pkgs.pulseaudioFull;
 
-  nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [ file vim ];
   fonts = {
     enableDefaultFonts = true;

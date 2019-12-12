@@ -24,6 +24,7 @@ let
 
 in with pkgs.stdenv; {
   time.timeZone = "Europe/London";
+  nixpkgs.config.allowUnfree = true;
 
   environment.systemPackages = [ pkgs.zsh ];
   users.users.cmacrae.shell = pkgs.zsh;
