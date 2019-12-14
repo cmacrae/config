@@ -44,7 +44,6 @@ in with pkgs.stdenv; with lib; {
       };
 
       programs.emacs.enable = true;
-      services.emacs.enable = if isDarwin then false else true;
 
       programs.fzf.enable = true;
       programs.fzf.enableZshIntegration = true;
@@ -234,6 +233,9 @@ in with pkgs.stdenv; with lib; {
         '';
       };
     }
+
+
+    (mkIf (! isDarwin) { services.emacs.enable =  true; })
 
     (mkIf (isDarwin) {
       home.file."Library/KeyBindings/DefaultKeyBinding.dict".text = ''
