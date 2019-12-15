@@ -89,6 +89,18 @@ in with lib;
       remapCapsLockToControl = true;
     };
 
+    local.alacritty.bindings = [
+       { key = "V"; mods = "Command"; action = "Paste"; }
+       { key = "C"; mods = "Command"; action = "Copy";  }
+       { key = "Q"; mods = "Command"; action = "Quit";  }
+       { key = "Q"; mods = "Control"; chars = "\x00"; }
+       { key = "N"; mods = "Command"; command = {
+           program = "open";
+           args = ["-nb" "io.alacritty"];
+         };
+       }
+    ];
+
     # Recreate /run/current-system symlink after boot
     services.activate-system.enable = true;
   };
