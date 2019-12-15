@@ -27,28 +27,28 @@ in with lib;
       {
         hostName = "compute1";
         sshUser = "root";
-        sshKey = "${builtins.getEnv("HOME")}/.ssh/id_rsa";
+        sshKey = "${homeDir}/.ssh/id_rsa";
         systems = [ "x86_64-linux" ];
         maxJobs = 16;
       }
       {
         hostName = "compute2";
         sshUser = "root";
-        sshKey = "${builtins.getEnv("HOME")}/.ssh/id_rsa";
+        sshKey = "${homeDir}/.ssh/id_rsa";
         systems = [ "x86_64-linux" ];
         maxJobs = 16;
       }
       {
         hostName = "compute3";
         sshUser = "root";
-        sshKey = "${builtins.getEnv("HOME")}/.ssh/id_rsa";
+        sshKey = "${homeDir}/.ssh/id_rsa";
         systems = [ "x86_64-linux" ];
         maxJobs = 16;
       }
       {
         hostName = "net1";
         sshUser = "root";
-        sshKey = "${builtins.getEnv("HOME")}/.ssh/id_rsa";
+        sshKey = "${homeDir}/.ssh/id_rsa";
         systems = [ "aarch64-linux" ];
         maxJobs = 4;
       }
@@ -57,7 +57,7 @@ in with lib;
     environment.shells = [ pkgs.zsh ];
     programs.bash.enable = false;
     programs.zsh.enable = true;
-    environment.darwinConfig = "${builtins.getEnv("HOME")}/dev/nix/${cfg.machine}/configuration.nix";
+    environment.darwinConfig = "${homeDir}/dev/nix/${cfg.machine}/configuration.nix";
 
     networking.hostName = cfg.machine;
     
