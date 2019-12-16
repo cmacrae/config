@@ -1,4 +1,4 @@
 {
   imports = [ ../lib/darwin.nix ];
-  local.machine = "pico";
+  local.darwin.machine = "pico";
 }

@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 let
-  cfg = config.local;
+  cfg = config.local.home;
 
   kubeTmux = pkgs.fetchFromGitHub {
     owner = "jonmosco";
@@ -25,7 +25,7 @@ let
   };
 
 in with pkgs.stdenv; with lib; {
-  options.local = {
+  options.local.home = {
     alacritty.bindings = mkOption {
       type = types.listOf types.attrs;
       default = [{}];

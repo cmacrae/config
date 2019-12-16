@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }:
 let
-  cfg = config.local;
+  cfg = config.local.desktop;
 
   # NOTE
   # - $SWAYSOCK unavailable
@@ -20,7 +20,7 @@ let
 in with lib; {
   imports = [ ./home.nix ];
 
-  options.local = {
+  options.local.desktop = {
     extraPkgs = mkOption {
       type = types.listOf types.package;
       default = [];

@@ -35,56 +35,58 @@ in
   };
 
   local = {
-    extraPkgs = with pkgs; [
-      awscli
-      aws-iam-authenticator
-      docker-compose
-      eksctl
-      kubernetes
-      minikube
-      nfs-utils
-      pantheon.elementary-files
-      slack
-    ];
+    desktop = {
+      extraPkgs = with pkgs; [
+        awscli
+        aws-iam-authenticator
+        docker-compose
+        eksctl
+        kubernetes
+        minikube
+        nfs-utils
+        pantheon.elementary-files
+        slack
+      ];
 
-    sway = {
-      inputs = ''
-        input "1:1:AT_Translated_Set_2_keyboard" {
-            xkb_layout gb
-            xkb_options ctrl:nocaps
-        }
-        
-        input "1739:0:Synaptics_TM3381-002" {
-            pointer_accel 0.7
-            tap enabled
-            dwt enabled
-            natural_scroll enabled
-        }
-      '';
+      sway = {
+        inputs = ''
+          input "1:1:AT_Translated_Set_2_keyboard" {
+              xkb_layout gb
+              xkb_options ctrl:nocaps
+          }
+          
+          input "1739:0:Synaptics_TM3381-002" {
+              pointer_accel 0.7
+              tap enabled
+              dwt enabled
+              natural_scroll enabled
+          }
+        '';
 
-      outputs = ''
-        {
-          output eDP-1
-        }
-        {
-          output HDMI-A-2 position 0,0
-          output eDP-1 position 320,1440
-        }
-        {
-          output DP-1 position 0,0 transform 270
-          output HDMI-A-2 position 1440,470
-          output eDP-1 position 1440,1910
-        }
-      '';
+        outputs = ''
+          {
+            output eDP-1
+          }
+          {
+            output HDMI-A-2 position 0,0
+            output eDP-1 position 320,1440
+          }
+          {
+            output DP-1 position 0,0 transform 270
+            output HDMI-A-2 position 1440,470
+            output eDP-1 position 1440,1910
+          }
+        '';
 
-      extraConfig = ''
-        bindsym $mod+Print exec slurp | grim -g - - | wl-copy
-        workspace 1 output eDP-1
-        workspace 2 output DP-1
-        workspace 3 output HDMI-A-2
-        workspace 4 output eDP-1
-        workspace 5 output eDP-1
-      '';
+        extraConfig = ''
+          bindsym $mod+Print exec slurp | grim -g - - | wl-copy
+          workspace 1 output eDP-1
+          workspace 2 output DP-1
+          workspace 3 output HDMI-A-2
+          workspace 4 output eDP-1
+          workspace 5 output eDP-1
+        '';
+      };
     };
   };
 

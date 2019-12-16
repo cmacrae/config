@@ -2,14 +2,14 @@
 let
   homeDir = builtins.getEnv("HOME");
   home-manager = builtins.fetchTarball https://github.com/rycee/home-manager/archive/release-19.09.tar.gz;
-  cfg = config.local;
+  cfg = config.local.darwin;
 
 in with lib;
 {
   imports = [ ../lib/home.nix "${home-manager}/nix-darwin" ];
 
   options = {
-    local.machine = mkOption {
+    local.darwin.machine = mkOption {
       type = types.str;
       description = "Target system to build.";
     };
@@ -89,7 +89,7 @@ in with lib;
       remapCapsLockToControl = true;
     };
 
-    local.alacritty.bindings = [
+    local.home.alacritty.bindings = [
        { key = "V"; mods = "Command"; action = "Paste"; }
        { key = "C"; mods = "Command"; action = "Copy";  }
        { key = "Q"; mods = "Command"; action = "Quit";  }

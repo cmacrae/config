@@ -1,4 +1,4 @@
 {
   imports = [ ../lib/darwin.nix ];
-  local.machine = "macbook";
+  local.darwin.machine = "macbook";
 }
