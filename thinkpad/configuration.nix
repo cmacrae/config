@@ -11,20 +11,43 @@ in
   imports = [
     "${home-manager}/nixos"
     ../lib/home.nix
+    ../lib/desktop.nix
+    ./hardware-configuration.nix
+  ];
 
-    (import ../lib/desktop.nix {
-      extraPkgs = with pkgs; [
-        awscli
-        aws-iam-authenticator
-        docker-compose
-        eksctl
-        kubernetes
-        minikube
-        nfs-utils
-        pantheon.elementary-files
-        slack
-      ];
+  boot.cleanTmpDir = true;
+  boot.loader.grub.efiSupport = true;
+  boot.loader.grub.zfsSupport = true;
+  boot.loader.grub.copyKernels = true;
+  boot.loader.grub.device = "nodev";
+  boot.loader.efi.canTouchEfiVariables = true;
+  boot.initrd.checkJournalingFS = false;
+  boot.supportedFilesystems = [ "zfs" ];
 
+  powerManagement.enable = true;
+  services.tlp.enable = true;
+  services.logind.extraConfig = "HandlePowerKey=ignore";
+
+  networking = {
+    hostId = "9938e3e0";
+    hostName = "thinkpad";
+    networkmanager.enable = true;
+  };
+
+  local = {
+    extraPkgs = with pkgs; [
+      awscli
+      aws-iam-authenticator
+      docker-compose
+      eksctl
+      kubernetes
+      minikube
+      nfs-utils
+      pantheon.elementary-files
+      slack
+    ];
+
+    sway = {
       inputs = ''
         input "1:1:AT_Translated_Set_2_keyboard" {
             xkb_layout gb
@@ -54,7 +77,7 @@ in
         }
       '';
 
-      extraSwayConfig = ''
+      extraConfig = ''
         bindsym $mod+Print exec slurp | grim -g - - | wl-copy
         workspace 1 output eDP-1
         workspace 2 output DP-1
@@ -62,29 +85,7 @@ in
         workspace 4 output eDP-1
         workspace 5 output eDP-1
       '';
-    })
-
-    # Sys Specific
-    ./hardware-configuration.nix
-  ];
-
-  boot.cleanTmpDir = true;
-  boot.loader.grub.efiSupport = true;
-  boot.loader.grub.zfsSupport = true;
-  boot.loader.grub.copyKernels = true;
-  boot.loader.grub.device = "nodev";
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.initrd.checkJournalingFS = false;
-  boot.supportedFilesystems = [ "zfs" ];
-
-  powerManagement.enable = true;
-  services.tlp.enable = true;
-  services.logind.extraConfig = "HandlePowerKey=ignore";
-
-  networking = {
-    hostId = "9938e3e0";
-    hostName = "thinkpad";
-    networkmanager.enable = true;
+    };
   };
 
   services.openvpn.servers.moo = {
