@@ -68,13 +68,14 @@ in
             output eDP-1
           }
           {
-            output HDMI-A-2 position 0,0
-            output eDP-1 position 320,1440
-          }
-          {
             output DP-1 position 0,0 transform 270
             output HDMI-A-2 position 1440,470
             output eDP-1 position 1440,1910
+          }
+          {
+            output DP-3 position 450,0
+            output DP-4 position 0,1440
+            output eDP-1 position 800,2880
           }
         '';
 
