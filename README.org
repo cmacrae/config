@@ -1,11 +1,11 @@
-* Nix
-  Collection of Nix expressions for various personal systems
+* About
+  A collection of machine configurations, expressed in Nix
  
 ** Initial rebuild needs explicit ~NIX_PATH~ and ~nixos-config~ target
    #+begin_src shell
-   $ NIX_PATH=$NIX_PATH:nixos-config=/home/cmacrae/dev/nix/<target system>/configuration.nix \
+   $ NIX_PATH=$NIX_PATH:nixos-config=/home/cmacrae/dev/config/<target system>/configuration.nix \
        sudo nixos-rebuild switch \
-         -I nixos-config=/home/cmacrae/dev/nix/<target system>/configuration.nix
+         -I nixos-config=/home/cmacrae/dev/config/<target system>/configuration.nix
    #+end_src
    /Note: <target system> here should point to the relevant directory for the system to build/
    
