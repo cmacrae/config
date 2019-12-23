@@ -10,8 +10,8 @@ in
 
   imports = [
     "${home-manager}/nixos"
-    ../lib/home.nix
-    ../lib/desktop.nix
+    ../modules/home.nix
+    ../modules/desktop.nix
     ./hardware-configuration.nix
   ];
 

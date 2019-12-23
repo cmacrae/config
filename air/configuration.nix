@@ -10,9 +10,9 @@ in
 
   imports = [
     "${home-manager}/nixos"
-    ../lib/home.nix
+    ../modules/home.nix
 
-    (import ../lib/desktop.nix {
+    (import ../modules/desktop.nix {
       inputs = ''
         input "1452:586:Apple_Inc._Apple_Internal_Keyboard_/_Trackpad" {
             xkb_layout gb

@@ -6,7 +6,7 @@ let
 
 in with lib;
 {
-  imports = [ ../lib/home.nix "${home-manager}/nix-darwin" ];
+  imports = [ ../modules/home.nix "${home-manager}/nix-darwin" ];
 
   options = {
     local.darwin.machine = mkOption {
