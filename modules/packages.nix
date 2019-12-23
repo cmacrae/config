@@ -5,13 +5,11 @@ with pkgs; [
   bc
   bind
   ffmpeg-full
-  fpp
   git
   gnumake
   gnupg
   htop
   jq
-  kind
   mpv
   nixops
   nix-prefetch-git
