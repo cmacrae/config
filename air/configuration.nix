@@ -11,34 +11,7 @@ in
   imports = [
     "${home-manager}/nixos"
     ../modules/home.nix
-
-    (import ../modules/desktop.nix {
-      inputs = ''
-        input "1452:586:Apple_Inc._Apple_Internal_Keyboard_/_Trackpad" {
-            xkb_layout gb
-            xkb_variant mac
-            xkb_options ctrl:nocaps
-        }
-        
-        input "1452:586:bcm5974" {
-            tap enabled
-            dwt enabled
-            natural_scroll enabled
-        }
-      '';
-
-      outputs = ''
-        {
-          output eDP-1
-        }
-        {
-          output HDMI-A-1 resolution 1920x1080 pos 0 0
-          output eDP-1 position 330 1080
-        }
-      '';
-    })
-
-     # Sys Specific
+    ../modules/desktop.nix
     ./hardware-configuration.nix
   ];
 
@@ -49,13 +22,13 @@ in
   boot.initrd.checkJournalingFS = false;
   boot.initrd.kernelModules = [ "fbcon" ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.kernelParams = [ 
+  boot.kernelParams = [
     "i915.enable_fbc=1"
   ];
 
   hardware.enableAllFirmware = true;
   hardware.bluetooth.enable = false;
-  
+
   powerManagement.enable = true;
   services.tlp.enable = true;
   services.logind.extraConfig = "HandlePowerKey=ignore";
@@ -63,6 +36,32 @@ in
   networking = {
     hostName = "air";
     networkmanager.enable = true;
+  };
+
+  local.desktop.sway = {
+    inputs = ''
+      input "1452:586:Apple_Inc._Apple_Internal_Keyboard_/_Trackpad" {
+          xkb_layout gb
+          xkb_variant mac
+          xkb_options ctrl:nocaps
+      }
+
+      input "1452:586:bcm5974" {
+          tap enabled
+          dwt enabled
+          natural_scroll enabled
+      }
+    '';
+
+    outputs = ''
+      {
+        output eDP-1
+      }
+      {
+        output HDMI-A-1 resolution 1920x1080 pos 0 0
+        output eDP-1 position 330 1080
+      }
+    '';
   };
 
   system.stateVersion = "19.09";
