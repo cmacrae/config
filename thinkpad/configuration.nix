@@ -5,7 +5,7 @@ in
 {
   nix.nixPath = [
     "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
-    "nixos-config=/home/cmacrae/dev/nix/thinkpad/configuration.nix:/nix/var/nix/profiles/per-user/root/channels"
+    "nixos-config=/home/cmacrae/dev/config/thinkpad/configuration.nix:/nix/var/nix/profiles/per-user/root/channels"
   ];
 
   imports = [
