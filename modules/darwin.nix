@@ -57,7 +57,7 @@ in with lib;
     environment.shells = [ pkgs.zsh ];
     programs.bash.enable = false;
     programs.zsh.enable = true;
-    environment.darwinConfig = "${homeDir}/dev/nix/${cfg.machine}/configuration.nix";
+    environment.darwinConfig = "${homeDir}/dev/config/${cfg.machine}/configuration.nix";
 
     networking.hostName = cfg.machine;
     
