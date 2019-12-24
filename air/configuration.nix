@@ -39,29 +39,33 @@ in
   };
 
   local.desktop.sway = {
-    inputs = ''
-      input "1452:586:Apple_Inc._Apple_Internal_Keyboard_/_Trackpad" {
-          xkb_layout gb
-          xkb_variant mac
-          xkb_options ctrl:nocaps
-      }
+    inputs = {
+      "1452:586:Apple_Inc._Apple_Internal_Keyboard_/_Trackpad" = {
+          xkb_layout = "gb";
+          xkb_variant = "mac";
+          xkb_options = "ctrl:nocaps";
+      };
 
-      input "1452:586:bcm5974" {
-          tap enabled
-          dwt enabled
-          natural_scroll enabled
-      }
-    '';
+      "1452:586:bcm5974" = {
+          tap = "enabled";
+          dwt = "enabled";
+          natural_scroll = "enabled";
+      };
+    };
 
-    outputs = ''
+    outputs = [
       {
-        output eDP-1
+        eDP-1 = {};
       }
       {
-        output HDMI-A-1 resolution 1920x1080 pos 0 0
-        output eDP-1 position 330 1080
+        "HDMI-A-1" = {
+          resolution = "1920x1080";
+          pos = "0 0";
+        };
+
+        eDP-1 = { position = "330 1080"; };
       }
-    '';
+    ];
   };
 
   system.stateVersion = "19.09";
