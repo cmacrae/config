@@ -17,13 +17,6 @@ let
     sha256 = "04ldklkmc75azs6lzxfivl7qs34041d63fan6yindj936r4kqcsp";
   };
 
-  tmuxFpp = pkgs.fetchFromGitHub {
-    owner = "tmux-plugins";
-    repo = "tmux-fpp";
-    rev = "ca125d5a9c80bb156ac114ac3f3d5951a795c80e";
-    sha256 = "1b89s6mfzifi7s5iwf22w7niddpq28w48nmqqy00dv38z4yga5ws";
-  };
-
 in with pkgs.stdenv; with lib; {
   options.local.home = {
     alacritty.bindings = mkOption {
@@ -230,7 +223,6 @@ in with pkgs.stdenv; with lib; {
             setw -g window-status-current-format "#[fg=blue,bg=default] #I #[fg=red,bg=default] #W "
 
             run-shell ${tmuxYank}/yank.tmux
-            run-shell ${tmuxFpp}/fpp.tmux
           '';
         };
       }
