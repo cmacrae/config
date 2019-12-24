@@ -1,4 +1,5 @@
 { config, lib, pkgs, ... }:
+with lib;
 let
   cfg = config.local.desktop;
 
@@ -17,6 +18,8 @@ let
 
   wallpaperCmd = "${pkgs.wallutils}/bin/setrandom -v ${pkgs.pantheon.elementary-wallpapers}/share/backgrounds/elementary";
 
+  local.lib = (import ../lib/generators.nix { inherit lib; });
+
 in with lib; {
   imports = [ ./home.nix ];
 
@@ -30,8 +33,8 @@ in with lib; {
     # TODO: implement generator funcs
     sway = {
       inputs = mkOption {
-        type = types.str;
-        default = "";
+        type = types.attrs;
+        default = {};
         description = "Input device configuration for Sway.";
       };
       outputs = mkOption {
@@ -153,7 +156,7 @@ in with lib; {
             name = "sway-config";
             src = ../conf.d/sway.conf;
             wallpaperCmd = wallpaperCmd;
-            inputs = "${cfg.sway.inputs}";
+            inputs = "${local.lib.toSwayInputs cfg.sway.inputs}";
             extraConfig = "${cfg.sway.extraConfig}";
           };
           onChange = "${reloadSway}";
