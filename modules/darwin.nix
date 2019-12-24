@@ -20,6 +20,7 @@ in with lib;
     nix.maxJobs = 8;
     nix.buildCores = 0;
     nix.package = pkgs.nix;
+    services.nix-daemon.enable = true;
 
     # Remote builder for linux
     nix.distributedBuilds = true;
