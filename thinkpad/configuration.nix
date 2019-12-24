@@ -63,21 +63,25 @@ in
           };
         };
 
-        outputs = ''
+        outputs = [
+          { eDP1 = {};}
+
           {
-            output eDP-1
+            "DP-1" = {
+              position = "0,0";
+              transform = "270";
+            };
+
+            "HDMI-A-2" = { position = "1440,470"; };
+            "eDP-1" = { position = "1440,1910"; };
           }
+
           {
-            output DP-1 position 0,0 transform 270
-            output HDMI-A-2 position 1440,470
-            output eDP-1 position 1440,1910
+            "DP-3" = { position = "450,0"; };
+            "DP-4" = { position = "0,1440"; };
+            "eDP-1" = { position = "800,2880"; };
           }
-          {
-            output DP-3 position 450,0
-            output DP-4 position 0,1440
-            output eDP-1 position 800,2880
-          }
-        '';
+        ];
 
         extraConfig = ''
           bindsym $mod+Print exec slurp | grim -g - - | wl-copy

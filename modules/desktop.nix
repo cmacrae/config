@@ -20,7 +20,7 @@ let
 
   local.lib = (import ../lib/generators.nix { inherit lib; });
 
-in with lib; {
+in with local.lib; {
   imports = [ ./home.nix ];
 
   options.local.desktop = {
@@ -156,13 +156,13 @@ in with lib; {
             name = "sway-config";
             src = ../conf.d/sway.conf;
             wallpaperCmd = wallpaperCmd;
-            inputs = "${local.lib.toSwayInputs cfg.sway.inputs}";
+            inputs = "${toSwayInputs cfg.sway.inputs}";
             extraConfig = "${cfg.sway.extraConfig}";
           };
           onChange = "${reloadSway}";
       };
 
-      xdg.configFile."kanshi/config".text = "${cfg.sway.outputs}";
+      xdg.configFile."kanshi/config".text = "${toSwayOutputs cfg.sway.outputs}";
 
       xdg.configFile."mako/config".text = ''
         font=DejaVu Sans 11
