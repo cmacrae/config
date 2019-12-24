@@ -62,7 +62,7 @@ rec {
         {
           ${concatStringsSep "\n  " (
             mapAttrsToList (display: config:
-            "output ${display} ${concatStringsSep " "
+              "output ${display} ${concatStringsSep " "
                 (mapAttrsToList (p: v: "${p} ${v}") config)}"
             ) block)
            }
