@@ -30,7 +30,6 @@ in with local.lib; {
       description = "Extra packages to install.";
     };
 
-    # TODO: implement generator funcs
     sway = {
       inputs = mkOption {
         type = types.attrs;
@@ -38,8 +37,8 @@ in with local.lib; {
         description = "Input device configuration for Sway.";
       };
       outputs = mkOption {
-        type = types.str;
-        default = "";
+        type = types.listOf types.attrs;
+        default = [{}];
         description = "Display output configuration for Sway.";
       };
       extraConfig = mkOption {
