@@ -94,7 +94,11 @@ in with lib;
        { key = "V"; mods = "Command"; action = "Paste"; }
        { key = "C"; mods = "Command"; action = "Copy";  }
        { key = "Q"; mods = "Command"; action = "Quit";  }
-       { key = "Q"; mods = "Control"; chars = "\x00"; }
+       { key = "Q"; mods = "Control"; chars = "\\x11"; }
+       { key = "F"; mods = "Alt"; chars = "\\x1bf"; }
+       { key = "B"; mods = "Alt"; chars = "\\x1bb"; }
+       { key = "Slash"; mods = "Control"; chars = "\\x1f"; }
+       { key = "Period"; mods = "Alt"; chars = "\\e-\\e."; }
        { key = "N"; mods = "Command"; command = {
            program = "open";
            args = ["-nb" "io.alacritty"];

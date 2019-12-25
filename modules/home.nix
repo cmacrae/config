@@ -75,6 +75,8 @@ in with pkgs.stdenv; with lib; {
               size = if (config.networking.hostName == "air") then 10 else 12;
             };
 
+            key_bindings = cfg.alacritty.bindings;
+
             colors = {
               primary.background = "0x282c34";
               primary.foreground = "0xabb2bf";
@@ -100,8 +102,6 @@ in with pkgs.stdenv; with lib; {
                 cyan = "0x56b6c2";
                 white = "0xffffff";
               };
-
-              key_bindings = cfg.alacritty.bindings;
             };
           };
       };
