@@ -1,7 +1,10 @@
 { config, lib, pkgs, ... }:
 let
   homeDir = builtins.getEnv("HOME");
-  home-manager = builtins.fetchTarball https://github.com/rycee/home-manager/archive/release-19.09.tar.gz;
+
+  # TODO: Using local home-manager fork whilst working on Firefox darwin support
+  # home-manager = builtins.fetchTarball https://github.com/rycee/home-manager/archive/release-19.09.tar.gz;
+  home-manager = "${homeDir}/dev/home-manager";
   cfg = config.local.darwin;
 
 in with lib;
@@ -21,6 +24,9 @@ in with lib;
     nix.buildCores = 0;
     nix.package = pkgs.nix;
     services.nix-daemon.enable = true;
+
+    # Firefox
+    nixpkgs.overlays = [ (import ../overlays/firefox.nix) ];
 
     # Remote builder for linux
     nix.distributedBuilds = true;

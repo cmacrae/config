@@ -47,13 +47,37 @@ in with pkgs.stdenv; with lib; {
           GDK_SCALE = "-1";
         };
 
+        programs.firefox.enable = true;
+        programs.firefox.profiles =
+          let defaultSettings = {
+              "browser.startup.homepage" = "https://lobste.rs";
+              "browser.search.region" = "GB";
+              "browser.search.isUS" = false;
+              "distribution.searchplugins.defaultLocale" = "en-GB";
+              "general.useragent.locale" = "en-GB";
+              "browser.bookmarks.showMobileBookmarks" = true;
+              };
+          in {
+            home = {
+              id = 0;
+              settings = defaultSettings;
+            };
+
+            work = {
+              id = 1;
+              settings = defaultSettings // {
+                "browser.startup.homepage" = "about:blank";
+              };
+            };
+        };
+
         programs.emacs.enable = true;
 
         programs.fzf.enable = true;
         programs.fzf.enableZshIntegration = true;
 
         programs.browserpass.enable = true;
-        programs.browserpass.browsers = [ "chrome" "chromium" ];
+        programs.browserpass.browsers = [ "chrome" "chromium" "firefox" ];
 
         programs.alacritty = {
           enable = true;
@@ -104,7 +128,7 @@ in with pkgs.stdenv; with lib; {
               };
             };
           };
-      };
+        };
 
         programs.zsh = {
           enable = true;
@@ -229,6 +253,7 @@ in with pkgs.stdenv; with lib; {
 
 
       (mkIf (! isDarwin) { services.emacs.enable =  true; })
+      (mkIf (isDarwin) { programs.firefox.package = pkgs.Firefox; })
 
       (mkIf (isDarwin) {
         home.file."Library/KeyBindings/DefaultKeyBinding.dict".text = ''
