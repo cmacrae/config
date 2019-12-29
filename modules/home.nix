@@ -60,24 +60,38 @@ in with pkgs.stdenv; with lib; {
             browserpass
             vimium
           ];
+
         programs.firefox.profiles =
           let defaultSettings = {
-              "browser.startup.homepage" = "https://lobste.rs";
-              "browser.search.region" = "GB";
-              "browser.search.isUS" = false;
-              "browser.ctrlTab.recentlyUsedOrder" = false;
-              "browser.bookmarks.showMobileBookmarks" = true;
-              "distribution.searchplugins.defaultLocale" = "en-GB";
-              "general.useragent.locale" = "en-GB";
-              "signon.rememberSignons" = false;
+                "browser.startup.homepage" = "https://lobste.rs";
+                "browser.search.region" = "GB";
+                "browser.search.isUS" = false;
+                "browser.ctrlTab.recentlyUsedOrder" = false;
+                "browser.newtabpage.enabled" = false;
+                "browser.bookmarks.showMobileBookmarks" = true;
+                "distribution.searchplugins.defaultLocale" = "en-GB";
+                "general.useragent.locale" = "en-GB";
+                "privacy.trackingprotection.enabled" = true;
+                "privacy.trackingprotection.socialtracking.enabled" = true;
+                "privacy.trackingprotection.socialtracking.annotate.enabled" = true;
+                "signon.rememberSignons" = false;
               };
+
+              extraConfig = ''
+                ${builtins.readFile (builtins.fetchurl
+                  "https://raw.githubusercontent.com/pyllyukko/user.js/relaxed/user.js")}
+              '';
           in {
             home = {
+              inherit extraConfig;
+
               id = 0;
               settings = defaultSettings;
             };
 
             work = {
+              inherit extraConfig;
+
               id = 1;
               settings = defaultSettings // {
                 "browser.startup.homepage" = "about:blank";
