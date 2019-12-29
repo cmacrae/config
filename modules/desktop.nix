@@ -214,20 +214,6 @@ in with local.lib; {
         gtk3.extraConfig = { gtk-application-prefer-dark-theme = true; };
       };
 
-      programs.chromium = {
-        enable = true;
-        extensions = [
-          "dbepggeogbaibhgnhhndojpepiihcmeb" # vimium
-          "cjpalhdlnbpafiamejdnhcphjbkeiagm" # ublock origin
-          "naepdomgkenhinolocfifgehidddafch" # browser-pass
-          "bhloflhklmhfpedakmangadcdofhnnoh" # Google Earth view
-        ];
-      };
-
-      xdg.configFile."chromium-flags.conf".text = ''
-        --force-device-scale-factor=1
-      '';
-
       programs.rofi.enable = true;
 
       services.gpg-agent = {
