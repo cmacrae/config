@@ -30,6 +30,12 @@ in with pkgs.stdenv; with lib; {
     time.timeZone = "Europe/London";
     nixpkgs.config.allowUnfree = true;
 
+    nixpkgs.config.packageOverrides = pkgs: {
+      nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
+        inherit pkgs;
+      };
+    };
+
     environment.systemPackages = [ pkgs.zsh ];
     users.users.cmacrae.shell = pkgs.zsh;
     users.users.cmacrae.home = if isDarwin then
@@ -48,14 +54,22 @@ in with pkgs.stdenv; with lib; {
         };
 
         programs.firefox.enable = true;
+        programs.firefox.extensions =
+          with pkgs.nur.repos.rycee.firefox-addons; [
+            ublock-origin
+            browserpass
+            vimium
+          ];
         programs.firefox.profiles =
           let defaultSettings = {
               "browser.startup.homepage" = "https://lobste.rs";
               "browser.search.region" = "GB";
               "browser.search.isUS" = false;
+              "browser.ctrlTab.recentlyUsedOrder" = false;
+              "browser.bookmarks.showMobileBookmarks" = true;
               "distribution.searchplugins.defaultLocale" = "en-GB";
               "general.useragent.locale" = "en-GB";
-              "browser.bookmarks.showMobileBookmarks" = true;
+              "signon.rememberSignons" = false;
               };
           in {
             home = {
