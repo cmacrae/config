@@ -24,6 +24,24 @@ in with pkgs.stdenv; with lib; {
       default = [{}];
       description = "Keybindings for Alacritty.";
     };
+
+    alacritty.fontSize = mkOption {
+      type = types.int;
+      default = 12;
+      description = "Font size for Alacritty.";
+    };
+
+    git.userName = mkOption {
+      type = types.str;
+      default = "cmacrae";
+      description = "Username for Git";
+    };
+
+    git.userEmail = mkOption {
+      type = types.str;
+      default = "calum0macrae@gmail.com";
+      description = "User e-mail for Git";
+    };
   };
 
   config = {
@@ -51,6 +69,10 @@ in with pkgs.stdenv; with lib; {
           PAGER = "less -R";
           EDITOR = "emacsclient";
         };
+
+        programs.git.enable = true;
+        programs.git.userName = cfg.git.userName;
+        programs.git.userEmail = cfg.git.userEmail;
 
         programs.firefox.enable = true;
         programs.firefox.extensions =
@@ -116,9 +138,9 @@ in with pkgs.stdenv; with lib; {
               font = {
                 normal.family = if isDarwin then
                   "Menlo"
-                                else
-                                  "DejaVu Sans Mono";
-                size = if (config.networking.hostName == "air") then 10 else 12;
+                else
+                  "DejaVu Sans Mono";
+                size = cfg.alacritty.fontSize;
               };
 
               colors = {

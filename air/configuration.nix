@@ -38,6 +38,7 @@ in
     networkmanager.enable = true;
   };
 
+  local.home.alacritty.fontSize = 10;
   local.desktop.sway = {
     inputs = {
       "1452:586:Apple_Inc._Apple_Internal_Keyboard_/_Trackpad" = {

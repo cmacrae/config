@@ -5,7 +5,6 @@ with pkgs; [
   bc
   bind
   ffmpeg-full
-  git
   gnumake
   gnupg
   htop

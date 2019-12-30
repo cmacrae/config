@@ -35,6 +35,8 @@ in
   };
 
   local = {
+    home.git.userEmail = "calum.macrae@moo.com";
+
     desktop = {
       extraPkgs = with pkgs; [
         awscli
