@@ -108,5 +108,20 @@ in
     %wheel	ALL=(root)	NOPASSWD: ${pkgs.systemd}/bin/systemctl * openvpn-moo
   '';
 
+  home-manager.users.cmacrae = {
+    programs.chromium = {
+      enable = true;
+      extensions = [
+        "dbepggeogbaibhgnhhndojpepiihcmeb" # vimium
+        "cjpalhdlnbpafiamejdnhcphjbkeiagm" # ublock origin
+        "naepdomgkenhinolocfifgehidddafch" # browser-pass
+      ];
+    };
+
+    xdg.configFile."chromium-flags.conf".text = ''
+      --force-device-scale-factor=1
+    '';
+  };
+
   system.stateVersion = "19.09";
 }
