@@ -64,6 +64,7 @@ in with pkgs.stdenv; with lib; {
           let defaultSettings = {
                 "browser.startup.homepage" = "https://lobste.rs";
                 "browser.search.region" = "GB";
+                "browser.search.countryCode" = "GB";
                 "browser.search.isUS" = false;
                 "browser.ctrlTab.recentlyUsedOrder" = false;
                 "browser.newtabpage.enabled" = false;
@@ -77,22 +78,13 @@ in with pkgs.stdenv; with lib; {
                 "services.sync.declinedEngines" = "passwords";
                 "signon.rememberSignons" = false;
               };
-
-              extraConfig = ''
-                ${builtins.readFile (builtins.fetchurl
-                  "https://raw.githubusercontent.com/pyllyukko/user.js/relaxed/user.js")}
-              '';
           in {
             home = {
-              inherit extraConfig;
-
               id = 0;
               settings = defaultSettings;
             };
 
             work = {
-              inherit extraConfig;
-
               id = 1;
               settings = defaultSettings // {
                 "browser.startup.homepage" = "about:blank";
