@@ -73,6 +73,8 @@ in with pkgs.stdenv; with lib; {
                 "privacy.trackingprotection.enabled" = true;
                 "privacy.trackingprotection.socialtracking.enabled" = true;
                 "privacy.trackingprotection.socialtracking.annotate.enabled" = true;
+                "services.sync.engine.passwords" = false;
+                "services.sync.declinedEngines" = "passwords";
                 "signon.rememberSignons" = false;
               };
 
