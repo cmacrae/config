@@ -108,54 +108,58 @@ in with pkgs.stdenv; with lib; {
 
         programs.alacritty = {
           enable = true;
-          settings = {
-            window.padding.x = 15;
-            window.padding.y = 15;
-            window.decorations = if isDarwin then "buttonless" else "none";
-            scrolling.history = 100000;
-            live_config_reload = true;
-            selection.save_to_clipboard = true;
-            dynamic_title = false;
-            mouse.hide_when_typing = true;
+          settings = mkMerge [
+            {
+              window.padding.x = 15;
+              window.padding.y = 15;
+              window.decorations = if isDarwin then "buttonless" else "none";
+              scrolling.history = 100000;
+              live_config_reload = true;
+              selection.save_to_clipboard = true;
+              dynamic_title = false;
+              mouse.hide_when_typing = true;
 
-            font = {
-              normal.family = if isDarwin then
+              font = {
+                normal.family = if isDarwin then
                   "Menlo"
-                else
-                  "DejaVu Sans Mono";
-              size = if (config.networking.hostName == "air") then 10 else 12;
-            };
-
-            key_bindings = cfg.alacritty.bindings;
-
-            colors = {
-              primary.background = "0x282c34";
-              primary.foreground = "0xabb2bf";
-
-              normal = {
-                black = "0x282c34";
-                red = "0xe06c75";
-                green = "0x98c379";
-                yellow = "0xd19a66";
-                blue = "0x61afef";
-                magenta = "0xc678dd";
-                cyan = "0x56b6c2";
-                white = "0xabb2bf";
+                                else
+                                  "DejaVu Sans Mono";
+                size = if (config.networking.hostName == "air") then 10 else 12;
               };
 
-              bright = {
-                black = "0x5c6370";
-                red = "0xe06c75";
-                green = "0x98c379";
-                yellow = "0xd19a66";
-                blue = "0x61afef";
-                magenta = "0xc678dd";
-                cyan = "0x56b6c2";
-                white = "0xffffff";
+              colors = {
+                primary.background = "0x282c34";
+                primary.foreground = "0xabb2bf";
+
+                normal = {
+                  black = "0x282c34";
+                  red = "0xe06c75";
+                  green = "0x98c379";
+                  yellow = "0xd19a66";
+                  blue = "0x61afef";
+                  magenta = "0xc678dd";
+                  cyan = "0x56b6c2";
+                  white = "0xabb2bf";
+                };
+
+                bright = {
+                  black = "0x5c6370";
+                  red = "0xe06c75";
+                  green = "0x98c379";
+                  yellow = "0xd19a66";
+                  blue = "0x61afef";
+                  magenta = "0xc678dd";
+                  cyan = "0x56b6c2";
+                  white = "0xffffff";
+                };
               };
-            };
-          };
-        };
+            }
+
+            (mkIf (cfg.alacritty.bindings != [{}])
+              { key_bindings = cfg.alacritty.bindings; }
+            )
+          ];
+        } ;
 
         programs.zsh = {
           enable = true;
