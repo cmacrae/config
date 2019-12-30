@@ -149,6 +149,11 @@ in with local.lib; {
         spotify
       ] ++ cfg.extraPkgs;
 
+      home.sessionVariables = {
+        GDK_SCALE = "-1";
+        GDK_BACKEND = "wayland";
+      };
+
       xdg.enable = true;
       xdg.configFile."sway/config" = {
           source = pkgs.substituteAll {

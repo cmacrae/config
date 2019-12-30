@@ -50,7 +50,6 @@ in with pkgs.stdenv; with lib; {
         home.sessionVariables = {
           PAGER = "less -R";
           EDITOR = "emacsclient";
-          GDK_SCALE = "-1";
         };
 
         programs.firefox.enable = true;
