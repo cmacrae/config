@@ -56,10 +56,10 @@ in with pkgs.stdenv; with lib; {
 
     environment.systemPackages = [ pkgs.zsh ];
     users.users.cmacrae.shell = pkgs.zsh;
-    users.users.cmacrae.home = if isDarwin then
-      "/Users/cmacrae"
-      else
-      "/home/cmacrae";
+    users.users.cmacrae.home =
+      if isDarwin
+      then "/Users/cmacrae"
+      else "/home/cmacrae";
 
     home-manager.users.cmacrae = mkMerge [
       {

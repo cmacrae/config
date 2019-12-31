@@ -2,9 +2,7 @@
 let
   homeDir = builtins.getEnv("HOME");
 
-  # TODO: Using local home-manager fork whilst working on Firefox darwin support
-  # home-manager = builtins.fetchTarball https://github.com/rycee/home-manager/archive/release-19.09.tar.gz;
-  home-manager = "${homeDir}/dev/home-manager";
+  home-manager = builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz;
   cfg = config.local.darwin;
 
 in with lib;

@@ -1,6 +1,6 @@
 { config, pkgs, ... }:
 let
-  home-manager = builtins.fetchTarball https://github.com/rycee/home-manager/archive/release-19.09.tar.gz;
+  home-manager = builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz;
 in
 {
   nix.nixPath = [
