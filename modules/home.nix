@@ -128,7 +128,10 @@ in with pkgs.stdenv; with lib; {
             {
               window.padding.x = 15;
               window.padding.y = 15;
-              window.decorations = if isDarwin then "buttonless" else "none";
+              window.decorations =
+                if isDarwin
+                then "buttonless"
+                else "none";
               scrolling.history = 100000;
               live_config_reload = true;
               selection.save_to_clipboard = true;
@@ -136,10 +139,10 @@ in with pkgs.stdenv; with lib; {
               mouse.hide_when_typing = true;
 
               font = {
-                normal.family = if isDarwin then
-                  "Menlo"
-                else
-                  "DejaVu Sans Mono";
+                normal.family =
+                  if isDarwin
+                  then "Menlo"
+                  else "DejaVu Sans Mono";
                 size = cfg.alacritty.fontSize;
               };
 
@@ -300,9 +303,10 @@ in with pkgs.stdenv; with lib; {
 
 
       (mkIf (! isDarwin) { services.emacs.enable =  true; })
-      (mkIf (isDarwin) { programs.firefox.package = pkgs.Firefox; })
 
       (mkIf (isDarwin) {
+        programs.firefox.package = pkgs.Firefox;
+
         home.file."Library/KeyBindings/DefaultKeyBinding.dict".text = ''
           {
               /* Ctrl shortcuts */
