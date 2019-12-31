@@ -1,9 +1,19 @@
 { config, lib, pkgs, ... }:
 let
+  cfg = config.local.darwin;
+
   homeDir = builtins.getEnv("HOME");
 
   home-manager = builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz;
-  cfg = config.local.darwin;
+
+  # TODO: [Darwin] Implement yabai config generator
+  # TODO: [Darwin] Implement skhd config generator
+  # TODO: [Darwin] yabai launchd daemon
+  # TODO: [Darwin] skhd launchd daemon
+  yabai = pkgs.callPackage ../pkgs/yabai.nix {
+    inherit (pkgs.darwin.apple_sdk.frameworks)
+      Carbon Cocoa ScriptingBridge;
+  };
 
 in with lib;
 {
@@ -66,7 +76,7 @@ in with lib;
 
     networking.hostName = cfg.machine;
     
-    environment.systemPackages = [ pkgs.gcc ];
+    environment.systemPackages = [ pkgs.gcc yabai pkgs.skhd ];
 
     system.defaults = {
       dock = {
