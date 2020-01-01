@@ -6,18 +6,13 @@ let
 
   home-manager = builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz;
 
-  # TODO: [Darwin] Implement yabai config generator
-  # TODO: [Darwin] Implement skhd config generator
-  # TODO: [Darwin] yabai launchd daemon
-  # TODO: [Darwin] skhd launchd daemon
-  yabai = pkgs.callPackage ../pkgs/yabai.nix {
-    inherit (pkgs.darwin.apple_sdk.frameworks)
-      Carbon Cocoa ScriptingBridge;
-  };
-
 in with lib;
 {
-  imports = [ ../modules/home.nix "${home-manager}/nix-darwin" ];
+  imports = [
+    "${home-manager}/nix-darwin"
+    ../modules/home.nix
+    ../modules/yabai.nix
+  ];
 
   options = {
     local.darwin.machine = mkOption {
@@ -76,7 +71,7 @@ in with lib;
 
     networking.hostName = cfg.machine;
     
-    environment.systemPackages = [ pkgs.gcc yabai pkgs.skhd ];
+    environment.systemPackages = [ pkgs.gcc ];
 
     system.defaults = {
       dock = {
@@ -97,6 +92,10 @@ in with lib;
         Clicking = true;
         TrackpadThreeFingerDrag = true;
       };
+
+      # TODO: [Darwin] (hide menubar) re-enable once PR is merged
+      #       https://github.com/LnL7/nix-darwin/pull/181
+      # NSGlobalDomain._HIHideMenuBar = false;
     };
 
     system.keyboard = {
@@ -119,6 +118,29 @@ in with lib;
          };
        }
     ];
+
+    services.skhd.enable = true;
+    services.skhd.skhdConfig = builtins.readFile ../conf.d/skhd.conf;
+
+    services.yabai.enable = true;
+    services.yabai.enableScriptingAddition = true;
+
+    home-manager.users.cmacrae.xdg.configFile."yabai/yabairc" = {
+      executable = true;
+
+      source = pkgs.substituteAll {
+        name = "yabairc";
+        src = ../conf.d/yabairc.sh;
+        yabai = "${config.services.yabai.package}/bin/yabai";
+      };
+
+      onChange = ''
+        launchctl stop org.nixos.yabai
+        launchctl start org.nixos.yabai
+      '';
+    };
+
+    services.yabai.configPath = "${homeDir}/.config/yabai/yabairc";
 
     # Recreate /run/current-system symlink after boot
     services.activate-system.enable = true;
