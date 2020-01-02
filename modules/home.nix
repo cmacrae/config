@@ -93,11 +93,16 @@ in with pkgs.stdenv; with lib; {
                 "browser.bookmarks.showMobileBookmarks" = true;
                 "distribution.searchplugins.defaultLocale" = "en-GB";
                 "general.useragent.locale" = "en-GB";
+                "identity.fxaccounts.account.device.name" = config.networking.hostName;
                 "privacy.trackingprotection.enabled" = true;
                 "privacy.trackingprotection.socialtracking.enabled" = true;
                 "privacy.trackingprotection.socialtracking.annotate.enabled" = true;
+                "services.sync.declinedEngines" = "addons,passwords,prefs";
+                "services.sync.engine.addons" = false;
+                "services.sync.engineStatusChanged.addons" = true;
                 "services.sync.engine.passwords" = false;
-                "services.sync.declinedEngines" = "passwords";
+                "services.sync.engine.prefs" = false;
+                "services.sync.engineStatusChanged.prefs" = true;
                 "signon.rememberSignons" = false;
               };
           in {
