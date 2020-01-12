@@ -84,6 +84,7 @@ in with pkgs.stdenv; with lib; {
 
         programs.firefox.profiles =
           let defaultSettings = {
+                "app.update.auto" = false;
                 "browser.startup.homepage" = "https://lobste.rs";
                 "browser.search.region" = "GB";
                 "browser.search.countryCode" = "GB";
