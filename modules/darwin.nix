@@ -56,7 +56,7 @@ in with lib;
         maxJobs = 16;
       }
       {
-        hostName = "net1";
+        hostName = "10.0.0.2";
         sshUser = "root";
         sshKey = "${homeDir}/.ssh/id_rsa";
         systems = [ "aarch64-linux" ];
