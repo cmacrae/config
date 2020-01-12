@@ -50,8 +50,6 @@ in with local.lib; {
   };
 
   config = {
-    nix.trustedUsers = [ "root" "@wheel" ];
-
     sound.enable = true;
     hardware.pulseaudio.enable = true;
     hardware.pulseaudio.package = pkgs.pulseaudioFull;

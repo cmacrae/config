@@ -46,6 +46,7 @@ in with pkgs.stdenv; with lib; {
 
   config = {
     time.timeZone = "Europe/London";
+    nix.trustedUsers = [ "root" "cmacrae" ];
     nixpkgs.config.allowUnfree = true;
 
     nixpkgs.config.packageOverrides = pkgs: {
