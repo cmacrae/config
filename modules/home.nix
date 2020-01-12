@@ -108,7 +108,9 @@ in with pkgs.stdenv; with lib; {
           in {
             home = {
               id = 0;
-              settings = defaultSettings;
+              settings = defaultSettings // {
+                "browser.urlbar.placeholderName" = "DuckDuckGo";
+              };
             };
 
             work = {
