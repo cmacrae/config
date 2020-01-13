@@ -16,8 +16,6 @@ let
     reload
   '';
 
-  wallpaperCmd = "${pkgs.wallutils}/bin/setrandom -v ${pkgs.pantheon.elementary-wallpapers}/share/backgrounds/elementary";
-
   local.lib = (import ../lib/generators.nix { inherit lib; });
 
 in with local.lib; {
@@ -106,26 +104,6 @@ in with local.lib; {
       extraPackages = []; # handled via home-manager
     };
 
-    systemd.user = {
-      targets.sway-session = {
-        description = "sway compositor session";
-        documentation = ["man:systemd.special(7)"];
-        bindsTo = ["graphical-session.target"];
-        wants = ["graphical-session-pre.target"];
-        after = ["graphical-session-pre.target"];
-      };
-
-      services.wallpaper = {
-        description = "Timed random wallpapers";
-        wantedBy = ["sway-session.target"];
-        partOf = ["graphical-session.target"];
-        startAt = "*:0/15";
-        serviceConfig = {
-          ExecStart = wallpaperCmd;
-        };
-      };
-    };
-
     home-manager.users.cmacrae = {
       home.packages = with pkgs; [
         swayidle # idle handling
@@ -157,7 +135,7 @@ in with local.lib; {
           source = pkgs.substituteAll {
             name = "sway-config";
             src = ../conf.d/sway.conf;
-            wallpaperCmd = wallpaperCmd;
+            wall = "${pkgs.pantheon.elementary-wallpapers}/share/backgrounds/elementary/Carmine\ De\ Fazio.jpg";
             inputs = "${toSwayInputs cfg.sway.inputs}";
             extraConfig = "${cfg.sway.extraConfig}";
           };
