@@ -48,6 +48,10 @@ in with pkgs.stdenv; with lib; {
     time.timeZone = "Europe/London";
     nix.trustedUsers = [ "root" "cmacrae" ];
     nixpkgs.config.allowUnfree = true;
+    nix.extraOptions = ''
+      plugin-files = ${pkgs.nix-plugins.override {
+               nix = config.nix.package; }}/lib/nix/plugins/libnix-extra-builtins.so
+    '';
 
     nixpkgs.config.packageOverrides = pkgs: {
       nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
