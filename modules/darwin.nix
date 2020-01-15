@@ -93,9 +93,7 @@ in with lib;
         TrackpadThreeFingerDrag = true;
       };
 
-      # TODO: [Darwin] (hide menubar) re-enable once PR is merged
-      #       https://github.com/LnL7/nix-darwin/pull/181
-      # NSGlobalDomain._HIHideMenuBar = false;
+      NSGlobalDomain._HIHideMenuBar = true;
     };
 
     system.keyboard = {
