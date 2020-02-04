@@ -205,6 +205,7 @@ in with pkgs.stdenv; with lib; {
             kp = "kube-prompt";
             kc = "kubectx";
             kn = "kubens";
+            t = "cd $(mktemp -d)";
           };
 
           oh-my-zsh.enable = true;
