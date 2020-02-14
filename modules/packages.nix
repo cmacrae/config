@@ -15,6 +15,7 @@ with pkgs; [
   nmap
   p7zip
   pass
+  python3
   ranger
   ripgrep
   rsync

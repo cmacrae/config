@@ -18,27 +18,27 @@ let
   };
 
 in with pkgs.stdenv; with lib; {
-  options.local.home = {
+  options.local.home = with types; {
     alacritty.bindings = mkOption {
-      type = types.listOf types.attrs;
+      type = listOf attrs;
       default = [{}];
       description = "Keybindings for Alacritty.";
     };
 
     alacritty.fontSize = mkOption {
-      type = types.int;
+      type = int;
       default = 12;
       description = "Font size for Alacritty.";
     };
 
     git.userName = mkOption {
-      type = types.str;
+      type = str;
       default = "cmacrae";
       description = "Username for Git";
     };
 
     git.userEmail = mkOption {
-      type = types.str;
+      type = str;
       default = "calum0macrae@gmail.com";
       description = "User e-mail for Git";
     };

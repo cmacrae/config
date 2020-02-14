@@ -28,8 +28,9 @@ in with lib;
     nix.package = pkgs.nix;
     services.nix-daemon.enable = true;
 
-    # Firefox
-    nixpkgs.overlays = [ (import ../overlays/firefox.nix) ];
+    nixpkgs.overlays = [
+      (import ../overlays/firefox.nix)
+    ];
 
     # Remote builder for linux
     nix.distributedBuilds = true;
@@ -132,10 +133,7 @@ in with lib;
         yabai = "${config.services.yabai.package}/bin/yabai";
       };
 
-      onChange = ''
-        launchctl stop org.nixos.yabai
-        launchctl start org.nixos.yabai
-      '';
+      onChange = "${homeDir}/.config/yabai/yabairc";
     };
 
     services.yabai.configPath = "${homeDir}/.config/yabai/yabairc";
