@@ -128,6 +128,10 @@ in with pkgs.stdenv; with lib; {
         };
 
         programs.emacs.enable = true;
+        programs.emacs.package =
+          if isDarwin
+          then pkgs.emacsMacport
+          else pkgs.emacs;
 
         programs.fzf.enable = true;
         programs.fzf.enableZshIntegration = true;
