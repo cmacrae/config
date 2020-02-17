@@ -126,13 +126,7 @@ in with lib;
 
     home-manager.users.cmacrae.xdg.configFile."yabai/yabairc" = {
       executable = true;
-
-      source = pkgs.substituteAll {
-        name = "yabairc";
-        src = ../conf.d/yabairc.sh;
-        yabai = "${config.services.yabai.package}/bin/yabai";
-      };
-
+      text = builtins.readFile ../conf.d/yabairc.sh;
       onChange = "${homeDir}/.config/yabai/yabairc";
     };
 

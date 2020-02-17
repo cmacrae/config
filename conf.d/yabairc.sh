@@ -1,3 +1,6 @@
+# env setup
+. /etc/static/zshenv
+
 # bar settings
 yabai -m config status_bar                   on
 yabai -m config status_bar_text_font         "Helvetica Neue:Bold:12.0"

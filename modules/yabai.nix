@@ -52,11 +52,6 @@ in
                                          ++ optionals (cfg.configPath != "") [ "-c" cfg.configPath ];
         serviceConfig.KeepAlive = true;
         serviceConfig.ProcessType = "Interactive";
-
-        # TODO: [Darwin](yabai) Once done with debugging, disable logging
-        #       Same for all of these entries
-        serviceConfig.StandardOutPath = "/tmp/yabai.log";
-        serviceConfig.StandardErrorPath = "/tmp/yabai-error.log";
       };
     })
 
@@ -70,9 +65,6 @@ in
 
         serviceConfig.RunAtLoad = true;
         serviceConfig.KeepAlive.SuccessfulExit = false;
-
-        serviceConfig.StandardOutPath = "/tmp/yabai-sa.log";
-        serviceConfig.StandardErrorPath = "/tmp/yabai-sa-error.log";
       };
     })
   ];
