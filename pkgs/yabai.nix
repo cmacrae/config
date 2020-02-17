@@ -2,13 +2,13 @@
 
 stdenv.mkDerivation rec {
   pname = "yabai";
-  version = "v2.1.3";
+  version = "v2.3.0";
 
   src = fetchFromGitHub {
     owner = "koekeishiya";
     repo = "yabai";
     rev = "${version}";
-    sha256 = "1g8ilbnr0vs4gn4a17jdrlhl3x3jrb5c43cgpwnzxc518dcyba2f";
+    sha256 = "0hjcl4gwsnkb89ymw3qqckc6194qsfzm1hbp63x8i0zn6mfwr3xc";
   };
 
   buildInputs = [ Carbon Cocoa ScriptingBridge ];
@@ -27,6 +27,6 @@ stdenv.mkDerivation rec {
     homepage = https://github.com/koekeishiya/yabai;
     platforms = platforms.darwin;
     maintainers = with maintainers; [ cmacrae ];
-    license = "MIT";
+    license = licenses.mit;
   };
 }
