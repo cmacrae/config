@@ -5,13 +5,13 @@ in
 {
   nix.nixPath = [
     "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
-    "nixos-config=/home/cmacrae/dev/config/air/configuration.nix:/nix/var/nix/profiles/per-user/root/channels"
+    "nixos-config=${builtins.getEnv("HOME")}/dev/config/machines/air/configuration.nix:/nix/var/nix/profiles/per-user/root/channels"
   ];
 
   imports = [
     "${home-manager}/nixos"
-    ../modules/home.nix
-    ../modules/desktop.nix
+    ../../modules/home.nix
+    ../../modules/desktop.nix
     ./hardware-configuration.nix
   ];
 

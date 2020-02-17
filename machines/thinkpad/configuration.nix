@@ -5,13 +5,13 @@ in
 {
   nix.nixPath = [
     "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
-    "nixos-config=/home/cmacrae/dev/config/thinkpad/configuration.nix:/nix/var/nix/profiles/per-user/root/channels"
+    "nixos-config=${builtins.getEnv ("HOME")}/dev/config/machines/thinkpad/configuration.nix:/nix/var/nix/profiles/per-user/root/channels"
   ];
 
   imports = [
     "${home-manager}/nixos"
-    ../modules/home.nix
-    ../modules/desktop.nix
+    ../../modules/home.nix
+    ../../modules/desktop.nix
     ./hardware-configuration.nix
   ];
 
@@ -99,7 +99,7 @@ in
 
   services.openvpn.servers.moo = {
     autoStart = false;
-    config = "config /home/cmacrae/dev/config/thinkpad/moo.ovpn";
+    config = "config ${builtins.getEnv ("HOME")}/dev/config/machines/thinkpad/moo.ovpn";
     up = "echo nameserver $nameserver | ${pkgs.openresolv}/sbin/resolvconf -m 0 -a $dev";
     down = "${pkgs.openresolv}/sbin/resolvconf -d $dev";
   };
