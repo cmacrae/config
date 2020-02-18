@@ -19,6 +19,11 @@ in with lib;
       type = types.str;
       description = "Target system to build.";
     };
+    local.darwin.skhd.extraBindings = mkOption {
+      type = types.str;
+      description = "Extra binding configuration for skhd.";
+      default = "";
+    };
   };
 
   config = {
@@ -119,7 +124,21 @@ in with lib;
     ];
 
     services.skhd.enable = true;
-    services.skhd.skhdConfig = builtins.readFile ../conf.d/skhd.conf;
+    launchd.user.agents.skhd.serviceConfig.ProgramArguments = [
+      "${config.services.skhd.package}/bin/skhd" "-c" "${homeDir}/.config/skhd/skhdrc"
+    ];
+
+    home-manager.users.cmacrae.xdg.configFile."skhd/skhdrc" = {
+      source = pkgs.substituteAll {
+        name = "skhdrc";
+        src = ../conf.d/skhd.conf;
+        extraBindings = cfg.skhd.extraBindings;
+      };
+      onChange = ''
+        launchctl stop org.nixos.skhd
+        launchctl start org.nixos.skhd
+      '';
+    };
 
     services.yabai.enable = true;
     services.yabai.enableScriptingAddition = true;
