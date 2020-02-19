@@ -69,6 +69,10 @@ main(){
     yabai -m config right_padding                10
     yabai -m config window_gap                   10
 
+    # rules
+    yabai -m rule --add app='System Preferences' manage=off
+
+    # events
     # Evaluate gaps/borders for various events
     for e in application_launched application_terminated window_created window_destroyed
     do
