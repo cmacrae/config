@@ -32,7 +32,7 @@ main(){
     yabai -m config status_bar_icon_font         "FontAwesome:Regular:12.0"
     yabai -m config status_bar_background_color  0xff202020
     yabai -m config status_bar_foreground_color  0xffa8a8a8
-    yabai -m config status_bar_space_icon_strip           
+    yabai -m config status_bar_space_icon_strip          
     yabai -m config status_bar_power_icon_strip   
     yabai -m config status_bar_space_icon        
     yabai -m config status_bar_clock_icon        
