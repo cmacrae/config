@@ -137,7 +137,7 @@ in with pkgs.stdenv; with lib; {
         programs.fzf.enableZshIntegration = true;
 
         programs.browserpass.enable = true;
-        programs.browserpass.browsers = [ "chrome" "chromium" "firefox" ];
+        programs.browserpass.browsers = [ "firefox" ];
 
         programs.alacritty = {
           enable = true;
