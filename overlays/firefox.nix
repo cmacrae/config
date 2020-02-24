@@ -1,5 +1,5 @@
 let
-  version = "72.0";
+  version = "73.0";
 
 in
 
@@ -19,7 +19,7 @@ self: super: {
     src = fetchurl {
       name = "Firefox-${version}.dmg";
       url = "https://download-installer.cdn.mozilla.net/pub/firefox/releases/${version}/mac/en-GB/Firefox%20${version}.dmg";
-      sha256 = "0gdjj7h21snxf6x8vhld89868v6v4gcgwwx46z6mds86cmaj2120";
+      sha256 = "0w2im76vri8wrx88qi66arhkwm3h7vyas9s3g0cbrkpsarf1hh82";
     };
 
     meta = with stdenv.lib; {

@@ -2,8 +2,8 @@
   imports = [ ../../modules/darwin.nix ];
   local.darwin.machine = "workbook";
   local.darwin.skhd.extraBindings = ''
-    cmd + ctrl - f : ~/.nix-profile/Applications/Firefox.app/Contents/MacOS/firefox -P work
-    cmd + shift + ctrl - f : ~/.nix-profile/Applications/Firefox.app/Contents/MacOS/firefox -P home
+    cmd + ctrl - f : open -n ~/.nix-profile/Applications/Firefox.app --args -P work
+    cmd + shift + ctrl - f : open -n ~/.nix-profile/Applications/Firefox.app --args -P home
 
     cmd - up: yabai -m display --focus next
     cmd - down: yabai -m display --focus prev
