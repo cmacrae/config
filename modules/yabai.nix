@@ -6,7 +6,7 @@ let
   cfg = config.services.yabai;
 
   # TODO: [Darwin] Handle removal of yabai scripting additions
-  yabai = pkgs.callPackage ../pkgs/yabai.nix {
+  yabai = pkgs.callPackage ../pkgs/yabai {
     inherit (pkgs.darwin.apple_sdk.frameworks)
       Carbon Cocoa ScriptingBridge;
   };

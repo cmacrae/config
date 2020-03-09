@@ -33,9 +33,7 @@ in with lib;
     nix.package = pkgs.nix;
     services.nix-daemon.enable = true;
 
-    nixpkgs.overlays = [
-      (import ../overlays/firefox.nix)
-    ];
+    nixpkgs.overlays = [ (import ../overlays) ];
 
     # Remote builder for linux
     nix.distributedBuilds = true;

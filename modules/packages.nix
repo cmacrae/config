@@ -37,11 +37,17 @@ with pkgs; [
   errcheck
   gotags
 
+  # Docker
+  docker
+  docker-machine
+  docker-machine-driver-hyperkit
+  hyperkit
+
   # k8s
+  fluxctl
   kubectl
   kubectx
   kube-prompt
-  fluxctl
   kubernetes-helm
   kustomize
 ]
