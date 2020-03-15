@@ -12,28 +12,28 @@
     {
       hostName = "compute1";
       sshUser = "root";
-      sshKey = "$HOME/.ssh/id_rsa";
+      sshKey = "/Users/cmacrae/.ssh/id_rsa";
       systems = [ "x86_64-linux" ];
       maxJobs = 16;
     }
     {
       hostName = "compute2";
       sshUser = "root";
-      sshKey = "$HOME/.ssh/id_rsa";
+      sshKey = "/Users/cmacrae/.ssh/id_rsa";
       systems = [ "x86_64-linux" ];
       maxJobs = 16;
     }
     {
       hostName = "compute3";
       sshUser = "root";
-      sshKey = "$HOME/.ssh/id_rsa";
+      sshKey = "/Users/cmacrae/.ssh/id_rsa";
       systems = [ "x86_64-linux" ];
       maxJobs = 16;
     }
     {
       hostName = "10.0.0.2";
       sshUser = "root";
-      sshKey = "$HOME/.ssh/id_rsa";
+      sshKey = "/Users/cmacrae/.ssh/id_rsa";
       systems = [ "aarch64-linux" ];
       maxJobs = 4;
     }
