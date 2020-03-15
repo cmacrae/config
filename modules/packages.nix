@@ -1,7 +1,6 @@
 { pkgs }:
 
 with pkgs; [
-  ansible
   bc
   bind
   ffmpeg-full
