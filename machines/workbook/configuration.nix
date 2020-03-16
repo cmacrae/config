@@ -1,5 +1,11 @@
 {
   imports = [ ../../modules/darwin.nix ];
+
+  local.home.git = {
+    userName = "Calum MacRae";
+    userEmail = "calum.macrae@moo.com";
+  };
+
   local.darwin.machine = "workbook";
   local.darwin.skhd.extraBindings = ''
     cmd + ctrl - f : open -n ~/.nix-profile/Applications/Firefox.app --args -P work
