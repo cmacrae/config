@@ -1,11 +1,13 @@
 { pkgs }:
 
 with pkgs; [
+  awscli
   bc
   bind
   ffmpeg-full
   gnumake
   gnupg
+  gnused
   htop
   jq
   mpv
@@ -46,6 +48,7 @@ with pkgs; [
   fluxctl
   kubectl
   kubectx
+  kubeval
   kube-prompt
   kubernetes-helm
   kustomize
