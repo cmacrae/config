@@ -79,6 +79,7 @@ in with lib;
        { key = "Q"; mods = "Control"; chars = "\\x11"; }
        { key = "F"; mods = "Alt"; chars = "\\x1bf"; }
        { key = "B"; mods = "Alt"; chars = "\\x1bb"; }
+       { key = "D"; mods = "Alt"; chars = "\\x1bd"; }
        { key = "Slash"; mods = "Control"; chars = "\\x1f"; }
        { key = "Period"; mods = "Alt"; chars = "\\e-\\e."; }
        { key = "N"; mods = "Command"; command = {
