@@ -45,7 +45,6 @@ with pkgs; [
   hyperkit
 
   # k8s
-  fluxctl
   kubectl
   kubectx
   kubeval
