@@ -1,0 +1,31 @@
+From 64420a91e8ff85bac798bbacc226d95e21231f19 Mon Sep 17 00:00:00 2001
+From: Golem <golem@d12frosted.io>
+Date: Thu, 9 Jan 2020 07:21:55 +0200
+Subject: [PATCH] [patch] no-frame-refocus-cocoa
+
+---
+ src/frame.c | 9 ---------
+ 1 file changed, 9 deletions(-)
+
+diff --git a/src/frame.c b/src/frame.c
+index 51fc78ab70..96b135745b 100644
+--- a/src/frame.c
++++ b/src/frame.c
+@@ -2056,15 +2056,6 @@ delete_frame (Lisp_Object frame, Lisp_Object force)
+ 		}
+ 	    }
+ 	}
+-#ifdef NS_IMPL_COCOA
+-      else
+-	/* Under NS, there is no system mechanism for choosing a new
+-	   window to get focus -- it is left to application code.
+-	   So the portion of THIS application interfacing with NS
+-	   needs to know about it.  We call Fraise_frame, but the
+-	   purpose is really to transfer focus.  */
+-	Fraise_frame (frame1);
+-#endif
+ 
+       do_switch_frame (frame1, 0, 1, Qnil);
+       sf = SELECTED_FRAME ();
+-- 
+2.25.0

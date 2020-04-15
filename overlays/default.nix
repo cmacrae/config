@@ -1,4 +1,9 @@
 self: pkgs: {
+  Emacs = pkgs.callPackage ./emacs {
+    inherit (pkgs.darwin.apple_sdk.frameworks) AppKit GSS ImageIO;
+    stdenv = pkgs.clangStdenv;
+  };
+
   Firefox = pkgs.callPackage ./firefox {};
 
   hyperkit = pkgs.callPackage ./hyperkit {
