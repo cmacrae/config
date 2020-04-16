@@ -12,6 +12,7 @@ in with lib;
     "${home-manager}/nix-darwin"
     ../modules/home.nix
     ../modules/yabai.nix
+    ../modules/spacebar.nix
   ];
 
   options = {
@@ -116,6 +117,13 @@ in with lib;
     };
 
     services.yabai.configPath = "${homeDir}/.config/yabai/yabairc";
+
+    services.spacebar.enable = true;
+    services.spacebar.config = {
+      clock_format = "%R";
+      space_icon_strip = "        ";
+      text_font = "Gill Sans:Regular:14.0";
+    };
 
     # Recreate /run/current-system symlink after boot
     services.activate-system.enable = true;

@@ -13,35 +13,23 @@ evalWorkspace() {
         if [ $(yabai -m query --windows --window | jq '.border') -eq 1 ]; then
             yabai -m window ${spaceWindows[0]} --toggle border
         fi
-        yabai -m space --padding abs:0:0:0:0
+        yabai -m space --padding abs:26:0:0:0
         yabai -m space --gap abs:0
     elif [[ $windowCount -gt 1 ]]; then
         if [[ $(yabai -m query --windows --window ${spaceWindows[0]} | jq '.border') -eq 0 ]]; then
             yabai -m window ${spaceWindows[0]} --toggle border
         fi
-        yabai -m space --padding abs:10:10:10:10
+        yabai -m space --padding abs:36:10:10:10
         yabai -m space --gap abs:10
     fi
 }
 
 #--- Config ---#
 main(){
-    # bar settings
-    yabai -m config status_bar                   on
-    yabai -m config status_bar_text_font         "Helvetica Neue:Bold:12.0"
-    yabai -m config status_bar_icon_font         "FontAwesome:Regular:12.0"
-    yabai -m config status_bar_background_color  0xff202020
-    yabai -m config status_bar_foreground_color  0xffa8a8a8
-    yabai -m config status_bar_space_icon_strip          
-    yabai -m config status_bar_power_icon_strip   
-    yabai -m config status_bar_space_icon        
-    yabai -m config status_bar_clock_icon        
-
     # global settings
     yabai -m config focus_follows_mouse          autoraise
     yabai -m config mouse_follows_focus          off
     yabai -m config window_placement             second_child
-    yabai -m config window_topmost               on
     yabai -m config window_opacity               off
     yabai -m config window_opacity_duration      0.0
     yabai -m config window_shadow                off
@@ -63,7 +51,7 @@ main(){
 
     # general space settings
     yabai -m config layout                       bsp
-    yabai -m config top_padding                  10
+    yabai -m config top_padding                  36
     yabai -m config bottom_padding               10
     yabai -m config left_padding                 10
     yabai -m config right_padding                10
