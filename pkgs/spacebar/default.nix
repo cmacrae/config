@@ -4,12 +4,16 @@ stdenv.mkDerivation rec {
   pname = "spacebar";
   version = "v0.4.0";
 
-  src = fetchFromGitHub {
-    owner = "somdoron";
-    repo = "spacebar";
-    rev = "${version}";
-    sha256 = "0wg3lfvxa4bnlhyw89kr97c1p2x5d1n55iapbfdcckq1yaxb257b";
-  };
+  # src = fetchFromGitHub {
+  #   owner = "somdoron";
+  #   repo = "spacebar";
+  #   rev = "${version}";
+  #   sha256 = "0wg3lfvxa4bnlhyw89kr97c1p2x5d1n55iapbfdcckq1yaxb257b";
+  # };
+
+  # TODO: [Darwin|spacebar] Local development - awaiting PR:
+  #       https://github.com/somdoron/spacebar/pull/4
+  src = ../../../spacebar;
 
   buildInputs = [ Carbon Cocoa ScriptingBridge ];
 
