@@ -1,6 +1,3 @@
-#! /usr/bin/env bash
-. /etc/static/zshenv
-
 #--- Funcs  ---#
 
 # Smart gap/border assesment
@@ -38,6 +35,8 @@ main(){
     yabai -m config window_border_width          2
     yabai -m config window_border_radius         3
     yabai -m config active_window_border_topmost off
+    yabai -m config window_topmost               on
+    yabai -m config window_shadow                float
     yabai -m config active_window_border_color   0xff5c7e81
     yabai -m config normal_window_border_color   0xff505050
     yabai -m config insert_window_border_color   0xffd75f5f

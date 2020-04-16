@@ -51,7 +51,10 @@ in
         serviceConfig.ProgramArguments = [ "${cfg.package}/bin/yabai" ]
                                          ++ optionals (cfg.configPath != "") [ "-c" cfg.configPath ];
         serviceConfig.KeepAlive = true;
-        serviceConfig.ProcessType = "Interactive";
+        serviceConfig.RunAtLoad = true;
+        serviceConfig.EnvironmentVariables = {
+          PATH = "${cfg.package}/bin:/usr/bin:/bin:/usr/sbin:/sbin";
+        };
       };
     })
 
