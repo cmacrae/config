@@ -5,39 +5,53 @@ with lib;
 let
   cfg = config.services.yabai;
 
-  # TODO: [Darwin] Handle removal of yabai scripting additions
-  yabai = pkgs.callPackage ../pkgs/yabai {
-    inherit (pkgs.darwin.apple_sdk.frameworks)
-      Carbon Cocoa ScriptingBridge;
-  };
+  toYabaiConfig = opts:
+    concatStringsSep "\n" (mapAttrsToList
+      (p: v: "yabai -m config ${p} ${toString v}") opts);
 
 in
 
 {
-  options = {
-    services.yabai.enable = mkOption {
-      type = types.bool;
+  options.services.yabai = with types; {
+    enable = mkOption {
+      type = bool;
       default = false;
       description = "Whether to enable the yabai window manager.";
     };
 
-    services.yabai.package = mkOption {
-      type = types.path;
-      default = yabai;
-      description = "This option specifies the yabai package to use.";
+    package = mkOption {
+      type = path;
+      default = pkgs.yabai;
+      description = "The yabai package to use.";
     };
 
-    services.yabai.configPath = mkOption {
-      type = types.path;
-      default = "";
-      example = "~/.yabairc";
+    configPath = mkOption {
+      type = path;
+      default = "/etc/yabairc";
       description = "Path to the executable <filename>yabairc</filename> file.";
     };
 
-    services.yabai.enableScriptingAddition = mkOption {
-      type = types.bool;
+    enableScriptingAddition = mkOption {
+      type = bool;
       default = false;
-      description = "Whether to enable yabai's scripting-addition.";
+      description = ''
+        Whether to enable yabai's scripting-addition.
+        SIP must be disabled for this to work.
+      '';
+    };
+
+    config = mkOption {
+      type = attrs;
+      default = {};
+      description = ''
+        Key/Value pairs to pass to yabai's 'config' domain, via the configuration file.
+      '';
+    };
+
+    extraConfig = mkOption {
+      type = str;
+      default = "";
+      description = "Extra arbitrary configuration to append to the configuration file";
     };
   };
 
@@ -55,9 +69,18 @@ in
         serviceConfig.EnvironmentVariables = {
           PATH = "${cfg.package}/bin:/usr/bin:/bin:/usr/sbin:/sbin";
         };
+        serviceConfig.StandardOutPath = "/tmp/yabai.out.log";
+        serviceConfig.StandardErrorPath = "/tmp/yabai.err.log";
       };
     })
 
+    (mkIf (cfg.configPath == "/etc/yabairc") {
+      environment.etc."yabairc".source = pkgs.writeScript "etc-yabairc" (''
+        ${toYabaiConfig cfg.config}
+      '' + optionalString (cfg.extraConfig != "") cfg.extraConfig);
+    })
+
+    # TODO: [Darwin] Handle removal of yabai scripting additions
     (mkIf (cfg.enableScriptingAddition) {
       launchd.daemons.yabai-sa = {
         script = ''

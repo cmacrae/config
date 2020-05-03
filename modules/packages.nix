@@ -4,11 +4,13 @@ with pkgs; [
   awscli
   bc
   bind
+  clang
   ffmpeg-full
   gnumake
   gnupg
   gnused
   htop
+  hugo
   jq
   mpv
   nixops
@@ -25,6 +27,7 @@ with pkgs; [
   up
   vim
   wget
+  wireguard-tools
   youtube-dl
 
   # Go

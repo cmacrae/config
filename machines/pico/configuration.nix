@@ -1,8 +1,5 @@
+{ lib, config, pkgs, ...}:
 {
-  imports = [ ../../modules/darwin.nix ];
+  imports = lib.attrValues (import ../../modules);
   local.darwin.machine = "pico";
-  local.darwin.skhd.extraBindings = ''
-    cmd + ctrl - f : ~/.nix-profile/Applications/Firefox.app/Contents/MacOS/firefox -P home
-    cmd + shift + ctrl - f : ~/.nix-profile/Applications/Firefox.app/Contents/MacOS/firefox -P work
-  '';
 }
