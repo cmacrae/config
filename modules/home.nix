@@ -68,6 +68,8 @@ in with pkgs.stdenv; with lib; {
               "browser.ctrlTab.recentlyUsedOrder" = false;
               "browser.newtabpage.enabled" = false;
               "browser.bookmarks.showMobileBookmarks" = true;
+              "browser.uidensity" = 1;
+              "browser.urlbar.update1" = true;
               "distribution.searchplugins.defaultLocale" = "en-GB";
               "general.useragent.locale" = "en-GB";
               "identity.fxaccounts.account.device.name" = config.networking.hostName;
@@ -87,7 +89,9 @@ in with pkgs.stdenv; with lib; {
             id = 0;
             settings = defaultSettings // {
               "browser.urlbar.placeholderName" = "DuckDuckGo";
+              "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
             };
+            userChrome = builtins.readFile ../conf.d/userChrome.css;
           };
 
           work = {
