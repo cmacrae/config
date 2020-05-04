@@ -137,9 +137,9 @@ in with lib;
                 emacsSwitchTheme () {
                   if pgrep -q Emacs; then
                 	  if [[  $MODE == "dark"  ]]; then
-                	      emacsclient --eval "(my/switch-theme 'doom-one)"
+                	      emacsclient --eval "(cm/switch-theme 'doom-one)"
                 	  elif [[  $MODE == "light"  ]]; then
-                	      emacsclient --eval "(my/switch-theme 'doom-solarized-light)"
+                	      emacsclient --eval "(cm/switch-theme 'doom-solarized-light)"
                 	  fi
                   fi
                 }
