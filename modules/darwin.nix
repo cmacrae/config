@@ -210,7 +210,7 @@ in with lib;
         normal_window_opacity        = "1.0";
         split_ratio                  = "0.50";
         auto_balance                 = "on";
-        mouse_modifier               = "alt";
+        mouse_modifier               = "fn";
         mouse_action1                = "move";
         mouse_action2                = "resize";
         layout                       = "bsp";
