@@ -2,6 +2,8 @@
 
 with pkgs; [
   awscli
+  aspell
+  aspellDicts.en
   bc
   bind
   clang
