@@ -4,6 +4,7 @@ with pkgs; [
   awscli
   aspell
   aspellDicts.en
+  aspellDicts.en-computers
   bc
   bind
   clang
