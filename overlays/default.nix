@@ -16,22 +16,13 @@ self: super: {
     inherit (super.darwin.apple_sdk.frameworks) vmnet;
   };
 
-  yabai = super.callPackage ./yabai {
-    inherit (super.darwin.apple_sdk.frameworks)
-      Carbon Cocoa ScriptingBridge;
-  };
-
-  spacebar = super.callPackage ./spacebar {
-    inherit (super.darwin.apple_sdk.frameworks)
-      Carbon Cocoa ScriptingBridge;
-  };
-
-  skhd = super.skhd.overrideAttrs (o: {
+  yabai = super.yabai.overrideAttrs (o: {
+    version = "2.4.3";
     src = super.fetchFromGitHub {
       owner = "koekeishiya";
-      repo = "skhd";
-      rev = "v0.3.5";
-      sha256 = "0x099979kgpim18r0vi9vd821qnv0rl3rkj0nd1nx3wljxgf7mrg";
+      repo = "yabai";
+      rev = "v2.4.3";
+      sha256 = "1a6pqms5kwdsvr9vcshfa000xf2f5a2qbp5qapx0b3wzclnchjbn";
     };
   });
 }

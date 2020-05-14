@@ -189,6 +189,7 @@ in with lib;
 
     services.yabai = {
       enable = true;
+      package = pkgs.yabai;
       enableScriptingAddition = true;
       config = {
         focus_follows_mouse          = "autoraise";
@@ -257,9 +258,10 @@ in with lib;
     };
 
     services.spacebar.enable = true;
+    services.spacebar.package = pkgs.spacebar;
     services.spacebar.config = {
       clock_format     = "%R";
-      space_icon_strip = "        ";
+      space_icon_strip = "   ";
       text_font        = ''"Helvetica Neue:Bold:12.0"'';
       icon_font        = ''"FontAwesome:Regular:12.0"'';
       background_color = "0xff202020";

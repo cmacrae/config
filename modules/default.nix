@@ -5,6 +5,4 @@ in {
   darwin       = ./darwin.nix;
   home         = ./home.nix;
   home-manager = "${hm}/nix-darwin";
-  spacebar     = ./spacebar.nix;
-  yabai        = ./yabai.nix;
 }
