@@ -19,7 +19,6 @@ with pkgs; [
   nixops
   nix-prefetch-git
   nmap
-  p7zip
   pass
   python3
   ranger
