@@ -42,6 +42,7 @@ with pkgs; [
   go2nix
   errcheck
   gotags
+  gopls
 
   # Docker
   docker
