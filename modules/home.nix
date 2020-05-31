@@ -83,15 +83,19 @@ in with pkgs.stdenv; with lib; {
               "services.sync.engine.prefs" = false;
               "services.sync.engineStatusChanged.prefs" = true;
               "signon.rememberSignons" = false;
+              "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
             };
         in {
           home = {
             id = 0;
             settings = defaultSettings // {
               "browser.urlbar.placeholderName" = "DuckDuckGo";
-              "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
             };
-            userChrome = builtins.readFile ../conf.d/userChrome.css;
+            userChrome = (builtins.readFile (pkgs.substituteAll {
+              name = "homeUserChrome";
+              src = ../conf.d/userChrome.css;
+              tabLineColour = "#2aa198";
+            }));
           };
 
           work = {
@@ -99,6 +103,11 @@ in with pkgs.stdenv; with lib; {
             settings = defaultSettings // {
               "browser.startup.homepage" = "about:blank";
             };
+            userChrome = (builtins.readFile (pkgs.substituteAll {
+              name = "workUserChrome";
+              src = ../conf.d/userChrome.css;
+              tabLineColour = "#cb4b16";
+            }));
           };
       };
 

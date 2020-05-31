@@ -52,7 +52,7 @@
 }
 
 .tab-line[selected=true] {
-    background-color: #2aa198 !important;
+    background-color: @tabLineColour@ !important;
 }
 
 #navigator-toolbox #urlbar-container {
