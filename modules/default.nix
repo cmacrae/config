@@ -5,4 +5,5 @@ in {
   darwin       = ./darwin.nix;
   home         = ./home.nix;
   home-manager = "${hm}/nix-darwin";
+  limelight    = ./limelight.nix;
 }

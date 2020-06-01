@@ -187,6 +187,19 @@ in with lib;
       };
     };
 
+    services.limelight = {
+      enable = true;
+      package = pkgs.limelight; # overlay
+      config = {
+        width     = 2;
+        radius    = 3;
+        placement = "inset";
+        active_color     = "0xff5c7e81";
+        normal_color     = "0xff505050";
+        insert_color     = "0xffd75f5f";
+      };
+    };
+
     services.yabai = {
       enable = true;
       package = pkgs.yabai;
@@ -197,16 +210,9 @@ in with lib;
         window_placement             = "second_child";
         window_opacity               = "off";
         window_opacity_duration      = "0.0";
-        window_border                = "on";
-        window_border_placement      = "inset";
-        window_border_width          = 2;
-        window_border_radius         = 3;
         active_window_border_topmost = "off";
         window_topmost               = "on";
         window_shadow                = "float";
-        active_window_border_color   = "0xff5c7e81";
-        normal_window_border_color   = "0xff505050";
-        insert_window_border_color   = "0xffd75f5f";
         active_window_opacity        = "1.0";
         normal_window_opacity        = "1.0";
         split_ratio                  = "0.50";
