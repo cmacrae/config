@@ -194,7 +194,7 @@ in with lib;
         width     = 2;
         radius    = 3;
         placement = "inset";
-        active_color     = "0xff5c7e81";
+        active_color     = "0xff00afaf";
         normal_color     = "0xff505050";
         insert_color     = "0xffd75f5f";
       };
