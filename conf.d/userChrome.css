@@ -220,7 +220,7 @@
     --uc-toolbar-height: 40px;
 }
 /* Override for other densities */
-:root[uidensity="compact"] #navigator-toolbox{ --uc-toolbar-height: 32px; }
+:root[uidensity="compact"] #navigator-toolbox{ --uc-toolbar-height: 28px; }
 :root[uidensity="touch"] #navigator-toolbox{ --uc-toolbar-height: 40px; }
 
 :root[uidensity=compact] #urlbar-container.megabar{
