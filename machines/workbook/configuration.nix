@@ -2,10 +2,7 @@
 {
   imports = lib.attrValues (import ../../modules);
 
-  local.home.git = {
-    userName = "Calum MacRae";
-    userEmail = "calum.macrae@moo.com";
-  };
-
-  local.darwin.machine = "workbook";
+  macintosh.machine = "workbook";
+  home-manager.users.cmacrae.programs.git.userName = "Calum MacRae";
+  home-manager.users.cmacrae.programs.git.userEmail = "calum.macrae@moo.com";
 }

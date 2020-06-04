@@ -4,9 +4,8 @@ let
 
 in {
   imports = lib.attrValues (import ../../modules);
-  local.darwin.machine = "macbook";
+  macintosh.machine = "macbook";
 
-  # Remote builder for linux
   nix.distributedBuilds = true;
   nix.buildMachines = [
     {
