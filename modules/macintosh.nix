@@ -285,6 +285,7 @@ in with pkgs.stdenv; with lib; {
               "privacy.trackingprotection.enabled" = true;
               "privacy.trackingprotection.socialtracking.enabled" = true;
               "privacy.trackingprotection.socialtracking.annotate.enabled" = true;
+              "reader.color_scheme" = "sepia";
               "services.sync.declinedEngines" = "addons,passwords,prefs";
               "services.sync.engine.addons" = false;
               "services.sync.engineStatusChanged.addons" = true;
