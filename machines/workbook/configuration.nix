@@ -5,4 +5,5 @@
   macintosh.machine = "workbook";
   home-manager.users.cmacrae.programs.git.userName = "Calum MacRae";
   home-manager.users.cmacrae.programs.git.userEmail = "calum.macrae@moo.com";
+  environment.etc."resolver/pantheon.cmacr.ae".text = "nameserver 10.0.0.2";
 }
