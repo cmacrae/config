@@ -74,16 +74,17 @@ in with pkgs.stdenv; with lib; {
 
     services.skhd.enable = true;
     services.skhd.skhdConfig = builtins.readFile ../conf.d/skhd.conf;
+
     services.limelight = {
       enable = true;
       package = pkgs.limelight; # overlay
       config = {
-        width     = 2;
-        radius    = 3;
-        placement = "inset";
-        active_color     = "0xff00afaf";
-        normal_color     = "0xff505050";
-        insert_color     = "0xffd75f5f";
+        width        = 2;
+        radius       = 3;
+        placement    = "inset";
+        active_color = "0xff00afaf";
+        normal_color = "0xff505050";
+        insert_color = "0xffd75f5f";
       };
     };
 
