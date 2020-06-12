@@ -75,24 +75,15 @@ in with pkgs.stdenv; with lib; {
     services.skhd.enable = true;
     services.skhd.skhdConfig = builtins.readFile ../conf.d/skhd.conf;
 
-    services.limelight = {
-      enable = true;
-      package = pkgs.limelight; # overlay
-      config = {
-        width        = 2;
-        radius       = 3;
-        placement    = "inset";
-        active_color = "0xff00afaf";
-        normal_color = "0xff505050";
-        insert_color = "0xffd75f5f";
-      };
-    };
-
     services.yabai = {
       enable = true;
       package = pkgs.yabai;
       enableScriptingAddition = true;
       config = {
+        window_border                = "on";
+        window_border_width          = 4;
+        active_window_border_color   = "0xff00afaf";
+        normal_window_border_color   = "0xff505050";
         focus_follows_mouse          = "autoraise";
         mouse_follows_focus          = "off";
         window_placement             = "second_child";
@@ -155,7 +146,7 @@ in with pkgs.stdenv; with lib; {
     services.spacebar.package = pkgs.spacebar;
     services.spacebar.config = {
       clock_format     = "%R";
-      space_icon_strip = "   ";
+      space_icon_strip = mkDefault "   ";
       text_font        = ''"Helvetica Neue:Bold:12.0"'';
       icon_font        = ''"FontAwesome:Regular:12.0"'';
       background_color = "0xff202020";
