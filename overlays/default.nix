@@ -23,8 +23,8 @@ self: super: {
     src = super.fetchFromGitHub {
       owner = "koekeishiya";
       repo = "yabai";
-      rev = "f1a4a24012707133f328cf9233593a495d81e147";
-      sha256 = "17m9zv2v8hiz619f0p2q5phf254sjibc8kywry8nn3pm8hgj4lcz";
+      rev = "0690eb50c6e336345a1b1235b3e0baf0245b09d5";
+      sha256 = "148gjjn50l2x2psp37i37bfxgv31hmwqz5ryj6mvz16isffdx37z";
     };
   });
 }
