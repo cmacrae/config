@@ -24,4 +24,9 @@ with lib; {
             maxJobs = 4;
           })
         ];
+
+  # For use with 'pass' output in NixOps builds
+  nix.extraOptions = ''
+    plugin-files = ${pkgs.nix-plugins.override { nix = config.nix.package; }}/lib/nix/plugins/libnix-extra-builtins.so
+  '';
 }
