@@ -34,5 +34,7 @@ self: super: {
       rev = "1670a26a9f09b10a6c8867e1bc1cda1c00c2f54c";
       sha256 = "1yk3ijn0kivb9ngf8wva6fbzla7152xhzjiad56hjww0avx9cq06";
     };
+
+    patches = [ ./spacebar/space_icon_indicator.patch ];
   });
 }
