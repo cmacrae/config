@@ -25,4 +25,14 @@ self: super: {
       sha256 = "01qqndawi4hl8lfvm11n7clla57hkrnck7k0hgsk6l62vyv26lj9";
     };
   });
+
+  spacebar = super.spacebar.overrideAttrs (o: {
+    version = "master";
+    src = super.fetchFromGitHub {
+      owner = "somdoron";
+      repo = "spacebar";
+      rev = "1670a26a9f09b10a6c8867e1bc1cda1c00c2f54c";
+      sha256 = "1yk3ijn0kivb9ngf8wva6fbzla7152xhzjiad56hjww0avx9cq06";
+    };
+  });
 }
