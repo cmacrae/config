@@ -136,6 +136,7 @@ in with pkgs.stdenv; with lib; {
     icon_font        = ''"FontAwesome:Regular:12.0"'';
     background_color = "0xff202020";
     foreground_color = "0xffa8a8a8";
+    space_icon_color = "0xff458588";
     power_icon_strip = " ";
     space_icon       = "";
     clock_icon       = "";

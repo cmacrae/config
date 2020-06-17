@@ -26,15 +26,15 @@ self: super: {
     };
   });
 
+  # NOTE: Following my fork with enhancements
+  #       (submitted upstream for consideration)
   spacebar = super.spacebar.overrideAttrs (o: {
-    version = "master";
+    version = "enhanced";
     src = super.fetchFromGitHub {
-      owner = "somdoron";
+      owner = "cmacrae";
       repo = "spacebar";
-      rev = "1670a26a9f09b10a6c8867e1bc1cda1c00c2f54c";
-      sha256 = "1yk3ijn0kivb9ngf8wva6fbzla7152xhzjiad56hjww0avx9cq06";
+      rev = "9e5d235d04b00d93d5df70a08caddf4983570584";
+      sha256 = "0cixlizzsgj0c43n8bi670pid9kd92v4kjxxazbv49vka275aaz5";
     };
-
-    patches = [ ./spacebar/space_icon_indicator.patch ];
   });
 }
