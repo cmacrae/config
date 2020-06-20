@@ -28,13 +28,16 @@ self: super: {
 
   # NOTE: Following my fork with enhancements
   #       (submitted upstream for consideration)
+  #       - No underlines
+  #       - Current space icon indicator with colour option
   spacebar = super.spacebar.overrideAttrs (o: {
     version = "enhanced";
+    # src = /Users/cmacrae/dev/personal/github.com/cmacrae/spacebar;
     src = super.fetchFromGitHub {
       owner = "cmacrae";
       repo = "spacebar";
-      rev = "9e5d235d04b00d93d5df70a08caddf4983570584";
-      sha256 = "0cixlizzsgj0c43n8bi670pid9kd92v4kjxxazbv49vka275aaz5";
+      rev = "refs/heads/enhancements";
+      sha256 = "1r8pjw2v726fkjichc6sfin9cr2mn8hqb4l7dlxn9g4vk6nzbxnx";
     };
   });
 }
