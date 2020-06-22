@@ -132,7 +132,7 @@ in with pkgs.stdenv; with lib; {
   services.spacebar.config = {
     clock_format     = "%R";
     space_icon_strip = mkDefault "   ";
-    text_font        = ''"Helvetica Neue:Bold:12.0"'';
+    text_font        = ''"Menlo:Bold:12.0"'';
     icon_font        = ''"FontAwesome:Regular:12.0"'';
     background_color = "0xff202020";
     foreground_color = "0xffa8a8a8";
