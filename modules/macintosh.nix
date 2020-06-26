@@ -231,6 +231,7 @@ in with pkgs.stdenv; with lib; {
     };
 
     programs.git.enable = true;
+    programs.git.lfs.enable = true;
     programs.git.userName = mkDefault "cmacrae";
     programs.git.userEmail = mkDefault "hi@cmacr.ae";
 
