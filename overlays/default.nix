@@ -21,9 +21,12 @@ self: super: {
     src = super.fetchFromGitHub {
       owner = "koekeishiya";
       repo = "yabai";
-      rev = "a4c0115defa77981052bebca441c8afc2b31a448";
-      sha256 = "063lwb5jby8i8n8lmzdll313zdiy9q1b2qxcrbb2hrk1y70v22f1";
+      rev = "0c6157e52bc29cac4ffe46003b157fc2319391ee";
+      sha256 = "06a3dvkmbpaig0blf752v9w4bcs8glsz54iicz9bdrlpl9q0aykw";
     };
+
+    # TODO: Remove once unstable has caught up.
+    buildInputs = o.buildInputs ++ [ super.xxd ];
   });
 
   # NOTE: Following my fork with enhancements
