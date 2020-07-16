@@ -130,16 +130,21 @@ in with pkgs.stdenv; with lib; {
   services.spacebar.enable = true;
   services.spacebar.package = pkgs.spacebar;
   services.spacebar.config = {
-    clock_format     = "%R";
-    space_icon_strip = mkDefault "   ";
-    text_font        = ''"Menlo:Bold:12.0"'';
-    icon_font        = ''"FontAwesome:Regular:12.0"'';
-    background_color = "0xff202020";
-    foreground_color = "0xffa8a8a8";
-    space_icon_color = "0xff458588";
-    power_icon_strip = " ";
-    space_icon       = "";
-    clock_icon       = "";
+    clock_format       = "%R";
+    space_icon_strip   = mkDefault "   ";
+    text_font          = ''"Menlo:Bold:12.0"'';
+    icon_font          = ''"FontAwesome:Regular:12.0"'';
+    background_color   = "0xff202020";
+    foreground_color   = "0xffa8a8a8";
+    space_icon_color   = "0xff14b1ab";
+    dnd_icon_color     = "0xfffcf7bb";
+    clock_icon_color   = "0xff99d8d0";
+    power_icon_color   = "0xfff69e7b";
+    battery_icon_color = "0xffffbcbc";
+    power_icon_strip   = " ";
+    space_icon         = "";
+    clock_icon         = "";
+    dnd_icon           = "";
   };
 
   # Recreate /run/current-system symlink after boot
