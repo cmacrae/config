@@ -234,6 +234,8 @@ in with pkgs.stdenv; with lib; {
     programs.git.lfs.enable = true;
     programs.git.userName = mkDefault "cmacrae";
     programs.git.userEmail = mkDefault "hi@cmacr.ae";
+    programs.git.signing.key = mkDefault "54A14F5D";
+    programs.git.signing.signByDefault = mkDefault true;
 
     programs.firefox.enable = true;
     programs.firefox.package = pkgs.Firefox; # custom overlay
