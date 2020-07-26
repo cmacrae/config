@@ -58,7 +58,52 @@ in with pkgs.stdenv; with lib; {
   };
 
   services.skhd.enable = true;
-  services.skhd.skhdConfig = builtins.readFile ../conf.d/skhd.conf;
+  services.skhd.skhdConfig = (builtins.readFile (pkgs.substituteAll {
+    name = "homeUserChrome";
+    src = ../conf.d/skhd.conf;
+    vt220 = pkgs.writeShellScript "vt220OpenOrSelect" ''
+      WIN=$(${pkgs.yabai}/bin/yabai -m query --windows | ${pkgs.jq}/bin/jq '[.[]|select(.title=="vt220")]|unique_by(.id)')
+      if [[ $WIN != '[]' ]]; then
+        ID=$(echo $WIN | ${pkgs.jq}/bin/jq '.[].id')
+        FOCUSED=$(echo $WIN | ${pkgs.jq}/bin/jq '.[].focused')
+        if [[ $FOCUSED == 1 ]]; then
+          ${pkgs.yabai}/bin/yabai -m window --focus recent || \
+          ${pkgs.yabai}/bin/yabai -m space --focus recent
+        else
+          ${pkgs.yabai}/bin/yabai -m window --focus $ID
+        fi
+      else
+        open -n ~/.nix-profile/Applications/Alacritty.app \
+        --args --live-config-reload \
+        --config-file $HOME/.config/alacritty/live.yml \
+        -t vt220 --dimensions 80 24 --position 10000 10000 \
+        -e ${pkgs.tmux}/bin/tmux a -t vt
+      fi
+    '';
+  }));
+
+  environment.etc.gettytab.text = builtins.readFile (pkgs.substituteAll {
+    name = "gettytab";
+    src = ../conf.d/gettytab;
+    autoLogin = pkgs.writeShellScript "gettyAutoLogin" ''
+      ARGS=("$@")
+      exec /usr/bin/login "''${ARGS[@]}" \
+      ${pkgs.tmux}/bin/tmux \
+      -f ${builtins.getEnv("HOME")}/.tmux.conf \
+      new-session -A -s vt 'TERM=vt220 ${pkgs.zsh}/bin/zsh'
+    '';
+  });
+
+  launchd.daemons.serialconsole = {
+    command = "/usr/libexec/getty std.ttyUSB cu.usbserial";
+    serviceConfig = {
+      Label = "ae.cmacr.vt220";
+      KeepAlive = true;
+      EnvironmentVariables = {
+        PATH = (lib.replaceStrings ["$HOME"] [( builtins.getEnv("HOME") )] config.environment.systemPath);
+      };
+    };
+  };
 
   services.yabai = {
     enable = true;
@@ -96,40 +141,14 @@ in with pkgs.stdenv; with lib; {
       # rules
       yabai -m rule --add app='System Preferences' manage=off
       yabai -m rule --add app='Live' manage=off
-
-      # events
-      # Evaluate gaps/borders for various events
-      for e in application_launched application_terminated window_created window_destroyed
-      do
-      yabai -m signal --add event=$e action="${pkgs.writeShellScript "yabai-smart-gaps" ''
-        spaceData=$(yabai -m query --spaces --space)
-        spaceWindows=( $(echo $spaceData | ${pkgs.jq}/bin/jq '.windows | .[]') )
-        spaceIndex=$(echo $spaceData | ${pkgs.jq}/bin/jq '.index')
-        windowCount=$(yabai -m query --windows \
-        | ${pkgs.jq}/bin/jq "[.[]|select(.role==\"AXWindow\" and .space==$spaceIndex)]|length")
-        if [[ $windowCount -eq 1 ]]; then
-            if [[ $(yabai -m query --windows --window | ${pkgs.jq}/bin/jq '.border') -eq 1 ]]; then
-                yabai -m window $${spaceWindows[0]} --toggle border
-            fi
-            yabai -m space --padding abs:26:0:0:0
-            yabai -m space --gap abs:0
-        elif [[ $windowCount -gt 1 ]]; then
-            if [[ $(yabai -m query --windows --window $${spaceWindows[0]} | ${pkgs.jq}/bin/jq '.border') -eq 0 ]]; then
-                yabai -m window $${spaceWindows[0]} --toggle border
-            fi
-            yabai -m space --padding abs:36:10:10:10
-            yabai -m space --gap abs:10
-        fi
-
-      echo "yabai config loaded"
-      ''}"
-      done
+      yabai -m rule --add label=vt220 title=vt220 sticky=on border=off manage=off opacity=0.0001
     '';
   };
 
   services.spacebar.enable = true;
   services.spacebar.package = pkgs.spacebar;
   services.spacebar.config = {
+    debug_output       = "on";
     clock_format       = "%R";
     space_icon_strip   = mkDefault "   ";
     text_font          = ''"Menlo:Bold:12.0"'';
