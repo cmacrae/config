@@ -374,10 +374,10 @@ in with pkgs.stdenv; with lib; {
         window.padding.x = 15;
         window.padding.y = 15;
         window.decorations = "buttonless";
+        window.dynamic_title = false;
         scrolling.history = 100000;
         live_config_reload = true;
         selection.save_to_clipboard = true;
-        dynamic_title = false;
         mouse.hide_when_typing = true;
 
         font = {
