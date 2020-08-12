@@ -1,8 +1,26 @@
 self: super: {
-  Emacs = super.callPackage ./emacs {
-    inherit (super.darwin.apple_sdk.frameworks) AppKit GSS ImageIO;
-    stdenv = super.clangStdenv;
-  };
+  Emacs = (super.emacsMacport.overrideAttrs (o: rec {
+    version = "27.1";
+    macportVersion = "8.0";
+    emacsName = "emacs-${version}";
+
+    src = builtins.fetchurl {
+      url = "http://mirror.koddos.net/gnu/emacs/${emacsName}.tar.xz";
+      sha256 = "0h9f2wpmp6rb5rfwvqwv1ia1nw86h74p7hnz3vb3gjazj67i4k2a";
+    };
+
+    macportSrc = builtins.fetchurl {
+      url = "ftp://ftp.math.s.chiba-u.ac.jp/emacs/${emacsName}-mac-${macportVersion}.tar.gz";
+      sha256 = "0rjk82k9qp1g701pfd4f0q2myzvsnp9q8xzphlxwi5yzwbs91kjq";
+    };
+
+    doCheck = false;
+    installTargets = [ "tags" "install" ];
+    buildInputs = o.buildInputs ++ [ super.jansson ];
+    configureFlags = o.configureFlags ++ [ "--with-json" ];
+
+    patches = [];
+  }));
 
   Firefox = super.callPackage ./firefox {};
 
@@ -29,18 +47,9 @@ self: super: {
     buildInputs = o.buildInputs ++ [ super.xxd ];
   });
 
-  # NOTE: Following my fork with enhancements
-  #       (submitted upstream for consideration)
-  #       - No underlines
-  #       - Current space icon indicator with colour option
+  # NOTE: For local development
   spacebar = super.spacebar.overrideAttrs (o: {
-    version = "enhanced";
-    # src = /Users/cmacrae/dev/personal/github.com/cmacrae/spacebar;
-    src = super.fetchFromGitHub {
-      owner = "cmacrae";
-      repo = "spacebar";
-      rev = "refs/heads/enhancements";
-      sha256 = "1r8pjw2v726fkjichc6sfin9cr2mn8hqb4l7dlxn9g4vk6nzbxnx";
-    };
+    # src = "${builtins.getEnv("HOME")}/dev/personal/github.com/cmacrae/spacebar";
+    src = /Users/cmacrae/dev/personal/github.com/cmacrae/spacebar;
   });
 }
