@@ -29,4 +29,6 @@ self: super: {
     # src = "${builtins.getEnv("HOME")}/dev/personal/github.com/cmacrae/spacebar";
     src = /Users/cmacrae/dev/personal/github.com/cmacrae/spacebar;
   });
+
+  kubectl-argo-rollouts = super.callPackage ./kubectl-argo-rollouts { };
 }

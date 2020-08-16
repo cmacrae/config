@@ -51,10 +51,12 @@ with pkgs; [
   hyperkit
 
   # k8s
+  argocd
   kubectl
   kubectx
   kubeval
   kube-prompt
   kubernetes-helm
   kustomize
+  kubectl-argo-rollouts
 ]
