@@ -325,7 +325,7 @@ in with pkgs.stdenv; with lib; {
       };
 
     programs.emacs.enable = true;
-    programs.emacs.package = pkgs.Emacs; # custom overlay
+    programs.emacs.package = pkgs.emacsMacport;
 
     programs.fzf.enable = true;
     programs.fzf.enableZshIntegration = true;
