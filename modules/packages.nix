@@ -46,9 +46,6 @@ with pkgs; [
 
   # Docker
   docker
-  docker-machine
-  docker-machine-driver-hyperkit
-  hyperkit
 
   # k8s
   argocd
