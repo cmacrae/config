@@ -130,11 +130,12 @@ in with pkgs.stdenv; with lib; {
       mouse_action1                = "move";
       mouse_action2                = "resize";
       layout                       = "bsp";
-      top_padding                  = 36;
+      top_padding                  = 10;
       bottom_padding               = 10;
       left_padding                 = 10;
       right_padding                = 10;
       window_gap                   = 10;
+      external_bar                 = "all:0:26";
     };
 
     extraConfig = ''
@@ -149,8 +150,9 @@ in with pkgs.stdenv; with lib; {
   services.spacebar.package = pkgs.spacebar;
   services.spacebar.config = {
     debug_output       = "on";
+    position           = "bottom";
     clock_format       = "%R";
-    space_icon_strip   = mkDefault "   ";
+    space_icon_strip   = "   ";
     text_font          = ''"Menlo:Bold:12.0"'';
     icon_font          = ''"FontAwesome:Regular:12.0"'';
     background_color   = "0xff202020";
@@ -165,6 +167,9 @@ in with pkgs.stdenv; with lib; {
     clock_icon         = "";
     dnd_icon           = "";
   };
+
+  launchd.user.agents.spacebar.serviceConfig.StandardErrorPath = "/tmp/spacebar.err.log";
+  launchd.user.agents.spacebar.serviceConfig.StandardOutPath = "/tmp/spacebar.out.log";
 
   # Recreate /run/current-system symlink after boot
   services.activate-system.enable = true;
