@@ -23,7 +23,7 @@ in with pkgs.stdenv; with lib; {
   environment.systemPackages = [ pkgs.zsh pkgs.gcc ];
   programs.bash.enable = false;
   programs.zsh.enable = true;
-  environment.darwinConfig = "${homeDir}/dev/config/machines/${config.networking.hostName}/configuration.nix";
+  environment.darwinConfig = mkDefault "${homeDir}/src/github.com/cmacrae/config/machines/${config.networking.hostName}/configuration.nix";
 
   time.timeZone = "Europe/London";
   users.users.cmacrae.shell = pkgs.zsh;
