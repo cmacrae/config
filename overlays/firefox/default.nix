@@ -2,7 +2,7 @@
 
 stdenv.mkDerivation rec {
   pname = "Firefox";
-  version = "81.0";
+  version = "83.0";
 
   buildInputs = [ undmg ];
   sourceRoot = ".";
@@ -15,7 +15,7 @@ stdenv.mkDerivation rec {
   src = fetchurl {
     name = "Firefox-${version}.dmg";
     url = "https://download-installer.cdn.mozilla.net/pub/firefox/releases/${version}/mac/en-GB/Firefox%20${version}.dmg";
-    sha256 = "0s4pglzccr5zjl3plpabdz2x5ivv28qv5wn8yy83cply7pjq0j28";
+    sha256 = "08p3qnf38pncsr0pdanzbm6q9ywjjahf88ygfmyj1gvayynwkxvi";
   };
 
   meta = with stdenv.lib; {
