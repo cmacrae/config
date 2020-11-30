@@ -52,6 +52,9 @@ in with pkgs.stdenv; with lib; {
     NSGlobalDomain._HIHideMenuBar = true;
   };
 
+  fonts.enableFontDir = true;
+  fonts.fonts = with pkgs; [ font-awesome emacs-all-the-icons-fonts ];
+
   system.keyboard = {
     enableKeyMapping = true;
     remapCapsLockToControl = true;
