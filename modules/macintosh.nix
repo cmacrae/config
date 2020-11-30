@@ -263,7 +263,7 @@ in with pkgs.stdenv; with lib; {
     programs.git.enable = true;
     programs.git.lfs.enable = true;
     programs.git.userName = mkDefault "cmacrae";
-    programs.git.userEmail = mkDefault "hi@cmacr.ae";
+    programs.git.userEmail = mkDefault ''${builtins.replaceStrings [" <at> " " <dot> "] ["@" "."] "hi <at> cmacr <dot> ae"}'';
     programs.git.signing.key = mkDefault "54A14F5D";
     programs.git.signing.signByDefault = mkDefault true;
 
