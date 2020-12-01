@@ -331,7 +331,9 @@ in with pkgs.stdenv; with lib; {
       };
 
     programs.emacs.enable = true;
-    programs.emacs.package = pkgs.emacsMacport;
+    programs.emacs.package = pkgs.emacsMacport.overrideAttrs (o: {
+      patches = o.patches ++ [ ../patches/borderless-emacs.patch ];
+    });
 
     programs.fzf.enable = true;
     programs.fzf.enableZshIntegration = true;

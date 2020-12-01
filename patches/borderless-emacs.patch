@@ -1,0 +1,20 @@
+diff --git a/src/macappkit.m b/src/macappkit.m
+index 825b4e279e..d3c322fdcd 100644
+--- a/src/macappkit.m
++++ b/src/macappkit.m
+@@ -2763,10 +2772,11 @@ - (void)setupWindow
+       if (!self.shouldBeTitled)
+ 	windowStyle = NSWindowStyleMaskBorderless;
+       else
+-	windowStyle = (NSWindowStyleMaskTitled | NSWindowStyleMaskClosable
+-		       | NSWindowStyleMaskMiniaturizable
+-		       | NSWindowStyleMaskResizable);
+-    }
++	windowStyle = (NSWindowStyleMaskBorderless | NSWindowStyleMaskResizable);
++      // windowStyle = (NSWindowStyleMaskTitled | NSWindowStyleMaskClosable
++	// 	       | NSWindowStyleMaskMiniaturizable
++	// 	       | NSWindowStyleMaskResizable);
++	}
+   else
+     windowStyle = NSWindowStyleMaskBorderless;
+ 
