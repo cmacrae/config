@@ -53,7 +53,7 @@ in with pkgs.stdenv; with lib; {
   };
 
   fonts.enableFontDir = true;
-  fonts.fonts = with pkgs; [ font-awesome emacs-all-the-icons-fonts ];
+  fonts.fonts = with pkgs; [ emacs-all-the-icons-fonts fira-code font-awesome roboto roboto-mono ];
 
   system.keyboard = {
     enableKeyMapping = true;
