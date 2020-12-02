@@ -73,7 +73,7 @@
 }
 
 #navigator-toolbox #nav-bar {
-    background: #fdf6e3 !important;
+    background: #2e3440 !important;
     box-shadow: none !important;
 }
 
@@ -104,12 +104,12 @@
 }
 
 #navigator-toolbox .toolbar-items {
-    background: #fdf6e3  !important;
+    background: #2e3440  !important;
 }
 
 #navigator-toolbox #urlbar {
-    background: #fdf6e3 !important;;
-    color: #586e75 !important;
+    background: #2e3440 !important;;
+    color: #d8dee9 !important;
     padding: 0 !important;
     padding-left: 1ch !important;
     font-size: 13px;
@@ -117,13 +117,13 @@
 }
 
 #navigator-toolbox #urlbar-background {
-    background: #fdf6e3 !important;;
+    background: #2e3440 !important;;
     border: none !important;
     margin: 0 !important;
 }
 
 #navigator-toolbox #nav-bar-customization-target {
-    background: #fdf6e3 !important;;
+    background: #2e3440 !important;;
 }
 
 #navigator-toolbox .toolbarbutton-1 {
@@ -131,18 +131,18 @@
 }
 
 #navigator-toolbox #downloads-button {
-    color: #fdf6e3 ;
-    background: #fdf6e3 !important;
+    color: #2e3440 ;
+    background: #2e3440 !important;
 }
 
 #navigator-toolbox #PanelUI-button {
     opacity: 1 !important;
-    background: #fdf6e3 !important;
+    background: #2e3440 !important;
 }
 
 #navigator-toolbox #PanelUI-menu-button {
-    background: #fdf6e3 !important;
-    color: #586e75 !important;
+    background: #2e3440 !important;
+    color: #d8dee9 !important;
 }
 
 #navigator-toolbox .tabbrowser-tab {
@@ -150,21 +150,21 @@
 }
 
 #navigator-toolbox .tab-background {
-    background: #fdf6e3  !important;
+    background: #2e3440  !important;
     box-shadow: none!important;
     border: none !important;
 }
 
 #navigator-toolbox .tabbrowser-tab .tab-label {
-    color: #586e75 !important;
+    color: #d8dee9 !important;
 }
 
 #navigator-toolbox .tab-background[selected="true"] {
-    background: #fdf6e3  !important;
+    background: #2e3440  !important;
 }
 
 #navigator-toolbox .tabbrowser-tab[selected="true"] .tab-label {
-    color: #586e75 !important;
+    color: #d8dee9 !important;
 }
 
 #navigator-toolbox .tabbrowser-tab::after {
