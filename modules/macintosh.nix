@@ -61,52 +61,7 @@ in with pkgs.stdenv; with lib; {
   };
 
   services.skhd.enable = true;
-  services.skhd.skhdConfig = (builtins.readFile (pkgs.substituteAll {
-    name = "homeUserChrome";
-    src = ../conf.d/skhd.conf;
-    vt220 = pkgs.writeShellScript "vt220OpenOrSelect" ''
-      WIN=$(${pkgs.yabai}/bin/yabai -m query --windows | ${pkgs.jq}/bin/jq '[.[]|select(.title=="vt220")]|unique_by(.id)')
-      if [[ $WIN != '[]' ]]; then
-        ID=$(echo $WIN | ${pkgs.jq}/bin/jq '.[].id')
-        FOCUSED=$(echo $WIN | ${pkgs.jq}/bin/jq '.[].focused')
-        if [[ $FOCUSED == 1 ]]; then
-          ${pkgs.yabai}/bin/yabai -m window --focus recent || \
-          ${pkgs.yabai}/bin/yabai -m space --focus recent
-        else
-          ${pkgs.yabai}/bin/yabai -m window --focus $ID
-        fi
-      else
-        open -n ~/.nix-profile/Applications/Alacritty.app \
-        --args --live-config-reload \
-        --config-file $HOME/.config/alacritty/live.yml \
-        -t vt220 --dimensions 80 24 --position 10000 10000 \
-        -e ${pkgs.tmux}/bin/tmux a -t vt
-      fi
-    '';
-  }));
-
-  environment.etc.gettytab.text = builtins.readFile (pkgs.substituteAll {
-    name = "gettytab";
-    src = ../conf.d/gettytab;
-    autoLogin = pkgs.writeShellScript "gettyAutoLogin" ''
-      ARGS=("$@")
-      exec /usr/bin/login "''${ARGS[@]}" \
-      ${pkgs.tmux}/bin/tmux \
-      -f ${builtins.getEnv("HOME")}/.tmux.conf \
-      new-session -A -s vt 'TERM=vt220 ${pkgs.zsh}/bin/zsh'
-    '';
-  });
-
-  launchd.daemons.serialconsole = {
-    command = "/usr/libexec/getty std.ttyUSB cu.usbserial";
-    serviceConfig = {
-      Label = "ae.cmacr.vt220";
-      KeepAlive = true;
-      EnvironmentVariables = {
-        PATH = (lib.replaceStrings ["$HOME"] [( builtins.getEnv("HOME") )] config.environment.systemPath);
-      };
-    };
-  };
+  services.skhd.skhdConfig = builtins.readFile ../conf.d/skhd.conf;
 
   services.yabai = {
     enable = true;
@@ -143,7 +98,6 @@ in with pkgs.stdenv; with lib; {
       # rules
       yabai -m rule --add app='System Preferences' manage=off
       yabai -m rule --add app='Live' manage=off
-      yabai -m rule --add label=vt220 title=vt220 sticky=on border=off manage=off opacity=0.0001
     '';
   };
 
