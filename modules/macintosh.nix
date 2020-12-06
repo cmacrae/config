@@ -69,7 +69,7 @@ in with pkgs.stdenv; with lib; {
     enableScriptingAddition = true;
     config = {
       window_border              = "on";
-      window_border_width        = 4;
+      window_border_width        = 5;
       active_window_border_color = "0xff81a1c1";
       normal_window_border_color = "0xff3b4252";
       focus_follows_mouse        = "autoraise";
