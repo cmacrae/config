@@ -50,6 +50,7 @@ with pkgs; [
 
   # k8s
   argocd
+  kind
   kubectl
   kubectx
   kubeval
