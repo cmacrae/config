@@ -19,6 +19,7 @@ with pkgs; [
   nixops
   nix-prefetch-git
   nmap
+  open-policy-agent
   pass
   python3
   ranger
