@@ -20,6 +20,4 @@ self: super: {
   # spacebar = super.spacebar.overrideAttrs (o: {
   #   src = "${builtins.getEnv("HOME")}/src/github.com/cmacrae/spacebar";
   # });
-
-  kubectl-argo-rollouts = super.callPackage ./kubectl-argo-rollouts { };
 }

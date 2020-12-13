@@ -56,5 +56,4 @@ with pkgs; [
   kube-prompt
   kubernetes-helm
   kustomize
-  kubectl-argo-rollouts
 ]
