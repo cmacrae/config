@@ -137,12 +137,14 @@ in with pkgs.stdenv; with lib; {
       EDITOR = "emacsclient";
     };
 
-    programs.git.enable = true;
-    programs.git.lfs.enable = true;
-    programs.git.userName = mkDefault "Calum MacRae";
-    programs.git.userEmail = mkDefault ''${builtins.replaceStrings [" <at> " " <dot> "] ["@" "."] "hi <at> cmacr <dot> ae"}'';
-    programs.git.signing.key = mkDefault "54A14F5D";
-    programs.git.signing.signByDefault = mkDefault true;
+    programs.git = {
+      enable = true;
+      userName = mkDefault "Calum MacRae";
+      userEmail = mkDefault ''${builtins.replaceStrings [" <at> " " <dot> "] ["@" "."] "hi <at> cmacr <dot> ae"}'';
+      signing.key = mkDefault "54A14F5D";
+      signing.signByDefault = mkDefault true;
+      extraConfig.github.user = mkDefault "cmacrae";
+    };
 
     programs.firefox.enable = true;
     programs.firefox.package = pkgs.Firefox; # custom overlay
