@@ -224,18 +224,20 @@ in with pkgs.stdenv; with lib; {
         window.padding.x = 24;
         window.padding.y = 24;
         window.decorations = "buttonless";
-        window.dynamic_title = false;
+        window.dynamic_title = true;
         scrolling.history = 100000;
         live_config_reload = true;
         selection.save_to_clipboard = true;
         mouse.hide_when_typing = true;
+        use_thin_strokes = true;
 
         font = {
-          normal.family = "Roboto Mono";
           size = 12;
+          normal.family = "Roboto Mono";
         };
 
         colors = {
+          cursor.cursor      = "#81a1c1";
           primary.background = "#2e3440";
           primary.foreground = "#d8dee9";
 
