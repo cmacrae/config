@@ -212,6 +212,12 @@ in with pkgs.stdenv; with lib; {
     programs.emacs.enable = true;
     programs.emacs.package = pkgs.emacsMacport.overrideAttrs (o: {
       patches = o.patches ++ [ ../patches/borderless-emacs.patch ];
+
+      # Copy vterm module & elisp from overlay
+      postInstall = o.postInstall + ''
+        cp ${pkgs.emacs-vterm}/vterm-module.so $out/share/emacs/site-lisp/vterm-module.so
+        cp ${pkgs.emacs-vterm}/vterm.el $out/share/emacs/site-lisp/vterm.el
+      '';
     });
 
     programs.fzf.enable = true;
@@ -344,6 +350,21 @@ in with pkgs.stdenv; with lib; {
           };
         }
       ];
+
+      initExtra = ''
+        vterm_printf(){
+            if [ -n "$TMUX" ]; then
+                # Tell tmux to pass the escape sequences through
+                # (Source: http://permalink.gmane.org/gmane.comp.terminal-emulators.tmux.user/1324)
+                printf "\ePtmux;\e\e]%s\007\e\\" "$1"
+            elif [ "$${TERM%%-*}" = "screen" ]; then
+                # GNU screen (screen, screen-256color, screen-256color-bce)
+                printf "\eP\e]%s\007\e\\" "$1"
+            else
+                printf "\e]%s\e\\" "$1"
+            fi
+        }
+      '';
     };
 
     programs.tmux =

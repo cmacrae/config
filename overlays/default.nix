@@ -1,5 +1,7 @@
 self: super: {
-  Firefox = super.callPackage ./firefox {};
+  Firefox = super.callPackage ./firefox { };
+
+  emacs-vterm = super.callPackage ./emacs-vterm { };
 
   # TODO: Switch back to src build when SkyLight issue is fixed
   yabai = super.yabai.overrideAttrs (o: rec {
