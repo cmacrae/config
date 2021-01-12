@@ -330,16 +330,6 @@ in with pkgs.stdenv; with lib; {
           };
         }
         {
-          name = "pi-theme";
-          file = "pi.zsh-theme";
-          src = pkgs.fetchFromGitHub {
-            owner = "tobyjamesthomas";
-            repo = "pi";
-            rev = "96778f903b79212ac87f706cfc345dd07ea8dc85";
-            sha256 = "0zjj1pihql5cydj1fiyjlm3163s9zdc63rzypkzmidv88c2kjr1z";
-          };
-        }
-        {
           name = "z";
           file = "zsh-z.plugin.zsh";
           src = pkgs.fetchFromGitHub {
@@ -352,6 +342,7 @@ in with pkgs.stdenv; with lib; {
       ];
 
       initExtra = ''
+        ${builtins.readFile ../conf.d/minimal-prompt.zsh}
         vterm_printf(){
             if [ -n "$TMUX" ]; then
                 # Tell tmux to pass the escape sequences through
