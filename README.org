@@ -1,15 +1,27 @@
 * About
   [[https://builtwithnix.org][https://img.shields.io/badge/Built_With-Nix-5277C3.svg?logo=nixos&labelColor=73C3D5]]
 
-  A collection of Darwin machine configurations - expressed in [[https://nixos.org/nix][Nix]] - leveraging [[https://github.com/LnL7/nix-darwin][LnL7/nix-darwin]] & [[https://github.com/rycee/home-manager][rycee/home-manager]]
+  A collection of Darwin machine configurations - expressed in [[https://nixos.org/nix][Nix]] - leveraging [[https://github.com/LnL7/nix-darwin][LnL7/nix-darwin]], [[https://github.com/nix-community/home-manager][nix-community/home-manager]],
+  [[https://github.com/nix-community/NUR][nix-community/NUR]], and [[https://github.com/nix-community/emacs-overlay][nix-community/emacs-overlay]]
 
-** Initial rebuild needs explicit ~darwin-config~ target
-   #+begin_src shell
-   $ darwin-rebuild switch \
-         -I darwin-config=$HOME/dev/config/machines/<target system>/configuration.nix
-   #+end_src
-   /Note: <target system> here should point to the relevant directory for the system to build/
+** Usage
+   This repository is based on [[https://nixos.wiki/wiki/Flakes][Nix Flakes]], an experimental feature of Nix that solves some of the problems around hermeticism.
+   To learn more about Flakes, I highly recommend reading the "Nix Flakes" series by Eelco himself:
+   - [[https://www.tweag.io/blog/2020-05-25-flakes][Part 1]]
+   - [[https://www.tweag.io/blog/2020-06-25-eval-cache][Part 2]]
+   - [[https://www.tweag.io/blog/2020-07-31-nixos-flakes/][Part 3]]
 
-   ~environment.darwinConfig~ should also be updated to reflect the path.
-
-   After this, ~darwin-rebuild~ will just point at this configuration naturally.
+   Once Nix is installed, you can bootstrap into a system configuration using the following command
+   #+BEGIN_EXAMPLE
+   $ nix run nixpkgs.nixUnstable -c \
+       nix --experimental-features \
+       "nix-command flakes" \
+       build .#darwinConfigurations.macbook.system # <- 'macbook' here should be the system you want to use
+       
+   # Use the resulting rebuild script to switch into the configuration
+   $ ./result/sw/bin/darwin-rebuild switch --flake ~/src/github.com/cmacrae/config\#macbook
+   #+END_EXAMPLE
+   /Note: Subsequent rebuilds won't need the =\#<system>= notation, as this'll match the hostname automatically/
+   
+**  Features
+/Coming soon..../

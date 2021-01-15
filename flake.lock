@@ -1,0 +1,102 @@
+{
+  "nodes": {
+    "darwin": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1608628442,
+        "narHash": "sha256-MNpNlZ2TqaQNiYuP8UcudfQoZAT/ocwFwFxhANSRt1c=",
+        "owner": "lnl7",
+        "repo": "nix-darwin",
+        "rev": "8834df431736c3037bbef017b24c62bc4ace4645",
+        "type": "github"
+      },
+      "original": {
+        "owner": "lnl7",
+        "ref": "master",
+        "repo": "nix-darwin",
+        "type": "github"
+      }
+    },
+    "emacs": {
+      "locked": {
+        "lastModified": 1610713605,
+        "narHash": "sha256-tR4wqRMTOW1FmLfi+YaK60TuW+PVdUjZBHjKIrZVwnk=",
+        "owner": "nix-community",
+        "repo": "emacs-overlay",
+        "rev": "f0c451352670dad32eb7ca0c63e0dcfbd8fb99ac",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "emacs-overlay",
+        "type": "github"
+      }
+    },
+    "home-manager": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1609010567,
+        "narHash": "sha256-N6WslRAtrvCPCpQnxQqo+VlSivX/KylL9Xy/OZr0kMg=",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "22f6736e628958f05222ddaadd7df7818fe8f59d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "ref": "release-20.09",
+        "repo": "home-manager",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1610705663,
+        "narHash": "sha256-I72M3mWbA4LSjO5Pl0iMUsAlvwLrZz0HRTIXodpSFJo=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "dc7dd232418af69d9e0ef994e3a5ab9c485e6445",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nur": {
+      "locked": {
+        "lastModified": 1610706946,
+        "narHash": "sha256-BbbMDueZwSRiiKGQ9jwSiumTZq/HOPqwZm5JFAhBZPg=",
+        "owner": "nix-community",
+        "repo": "NUR",
+        "rev": "2295ec44b00fb20dd1587080fc8f6f794f791181",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "NUR",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "darwin": "darwin",
+        "emacs": "emacs",
+        "home-manager": "home-manager",
+        "nixpkgs": "nixpkgs",
+        "nur": "nur"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
