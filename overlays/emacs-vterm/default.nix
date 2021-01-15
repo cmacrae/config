@@ -7,8 +7,8 @@ stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner =  "akermu";
     repo = "emacs-libvterm";
-    rev = "a670b786539d3c8865d8f68fe0c67a2d4afbf1aa";
-    sha256 = "0s244crjkbzl2jhp9m4sm1xdhbpxwph0m3jg18livirgajvdz6hn";
+    rev = "9d2ef5e535e79781a0c1d2523f82d096eb48765f";
+    sha256 = "03nslg391cagq9kdxkgyjcw3abfd5xswza5bq8rl8mrp9f8v7i17";
   };
 
   nativeBuildInputs = [
