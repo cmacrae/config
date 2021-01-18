@@ -129,6 +129,7 @@
    #+BEGIN_SRC emacs-lisp
    (use-package nano-emacs
      :ensure nil
+     :load-path "~/src/github.com/cmacrae/nano-emacs"
      :init
      (require 'nano-base-colors)
      (require 'nano-colors)
