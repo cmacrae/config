@@ -516,7 +516,6 @@
       :bind
       ("C-c z" . hydra-zoom/body)
       ("C-c T" . hydra-transpose/body)
-      ("C-c M" . hydra-toggle-mode/body)
 
       :config
       ;; Zoom
@@ -633,6 +632,12 @@
       :hook
       (after-init . global-hl-todo-mode)
       (yaml-mode . hl-todo-mode))
+    #+END_SRC
+
+*** centered-window-mode
+    Keep buffer text centered
+    #+BEGIN_SRC emacs-lisp
+    (use-package centered-window)
     #+END_SRC
 
 *** Languages
