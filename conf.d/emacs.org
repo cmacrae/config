@@ -131,7 +131,7 @@
    path.
 
    Any customisations that I'd deem too specific to my preference I'll explicitly outline here.
-   - Override the modeline for term/vterm mode to show current directory & =kubectl= context
+   - Override the modeline for term/vterm mode to show current directory & =kubectl= context and namespace (if not =default=)
 
    #+BEGIN_SRC emacs-lisp
    (use-package nano-emacs
@@ -149,14 +149,19 @@
      (require 'nano-layout)
 
      (defun cm/nano-modeline-term-mode ()
-       "Modline for term/vterm mode with current project (or directory) and kubectl context."
+       "Modline for term/vterm mode with current project (or directory) and kubectl context/namespace."
        (nano-modeline-compose " >_ "
                              "Terminal"
      			     (concat "| "
      			       (if (fboundp 'projectile-default-project-name)
      			             (projectile-project-name)
      			           (substring (shorten-directory default-directory 32) 0 -1)))
-                             (substring (shell-command-to-string "kubectl config current-context") 0 -1)))
+                             (let
+			     ((ns (shell-command-to-string "kubectl config view --minify --output 'jsonpath={..namespace}'"))
+			      (context (substring (shell-command-to-string "kubectl config current-context") 0 -1)))
+			       (if (string= "default" ns) 
+			         (format "%s" context)
+			         (format "%s:%s" context ns))))))
 
      (advice-add #'nano-modeline-term-mode :override #'cm/nano-modeline-term-mode)
 
