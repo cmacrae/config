@@ -126,6 +126,13 @@
 ** Meta Configurations
    This section includes the use of any "meta" collection of Emacs configurations provided by others.
    I'm using [[https://github.com/rougier/nano-emacs/issues/37][rougier/nano-emacs]] as a base. The configuration is shaped around principles that align with my own.
+   
+   Currently I'm making some changes locally that I intend to send for review upstream, so I'm loading from a local
+   path.
+
+   Any customisations that I'd deem too specific to my preference I'll explicitly outline here.
+   - Override the modeline for term/vterm mode to show current directory & =kubectl= context
+
    #+BEGIN_SRC emacs-lisp
    (use-package nano-emacs
      :ensure nil
@@ -140,15 +147,18 @@
      (require 'nano-modeline)
      (require 'nano-writer)
      (require 'nano-layout)
-     ;; Seems there's a bug with this: Wrong type argument: char-table-p, nil
-     ;; Returned from this in nano-layout.el
-     ;;
-     ;; (defface fallback '((t :family "Fira Code"
-     ;;                        :inherit 'nano-face-faded)) "Fallback")
-     ;; (set-display-table-slot standard-display-table 'truncation
-     ;;                         (make-glyph-code ?… 'fallback))
-     ;; (set-display-table-slot standard-display-table 'wrap
-     ;;                          (make-glyph-code ?↩ 'fallback))
+
+     (defun cm/nano-modeline-term-mode ()
+       "Modline for term/vterm mode with current project (or directory) and kubectl context."
+       (nano-modeline-compose " >_ "
+                             "Terminal"
+     			     (concat "| "
+     			       (if (fboundp 'projectile-default-project-name)
+     			             (projectile-project-name)
+     			           (substring (shorten-directory default-directory 32) 0 -1)))
+                             (substring (shell-command-to-string "kubectl config current-context") 0 -1)))
+
+     (advice-add #'nano-modeline-term-mode :override #'cm/nano-modeline-term-mode)
 
      :hook
      (after-init . nano-faces)
