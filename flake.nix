@@ -145,7 +145,15 @@
           # Recreate /run/current-system symlink after boot
           services.activate-system.enable = true;
           
-          home-manager.users.cmacrae = {
+          home-manager.users.cmacrae = let
+            mailAddr = name: domain: "${name}@${domain}";
+            primaryEmail = mailAddr "hi" "cmacr.ae";
+            secondaryEmail = mailAddr "account" "cmacr.ae";
+            fullName = "Calum MacRae";
+            userName = "cmacrae";
+            gpgKey = "54A14F5D";
+
+            in {
             home.stateVersion = "20.09";
             home.packages = with pkgs; [
               aspell
@@ -212,11 +220,45 @@
             
             programs.git = {
               enable = true;
-              userName = mkDefault "Calum MacRae";
-              userEmail = mkDefault ''${builtins.replaceStrings [" <at> " " <dot> "] ["@" "."] "hi <at> cmacr <dot> ae"}'';
-              signing.key = mkDefault "54A14F5D";
-              signing.signByDefault = mkDefault true;
-              extraConfig.github.user = mkDefault "cmacrae";
+              userName = fullName;
+              userEmail = primaryEmail;
+              signing.key = gpgKey;
+              signing.signByDefault = true;
+              extraConfig.github.user = userName;
+            };
+
+            #########
+            # Email #
+            #########
+            programs.mu.enable = true;
+            programs.mbsync.enable = true;
+            programs.msmtp.enable = true;
+            accounts.email.maildirBasePath = "~/.mail";
+            accounts.email.accounts.fastmail = {
+              primary = true;
+              address = primaryEmail;
+              aliases = [ secondaryEmail ];
+              userName = primaryEmail;
+              gpg.key = gpgKey;
+              gpg.signByDefault = true;
+              realName = fullName;
+              signature.showSignature = "append";
+              signature.text = ''
+              --
+              ${fullName}
+              '';
+              imap = {
+                host = "imap.fastmail.com";
+              };
+              mu.enable = true;
+              mbsync = {
+                enable = true;
+                create = "both";
+                expunge = "both";
+                remove = "both";
+              };
+
+              passwordCommand = "${pkgs.pass}/bin/pass Tech/fastmail.com | head -n 1";
             };
             
             ###########
