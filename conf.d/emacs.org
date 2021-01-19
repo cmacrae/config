@@ -161,7 +161,7 @@
 			      (context (substring (shell-command-to-string "kubectl config current-context") 0 -1)))
 			       (if (string= "default" ns) 
 			         (format "%s" context)
-			         (format "%s:%s" context ns))))))
+			         (format "%s:%s" context ns)))))
 
      (advice-add #'nano-modeline-term-mode :override #'cm/nano-modeline-term-mode)
 
