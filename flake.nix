@@ -386,11 +386,27 @@
                       rev = "343a269b52d6fb6e5ae6c09d91833ff4620490ec";
                       sha256 = "03f9r8glyjvbnwwy5dmy42643r21dr4vii0js8lzlds7h7qnd9jm";
                     });
+
+                    mu4e-dashboard = elPackage "mu4e-dashboard" (pkgs.fetchFromGitHub {
+                      owner = "rougier";
+                      repo = "mu4e-dashboard";
+                      rev = "143e87a770689d9402addaeb43ff48efcc5ce40c";
+                      sha256 = "13ximpz77fbgwl4a91nh8wy9qm83q7s11hbnlx3bi04pcgz4cchj";
+                    });
+
+                    mu4e-thread-folding = elPackage "mu4e-thread-folding" (pkgs.fetchFromGitHub {
+                      owner = "rougier";
+                      repo = "mu4e-thread-folding";
+                      rev = "db0fadeb1f7262cf43cfe98c3b1d08682f9c5f25";
+                      sha256 = "1rgvnqxkiparslk7n76h5iad0xq4pdjici21c94l7rpxsp9vsrvh";
+                    });
                   };
 
                   extraEmacsPackages = epkgs: with epkgs; [
                     nano-emacs
                     hydra-posframe
+                    mu4e-dashboard
+                    mu4e-thread-folding
                   ];
 
                   package = pkgs.emacsMacport.overrideAttrs (o: {

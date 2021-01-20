@@ -11,6 +11,13 @@
 
 * Configuration
 ** General
+*** About me
+    Tell Emacs who's driving
+    #+BEGIN_SRC emacs-lisp
+    (setq user-full-name    "Calum MacRae"
+          user-mail-address "hi@cmacr.ae")
+    #+END_SRC
+
 *** Global =:ensure= for use-package statements
     =use-package= has an =:ensure= keyword which dictates whether packages are installed or not.
     As most of my =use-package= configurations are for external packages, I set this to always ensure.
@@ -334,6 +341,22 @@
   :hook (evil-mode . global-evil-surround-mode))
 #+END_SRC
 
+*** mu4e
+    Email! mu4e comes bundled as part of the =mu= package, so I load it from my Nix profile.
+    #+BEGIN_SRC emacs-lisp
+    (use-package mu4e
+      :ensure nil
+      :load-path "~/.nix-profile/share/emacs/site-lisp/mu4e"
+
+      :config
+
+      (use-package mu4e-dashboard
+        :ensure nil)
+
+      (use-package mu4e-thread-folding
+        :ensure nil))
+    #+END_SRC
+
 *** Projectile
     Project management based on version control repositories.
     Absolutely essential package for me. This makes hopping around and between various projects really easy.
@@ -554,7 +577,6 @@
     ;;       https://github.com/Ladicle/hydra-posframe/issues/3
     (use-package hydra-posframe
       :ensure nil
-      ;; :straight (:host github :repo "Ladicle/hydra-posframe")
       :hook (after-init . hydra-posframe-mode)
       :custom
       (hydra-posframe-border-width 1)
