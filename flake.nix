@@ -233,7 +233,7 @@
             programs.mu.enable = true;
             programs.mbsync.enable = true;
             programs.msmtp.enable = true;
-            accounts.email.maildirBasePath = "~/.mail";
+            accounts.email.maildirBasePath = ".mail";
             accounts.email.accounts.fastmail = {
               primary = true;
               address = primaryEmail;
@@ -258,7 +258,9 @@
                 remove = "both";
               };
 
-              passwordCommand = "${pkgs.pass}/bin/pass Tech/fastmail.com | head -n 1";
+              passwordCommand = "${pkgs.writeShellScript "mbsyncPass" ''
+                  ${pkgs.pass}/bin/pass Tech/fastmail.com | ${pkgs.gawk}/bin/awk -F: '/mbsync/{gsub(/ /,""); print$NF}'
+                ''}";
             };
             
             ###########
