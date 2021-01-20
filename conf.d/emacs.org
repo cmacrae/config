@@ -277,9 +277,19 @@
     Below you'll find various extensions to my Evil layer that generally improve the quality of life.
     #+BEGIN_SRC emacs-lisp
     (use-package evil
-      :init (setq evil-want-C-u-scroll t)
+      :init
+      (setq evil-want-C-u-scroll t)
+      (setq evil-want-keybinding nil)
       :hook (after-init . evil-mode))
     #+END_SRC
+
+**** Evil Collection
+     A collection of Evil bindings, for the parts of Emacs that Evil does not cover properly by default
+     #+BEGIN_SRC emacs-lisp
+     (use-package evil-collection
+       :after evil
+       :hook (evil-mode . evil-collection-init))
+     #+END_SRC
 
 **** EasyMotion
      Buffer traversal made easy! Emulates easymotion.vim
