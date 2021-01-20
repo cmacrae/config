@@ -359,12 +359,46 @@
       :load-path "~/.nix-profile/share/emacs/site-lisp/mu4e"
 
       :config
+      ;; (use-package mu4e-thread-folding
+      ;;   :ensure nil)
 
       (use-package mu4e-dashboard
         :ensure nil)
 
-      (use-package mu4e-thread-folding
-        :ensure nil))
+      (setq mu4e-index-update-in-background nil)
+      (setq mu4e-change-filenames-when-moving t)
+      (setq mu4e-contexts `(
+        ,(make-mu4e-context
+           :name "Fastmail"
+           :enter-func (lambda () (mu4e-message "Switch to the Fastmail context"))
+           :match-func (lambda (msg)
+                         (when msg
+                           (string-match-p "^/fastmail" (mu4e-message-field msg :maildir))))
+
+           :vars '( ( mu4e-compose-signature .
+                      (concat
+                        "Calum MacRae\n"))
+                    ( mu4e-sent-folder   . "/fastmail/Sent"   )
+                    ( mu4e-drafts-folder . "/fastmail/Drafts" )
+                    ( mu4e-maildir-shortcuts . ( ("/fastmail/Inbox"   . ?i)
+                                                 ("/fastmail/Archive" . ?a) ))))
+
+        ,(make-mu4e-context
+           :name "Work"
+           :enter-func (lambda () (mu4e-message "Switch to the Work context"))
+           :match-func (lambda (msg)
+                         (when msg
+                           (string-match-p "^/work" (mu4e-message-field msg :maildir))))
+           :vars '( ( user-mail-address       . "calum.macrae@nutmeg.com" )
+                    ( mu4e-compose-signature  .
+                      (concat
+                        "Calum MacRae\n"
+                        "DevOps"
+                        "Engineering Efficiency\n") )
+                    ( mu4e-sent-folder   . "/work/Sent"   )
+                    ( mu4e-drafts-folder . "/work/Drafts" )
+                    ( mu4e-maildir-shortcuts . ( ("/work/Inbox"   . ?i)
+                                                 ("/work/Archive" . ?a) )))))))
     #+END_SRC
 
 *** Projectile
