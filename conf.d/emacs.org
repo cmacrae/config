@@ -397,6 +397,7 @@
 
       (setq mu4e-index-update-in-background nil)
       (setq mu4e-change-filenames-when-moving t)
+      (setq mu4e-headers-date-format "%a %d/%m/%y")
       (setq mu4e-contexts `(
         ,(make-mu4e-context
            :name "Fastmail"
