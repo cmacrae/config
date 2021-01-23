@@ -5,7 +5,9 @@
     # TODO: Move to 20.09 when stdenv fix on Big Sur is backported
     # nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-${release}-darwin";
     nixpkgs.url = "github:nixos/nixpkgs";
-    darwin.url = "github:lnl7/nix-darwin/master";
+    # TODO: Move back to upstream nix-darwin when done with local dev
+    # darwin.url = "github:lnl7/nix-darwin/master";
+    darwin.url = "/Users/cmacrae/src/github.com/cmacrae/nix-darwin";
     darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url = "github:nix-community/home-manager/release-20.09";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
@@ -15,13 +17,21 @@
 
   outputs = { self, nixpkgs, darwin, home-manager, nur, emacs }:
     let
+      mailAddr = name: domain: "${name}@${domain}";
+      primaryEmail = mailAddr "hi" "cmacr.ae";
+      secondaryEmail = mailAddr "account" "cmacr.ae";
+      workEmail = mailAddr "calum.macrae" "nutmeg.com";
+      fullName = "Calum MacRae";
+      userName = "cmacrae";
+      gpgKey = "54A14F5D";
+
       config = { lib, config, pkgs, ... }:
         with pkgs.stdenv; with lib; {
           nix.package = pkgs.nixFlakes;
           nix.extraOptions = ''
               experimental-features = nix-command flakes
             '';
-        
+          
           system.stateVersion = 4;
           nix.maxJobs = 8;
           nix.buildCores = 0;
@@ -78,7 +88,7 @@
           
           services.skhd.enable = true;
           services.skhd.skhdConfig = builtins.readFile ./conf.d/skhd.conf;
-        
+          
           services.yabai = {
             enable = true;
             package = pkgs.yabai;
@@ -145,15 +155,20 @@
           # Recreate /run/current-system symlink after boot
           services.activate-system.enable = true;
           
-          home-manager.users.cmacrae = let
-            mailAddr = name: domain: "${name}@${domain}";
-            primaryEmail = mailAddr "hi" "cmacr.ae";
-            secondaryEmail = mailAddr "account" "cmacr.ae";
-            fullName = "Calum MacRae";
-            userName = "cmacrae";
-            gpgKey = "54A14F5D";
-
-            in {
+          services.mbsync.enable = true;
+          services.mbsync.configFile = "${config.users.users.cmacrae.home}/.mbsyncrc";
+          services.mbsync.postExec = ''
+            if pgrep -f 'mu server'; then
+                ${config.home-manager.users.cmacrae.programs.emacs.package}/bin/emacsclient \
+                  -e '(mu4e-update-index)'
+            else
+                ${pkgs.mu}/bin/mu index --nocolor
+            fi
+          '';
+          launchd.user.agents.mbsync.serviceConfig.StandardErrorPath = "/tmp/mbsync.log";
+          launchd.user.agents.mbsync.serviceConfig.StandardOutPath = "/tmp/mbsync.log";
+          
+          home-manager.users.cmacrae = {
             home.stateVersion = "20.09";
             home.packages = with pkgs; [
               aspell
@@ -235,7 +250,8 @@
             programs.msmtp.enable = true;
             accounts.email.maildirBasePath = ".mail";
             accounts.email.accounts.fastmail = {
-              primary = true;
+              mu.enable = true;
+              primary = mkDefault true;
               address = primaryEmail;
               aliases = [ secondaryEmail ];
               userName = primaryEmail;
@@ -244,13 +260,12 @@
               realName = fullName;
               signature.showSignature = "append";
               signature.text = ''
-              --
-              ${fullName}
-              '';
+                  --
+                  ${fullName}
+                '';
               imap = {
                 host = "imap.fastmail.com";
               };
-              mu.enable = true;
               mbsync = {
                 enable = true;
                 create = "both";
@@ -258,7 +273,7 @@
                 remove = "both";
               };
 
-              passwordCommand = "${pkgs.writeShellScript "mbsyncPass" ''
+              passwordCommand = "${pkgs.writeShellScript "fastmail-mbsyncPass" ''
                   ${pkgs.pass}/bin/pass Tech/fastmail.com | ${pkgs.gawk}/bin/awk -F: '/mbsync/{gsub(/ /,""); print$NF}'
                 ''}";
             };
@@ -413,7 +428,7 @@
 
                   package = pkgs.emacsMacport.overrideAttrs (o: {
                     patches = o.patches ++ [ ./patches/borderless-emacs.patch ];
-                  
+                    
                     # Copy vterm module & elisp from overlay
                     postInstall = o.postInstall + ''
                         cp ${pkgs.emacs-vterm}/vterm-module.so $out/share/emacs/site-lisp/vterm-module.so
@@ -573,7 +588,7 @@
                       else
                           printf "\e]%s\e\\" "$1"
                       fi
-                  }
+                }
                 '';
             };
             
@@ -755,11 +770,41 @@
           config
           ({ pkgs, ... }: {
             networking.hostName = "workbook";
-            home-manager.users.cmacrae.home.packages = with pkgs; [
-              awscli
-              aws-iam-authenticator
-              vault
-            ];
+            home-manager.users.cmacrae = {
+              home.packages = with pkgs; [
+                awscli
+                aws-iam-authenticator
+                vault
+              ];
+
+              accounts.email.accounts.fastmail.primary = false;
+              accounts.email.accounts.work = {
+                mu.enable = true;
+                primary = true;
+                address = workEmail;
+                userName = workEmail;
+                realName = fullName;
+                signature.showSignature = "append";
+                signature.text = ''
+                      --
+                      ${fullName}
+                    '';
+
+                mbsync = {
+                  enable = true;
+                  create = "both";
+                  expunge = "both";
+                  remove = "both";
+                };
+
+                imap.host = "outlook.office365.com";
+                # Office365 IMAP requires an App Password to be created
+                # https://account.activedirectory.windowsazure.com/AppPasswords.aspx
+                passwordCommand = "${pkgs.writeShellScript "work-mbsyncPass" ''
+                      ${pkgs.pass}/bin/pass Nutmeg/office.com | ${pkgs.gawk}/bin/awk -F: '/mbsync/{gsub(/ /,""); print$NF}'
+                    ''}";
+              };
+            };
           })
         ];
       };
