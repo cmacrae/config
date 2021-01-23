@@ -256,6 +256,7 @@
         :hook (ivy-mode . ivy-posframe-mode)
         :custom
         (ivy-posframe-border-width 1)
+	(ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-point)))
         (ivy-posframe-parameters '((left-fringe . 8) (right-fringe . 8))
                                   (swiper . nil)))
       (use-package ivy-rich
