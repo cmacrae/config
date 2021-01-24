@@ -9,7 +9,10 @@
     # darwin.url = "github:lnl7/nix-darwin/master";
     darwin.url = "/Users/cmacrae/src/github.com/cmacrae/nix-darwin";
     darwin.inputs.nixpkgs.follows = "nixpkgs";
-    home-manager.url = "github:nix-community/home-manager/release-20.09";
+    # TODO: Move back to release branch when msmtp passwordCommand no longer
+    #       uses appended 'echo'
+    # home-manager.url = "github:nix-community/home-manager/release-20.09";
+    home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     nur.url = "github:nix-community/NUR";
     emacs.url = "github:nix-community/emacs-overlay";
@@ -22,8 +25,6 @@
       secondaryEmail = mailAddr "account" "cmacr.ae";
       workEmail = mailAddr "calum.macrae" "nutmeg.com";
       fullName = "Calum MacRae";
-      userName = "cmacrae";
-      gpgKey = "54A14F5D";
 
       config = { lib, config, pkgs, ... }:
         with pkgs.stdenv; with lib; {
@@ -156,7 +157,6 @@
           services.activate-system.enable = true;
           
           services.mbsync.enable = true;
-          services.mbsync.configFile = "${config.users.users.cmacrae.home}/.mbsyncrc";
           services.mbsync.postExec = ''
             if pgrep -f 'mu server'; then
                 ${config.home-manager.users.cmacrae.programs.emacs.package}/bin/emacsclient \
@@ -237,9 +237,9 @@
               enable = true;
               userName = fullName;
               userEmail = primaryEmail;
-              signing.key = gpgKey;
+              signing.key = "54A14F5D";
               signing.signByDefault = true;
-              extraConfig.github.user = userName;
+              extraConfig.github.user = "cmacrae";
             };
 
             #########
@@ -251,27 +251,23 @@
             accounts.email.maildirBasePath = ".mail";
             accounts.email.accounts.fastmail = {
               mu.enable = true;
+              msmtp.enable = true;
               primary = mkDefault true;
               address = primaryEmail;
               aliases = [ secondaryEmail ];
               userName = primaryEmail;
-              gpg.key = gpgKey;
-              gpg.signByDefault = true;
               realName = fullName;
-              signature.showSignature = "append";
-              signature.text = ''
-                  --
-                  ${fullName}
-                '';
-              imap = {
-                host = "imap.fastmail.com";
-              };
+
               mbsync = {
                 enable = true;
                 create = "both";
                 expunge = "both";
                 remove = "both";
               };
+
+              imap.host = "imap.fastmail.com";
+              smtp.host = "smtp.fastmail.com";
+              smtp.port = 465;
 
               passwordCommand = "${pkgs.writeShellScript "fastmail-mbsyncPass" ''
                   ${pkgs.pass}/bin/pass Tech/fastmail.com | ${pkgs.gawk}/bin/awk -F: '/mbsync/{gsub(/ /,""); print$NF}'
@@ -780,15 +776,11 @@
               accounts.email.accounts.fastmail.primary = false;
               accounts.email.accounts.work = {
                 mu.enable = true;
+                msmtp.enable = true;
                 primary = true;
                 address = workEmail;
                 userName = workEmail;
                 realName = fullName;
-                signature.showSignature = "append";
-                signature.text = ''
-                      --
-                      ${fullName}
-                    '';
 
                 mbsync = {
                   enable = true;

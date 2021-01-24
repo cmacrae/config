@@ -7,7 +7,7 @@
         ]
       },
       "locked": {
-        "narHash": "sha256-hVHVBIjRxujRWAZ26u2qgbrQqimRdyFu6x9y3ACQL8g=",
+        "narHash": "sha256-JzWYrhaMfjC+e/iltzsl/He9nMzhycAkDTGJWvAICA0=",
         "path": "/Users/cmacrae/src/github.com/cmacrae/nix-darwin",
         "type": "path"
       },
@@ -38,16 +38,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1609010567,
-        "narHash": "sha256-N6WslRAtrvCPCpQnxQqo+VlSivX/KylL9Xy/OZr0kMg=",
+        "lastModified": 1611416425,
+        "narHash": "sha256-kPhPj9e8zx4Mlr3Sb4a2GEFf1lYhfNIeVaSTCZvclpY=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "22f6736e628958f05222ddaadd7df7818fe8f59d",
+        "rev": "e44faef21c38e3885cf2ed874ea700d3f0260448",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
-        "ref": "release-20.09",
         "repo": "home-manager",
         "type": "github"
       }
