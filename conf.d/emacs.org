@@ -394,8 +394,22 @@
       ;;   :ensure nil)
 
       (use-package mu4e-dashboard
-        :ensure nil)
+        :ensure nil
+        :load-path "~/src/github.com/cmacrae/mu4e-dashboard"
+        :custom (mu4e-dashboard-file "~/org/mu4e-dashboard.org")
+        :bind
+         (:map mu4e-main-mode-map
+           ("C-;"     . mu4e-dashboard-show))
+         (:map mu4e-headers-mode-map
+           ("C-;"     . mu4e-dashboard-show)
+           ("C-c C-;" . mu4e-dasboard-toggle-window))
+         (:map mu4e-dashboard-mode-map
+	   (";"       . mu4e-context-switch)
+           ("C-;"     . (lambda () (interactive) (select-window (previous-window))))))
 
+
+
+      (add-to-list 'mu4e-view-actions '("ViewInBrowser" . mu4e-action-view-in-browser) t)
 
       (setq mu4e-index-update-in-background      nil
             mu4e-change-filenames-when-moving    t
@@ -404,24 +418,27 @@
             message-sendmail-f-is-evil           t
             send-mail-function                   'smtpmail-send-it
             message-sendmail-extra-arguments     '("--read-envelope-from")
-            message-send-mail-function           'message-send-mail-with-sendmail
-	    mml-secure-openpgp-sign-with-sender  t)
-      (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
+            message-send-mail-function           'message-send-mail-with-sendmail)
 
       (setq mu4e-contexts `(
         ,(make-mu4e-context
            :name "Fastmail"
-           :enter-func (lambda () (mu4e-message "Switch to the Fastmail context"))
+           :enter-func (lambda ()
+	                 (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
+			 (mu4e-message "Switch to the Fastmail context"))
+           :leave-func (lambda ()
+	                 (remove-hook 'message-send-hook 'mml-secure-message-sign-pgpmime))
            :match-func (lambda (msg)
                          (when msg
                            (string-match-p "^/fastmail" (mu4e-message-field msg :maildir))))
 
-           :vars '( ( mu4e-compose-signature .
-                      (concat
-                        "Calum MacRae\n"))
+           :vars '( ( user-mail-address       . "hi@cmacr.ae" )
+	            ( mml-secure-openpgp-sign-with-sender . t )
+	            ( mu4e-compose-signature . "Calum MacRae\n" )
                     ( mu4e-sent-folder   . "/fastmail/Sent"   )
                     ( mu4e-drafts-folder . "/fastmail/Drafts" )
                     ( mu4e-maildir-shortcuts . ( ("/fastmail/Inbox"   . ?i)
+		                                 ("/fastmail/Sent"    . ?s)
                                                  ("/fastmail/Archive" . ?a) ))))
 
         ,(make-mu4e-context
@@ -434,11 +451,12 @@
                     ( mu4e-compose-signature  .
                       (concat
                         "Calum MacRae\n"
-                        "DevOps"
+                        "DevOps\n"
                         "Engineering Efficiency\n") )
                     ( mu4e-sent-folder   . "/work/Sent"   )
                     ( mu4e-drafts-folder . "/work/Drafts" )
                     ( mu4e-maildir-shortcuts . ( ("/work/Inbox"   . ?i)
+		                                 ("/work/Sent"    . ?s)
                                                  ("/work/Archive" . ?a) )))))))
     #+END_SRC
 
