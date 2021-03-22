@@ -563,9 +563,7 @@
     Anyone using Git and Emacs *needs* Magit in their life!
     #+BEGIN_SRC emacs-lisp
     (use-package magit
-      :bind ("C-c m" . magit-status)
-      :config
-      (use-package evil-magit :ensure t))
+      :bind ("C-c m" . magit-status))
     #+END_SRC
 
 *** git-link
