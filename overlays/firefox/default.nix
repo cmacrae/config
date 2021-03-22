@@ -1,8 +1,8 @@
-{ stdenv, fetchurl, undmg }:
+{ stdenv, pkgs, fetchurl, undmg }:
 
 stdenv.mkDerivation rec {
   pname = "Firefox";
-  version = "84.0.2";
+  version = "87.0";
 
   buildInputs = [ undmg ];
   sourceRoot = ".";
@@ -15,10 +15,10 @@ stdenv.mkDerivation rec {
   src = fetchurl {
     name = "Firefox-${version}.dmg";
     url = "https://download-installer.cdn.mozilla.net/pub/firefox/releases/${version}/mac/en-GB/Firefox%20${version}.dmg";
-    sha256 = "RcoYiWP4CCl/TG/ZEZ6TM6qFYaWFUj9X9bz+mOCdq7Y=";
+    sha256 = "TEZ0JloM8GQbqN2iPs5cFCfBcGus5NHi+2zOqgWv1l0=";
   };
 
-  meta = with stdenv.lib; {
+  meta = with pkgs.lib; {
     description = "The Firefox web browser";
     homepage = "https://www.mozilla.org/en-GB/firefox";
     maintainers = [ maintainers.cmacrae ];
