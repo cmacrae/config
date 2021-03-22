@@ -27,7 +27,7 @@
       fullName = "Calum MacRae";
 
       config = { lib, config, pkgs, ... }:
-        with pkgs.stdenv; with lib; {
+        with pkgs.stdenv; with pkgs.lib; {
           nix.package = pkgs.nixFlakes;
           nix.extraOptions = ''
               experimental-features = nix-command flakes
@@ -55,6 +55,7 @@
           time.timeZone = "Europe/London";
           users.users.cmacrae.shell = pkgs.zsh;
           users.users.cmacrae.home = "/Users/cmacrae";
+          users.nix.configureBuildUsers = true;
           
           system.defaults = {
             dock = {
@@ -185,7 +186,6 @@
               hugo
               jq
               mpv
-              nixops
               nix-prefetch-git
               nmap
               open-policy-agent
@@ -423,7 +423,8 @@
                   ];
 
                   package = pkgs.emacsMacport.overrideAttrs (o: {
-                    patches = o.patches ++ [ ./patches/borderless-emacs.patch ];
+                    # patches = o.patches ++ [ ./patches/borderless-emacs.patch ];
+                    patches = [ ./patches/borderless-emacs.patch ];
                     
                     # Copy vterm module & elisp from overlay
                     postInstall = o.postInstall + ''
@@ -790,6 +791,9 @@
                 };
 
                 imap.host = "outlook.office365.com";
+                smtp.host = "smtp.office365.com";
+                smtp.port = 587;
+                smtp.tls.useStartTls = true;
                 # Office365 IMAP requires an App Password to be created
                 # https://account.activedirectory.windowsazure.com/AppPasswords.aspx
                 passwordCommand = "${pkgs.writeShellScript "work-mbsyncPass" ''
