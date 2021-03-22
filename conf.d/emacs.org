@@ -133,7 +133,7 @@
 ** Meta Configurations
    This section includes the use of any "meta" collection of Emacs configurations provided by others.
    I'm using [[https://github.com/rougier/nano-emacs/issues/37][rougier/nano-emacs]] as a base. The configuration is shaped around principles that align with my own.
-   
+
    Currently I'm making some changes locally that I intend to send for review upstream, so I'm loading from a local
    path.
 
@@ -167,7 +167,7 @@
                              (let
 			     ((ns (shell-command-to-string "kubectl config view --minify --output 'jsonpath={..namespace}'"))
 			      (context (substring (shell-command-to-string "kubectl config current-context") 0 -1)))
-			       (if (string= "default" ns) 
+			       (if (string= "default" ns)
 			         (format "%s" context)
 			         (format "%s:%s" context ns)))))
 
@@ -797,6 +797,14 @@
       :hook
       (terraform-mode . company-mode)
       (before-save . terraform-format-buffer))
+
+    (use-package dockerfile-mode
+      :mode "\\Dockerfile\\'")
+
+    (use-package web-mode
+      :mode "\\.html"
+      :custom
+      (web-mode-engines-alist '(("go" . "\\.gotmpl\\'"))))
     #+END_SRC
 
     Language Server Protocol integration
