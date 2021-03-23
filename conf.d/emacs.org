@@ -31,12 +31,15 @@
     To make Emacs play a little nicer with window management, enable menu-bar-mode.
     Also, set the frame's dimensions based on pixels - this makes Emacs play nicer with tiling
     window managers, where no title bar is displayed.
+    Also, when typing =M-3=, insert an octothorp - I use a British keyboard.
     #+BEGIN_SRC emacs-lisp
     (cond
       ((string-equal system-type "darwin")
-        (setq mac-option-modifier 'meta)
-        (menu-bar-mode t)
-        (setq frame-resize-pixelwise t)))
+         (setq frame-resize-pixelwise  t
+	       mac-option-modifier     'meta)
+
+	 (define-key key-translation-map (kbd "M-3") (kbd "#"))
+	 (menu-bar-mode t)))
     #+END_SRC
 
 *** Deactivation of functionality I don't tend to use
@@ -85,12 +88,6 @@
     Not really all that useful, but cleaner than the default comment, and I like having something there.
     #+BEGIN_SRC emacs-lisp
     (setq initial-scratch-message (format ";; Scratch buffer - started on %s\n\n" (current-time-string)))
-    #+END_SRC
-
-*** Use M-3 to insert an octothorp
-    I'm usually on a British keyboard, so when doing =M-3=: insert an octothorp, not a GBP sign
-    #+BEGIN_SRC emacs-lisp
-    (global-set-key (kbd "M-3") '(lambda () (interactive) (insert "#")))
     #+END_SRC
 
 *** Configure FlySpell to use aspell
