@@ -16,9 +16,11 @@
     home.inputs.nixpkgs.follows = "nixpkgs";
     nur.url = "github:nix-community/NUR";
     emacs.url = "github:nix-community/emacs-overlay";
+    rnix-lsp.url = "github:nix-community/rnix-lsp";
+    rnix-lsp.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, darwin, home, nur, emacs }: {
+  outputs = { self, nixpkgs, darwin, home, nur, emacs, rnix-lsp }: {
     darwinConfigurations.macbook = darwin.lib.darwinSystem {
       modules = [
         ./macintosh.nix

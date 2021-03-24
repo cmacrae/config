@@ -171,6 +171,7 @@ in {
       python3
       ranger
       ripgrep
+      rnix-lsp
       rsync
       terraform
       unzip

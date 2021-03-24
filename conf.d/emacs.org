@@ -809,8 +809,10 @@
     (use-package lsp-mode
       :commands (lsp lsp-deferred)
       :hook
-      (go-mode . lsp-deferred)
-      (go-mode . lsp-go-install-save-hooks)
+      (lsp-mode . lsp-install-save-hooks)
+      (nix-mode . lsp-deferred)
+      (go-mode  . lsp-deferred)
+      (go-mode  . lsp-go-install-save-hooks)
 
       :custom
       (gc-cons-threshold 100000000)
@@ -819,16 +821,22 @@
       (lsp-imenu-show-container-name nil)
 
       :config
+      (defun lsp-install-save-hooks ()
+        (add-hook 'before-save-hook #'lsp-format-buffer t t))
       (defun lsp-go-install-save-hooks ()
-        (add-hook 'before-save-hook #'lsp-format-buffer t t)
         (add-hook 'before-save-hook #'lsp-organize-imports t t))
+
+      (add-to-list 'lsp-language-id-configuration '(nix-mode . "nix"))
+      (lsp-register-client
+       (make-lsp-client :new-connection (lsp-stdio-connection '("rnix-lsp"))
+                        :major-modes '(nix-mode)
+                        :server-id 'nix))
 
       (use-package yasnippet
         :ensure t
         :hook (go-mode . yas-minor-mode))
 
       (use-package lsp-ui      :ensure t :commands lsp-ui-mode)
-      (use-package company-lsp :ensure t :commands company-lsp)
       (use-package lsp-ivy     :ensure t :commands lsp-ivy-workspace-symbol))
     #+END_SRC
 
