@@ -8,9 +8,9 @@ stdenv.mkDerivation rec {
   sourceRoot = ".";
   phases = [ "unpackPhase" "installPhase" ];
   installPhase = ''
-      mkdir -p "$out/Applications"
-      cp -r Firefox.app "$out/Applications/Firefox.app"
-    '';
+    mkdir -p "$out/Applications"
+    cp -r Firefox.app "$out/Applications/Firefox.app"
+  '';
 
   src = fetchurl {
     name = "Firefox-${version}.dmg";
