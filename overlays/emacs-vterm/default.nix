@@ -7,7 +7,7 @@ stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "akermu";
     repo = "emacs-libvterm";
-    rev = "9d2ef5e535e79781a0c1d2523f82d096eb48765f";
+    rev = "98179e129544bdee7d78fc095098971eeb72428d";
     sha256 = "03nslg391cagq9kdxkgyjcw3abfd5xswza5bq8rl8mrp9f8v7i17";
   };
 
