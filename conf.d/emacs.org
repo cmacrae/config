@@ -195,9 +195,23 @@
                               ""
                               ""))
 
+     (defun cm/nano-modeline-mu4e-dashboard-mode ()
+      "Modeline for mu4e-dashboard with a fancy mail icon"
+       (nano-modeline-compose (if (fboundp 'all-the-icons-faicon)
+			       (concat " " (all-the-icons-faicon
+			        "envelope"
+			        :height 5
+			        :face 'nano-face-header-faded
+			        :v-adjust -0.1) " ")
+			       (nano-modeline-status))
+                              "Mail"
+                              (nano-modeline-mu4e-context)
+                              ""))
+
      (advice-add #'nano-modeline-term-mode :override #'cm/nano-modeline-term-mode)
      (advice-add #'nano-modeline-mu4e-main-mode :override #'cm/nano-modeline-mu4e-main-mode)
      (advice-add #'nano-modeline-mu4e-headers-mode :override #'cm/nano-modeline-mu4e-headers-mode)
+     (advice-add #'nano-modeline-mu4e-dashboard-mode :override #'cm/nano-modeline-mu4e-dashboard-mode)
 
      :hook
      (after-init . nano-faces)
@@ -387,24 +401,26 @@
       :load-path "~/.nix-profile/share/emacs/site-lisp/mu4e"
 
       :config
-      ;; (use-package mu4e-thread-folding
-      ;;   :ensure nil)
+      (use-package mu4e-thread-folding
+        :ensure nil
+	:load-path "~/src/github.com/cmacrae/mu4e-thread-folding"
+	:after evil
+	:config
+	(evil-define-key 'normal mu4e-headers-mode-map (kbd "h") 'mu4e-headers-fold-at-point)
+	(evil-define-key 'normal mu4e-headers-mode-map (kbd "l") 'mu4e-headers-unfold-at-point))
 
       (use-package mu4e-dashboard
         :ensure nil
-        :load-path "~/src/github.com/cmacrae/mu4e-dashboard"
-        :custom (mu4e-dashboard-file "~/org/mu4e-dashboard.org")
-        :bind
-         (:map mu4e-main-mode-map
-           ("C-;"     . mu4e-dashboard-show))
-         (:map mu4e-headers-mode-map
-           ("C-;"     . mu4e-dashboard-show)
-           ("C-c C-;" . mu4e-dasboard-toggle-window))
-         (:map mu4e-dashboard-mode-map
-	   (";"       . mu4e-context-switch)
-           ("C-;"     . (lambda () (interactive) (select-window (previous-window))))))
-
-
+	:load-path "~/src/github.com/cmacrae/mu4e-dashboard"
+	:custom (mu4e-dashboard-file "~/org/mail-sidebar.org")
+	:bind
+	(:map mu4e-main-mode-map
+          ("C-;"     . mu4e-dashboard-show))
+	(:map mu4e-headers-mode-map
+	  ("C-;"     . mu4e-dashboard-show)
+	  ("C-c C-;" . mu4e-dasboard-toggle-window))
+	(:map mu4e-dashboard-mode-map
+	  ("C-;"     . (lambda () (interactive) (select-window (previous-window))))))
 
       (add-to-list 'mu4e-view-actions '("ViewInBrowser" . mu4e-action-view-in-browser) t)
 
@@ -415,7 +431,10 @@
             message-sendmail-f-is-evil           t
             send-mail-function                   'smtpmail-send-it
             message-sendmail-extra-arguments     '("--read-envelope-from")
-            message-send-mail-function           'message-send-mail-with-sendmail)
+            message-send-mail-function           'message-send-mail-with-sendmail
+	    mml-secure-openpgp-sign-with-sender  t
+	    mu4e-fold-threads-in-search-results  t)
+      (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
 
       (setq mu4e-contexts `(
         ,(make-mu4e-context
