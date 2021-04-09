@@ -4,7 +4,6 @@ let
   mailAddr = name: domain: "${name}@${domain}";
   primaryEmail = mailAddr "hi" "cmacr.ae";
   secondaryEmail = mailAddr "account" "cmacr.ae";
-  workEmail = mailAddr "calum.macrae" "nutmeg.com";
   fullName = "Calum MacRae";
 
 in
@@ -77,10 +76,11 @@ in
     config = {
       window_border = "on";
       window_border_width = 5;
-      active_window_border_color = "0xff81a1c1";
+      active_window_border_color = "0xffd9adad";
       normal_window_border_color = "0xff3b4252";
       focus_follows_mouse = "autoraise";
       mouse_follows_focus = "off";
+      mouse_drop_action = "stack";
       window_placement = "second_child";
       window_opacity = "off";
       window_topmost = "on";
@@ -108,28 +108,43 @@ in
     '';
   };
 
+  launchd.user.agents.yabai.serviceConfig.StandardErrorPath = "/tmp/yabai.log";
+  launchd.user.agents.yabai.serviceConfig.StandardOutPath = "/tmp/yabai.log";
+
   services.spacebar.enable = true;
   services.spacebar.package = pkgs.spacebar;
   services.spacebar.config = {
     debug_output = "on";
+    display = "main";
     position = "top";
     clock_format = "%R";
-    space_icon_strip = "   ";
     text_font = ''"Roboto Mono:Regular:12.0"'';
-    icon_font = ''"FontAwesome:Regular:12.0"'';
-    background_color = "0xff2e3440";
+    icon_font = ''"Font Awesome 5 Free:Solid:12.0"'';
+    background_color = "0xff222222";
     foreground_color = "0xffd8dee9";
-    space_icon_color = "0xff81a1c1";
-    dnd_icon_color = "0xff81a1c1";
-    clock_icon_color = "0xff81a1c1";
-    power_icon_color = "0xff81a1c1";
-    battery_icon_color = "0xff81a1c1";
-    power_icon_strip = " ";
-    space_icon = "";
+    space_icon_color = "0xffffab91";
+    dnd_icon_color = "0xffd8dee9";
+    clock_icon_color = "0xffd8dee9";
+    power_icon_color = "0xffd8dee9";
+    battery_icon_color = "0xffd8dee9";
+    power_icon_strip = " ";
+    space_icon = "•";
+    space_icon_strip = "1 2 3 4 5 6 7 8 9 10";
+    spaces_for_all_displays = "on";
+    display_separator = "on";
+    display_separator_icon = "";
+    space_icon_color_secondary = "0xff78c4d4";
+    space_icon_color_tertiary = "0xfffff9b0";
     clock_icon = "";
     dnd_icon = "";
+    right_shell = "on";
+    right_shell_icon = "";
+    right_shell_icon_color = "0xffd8dee9";
+    right_shell_command = ''"mu find 'm:/work/inbox' flag:unread | wc -l | tr -d \"[:blank:]\""'';
   };
 
+  launchd.user.agents.spacebar.serviceConfig.EnvironmentVariables.PATH = pkgs.lib.mkForce
+    (builtins.replaceStrings [ "$HOME" ] [ config.users.users.cmacrae.home ] config.environment.systemPath);
   launchd.user.agents.spacebar.serviceConfig.StandardErrorPath = "/tmp/spacebar.err.log";
   launchd.user.agents.spacebar.serviceConfig.StandardOutPath = "/tmp/spacebar.out.log";
 
