@@ -18,9 +18,10 @@
     emacs.url = "github:nix-community/emacs-overlay";
     rnix-lsp.url = "github:nix-community/rnix-lsp";
     rnix-lsp.inputs.nixpkgs.follows = "nixpkgs";
+    spacebar.url = "github:cmacrae/spacebar";
   };
 
-  outputs = { self, nixpkgs, darwin, home, nur, emacs, rnix-lsp }: {
+  outputs = { self, nixpkgs, darwin, home, nur, emacs, rnix-lsp, spacebar }: {
     darwinConfigurations.macbook = darwin.lib.darwinSystem {
       modules = [
         ./macintosh.nix
@@ -30,6 +31,7 @@
           nixpkgs.overlays = [
             nur.overlay
             emacs.overlay
+            spacebar.overlay
           ];
         }
 
@@ -63,6 +65,7 @@
           nixpkgs.overlays = [
             nur.overlay
             emacs.overlay
+            spacebar.overlay
           ];
         }
 

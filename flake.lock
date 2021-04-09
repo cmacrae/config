@@ -7,7 +7,7 @@
         ]
       },
       "locked": {
-        "narHash": "sha256-p2wcG7ihfInn7ouB6mbhbKI8qf3hPjZOyDVdQkB/xgo=",
+        "narHash": "sha256-oVMVszb+KSp0UeepD8oHBFOwp5RnysPDW1hcl6xZrB0=",
         "path": "/Users/cmacrae/src/github.com/cmacrae/nix-darwin",
         "type": "path"
       },
@@ -98,6 +98,17 @@
         "type": "indirect"
       }
     },
+    "nixpkgs_3": {
+      "locked": {
+        "narHash": "sha256-Rn0uizXoSr9n2RGng1Bom2t4kVsy0B5y6B/mxml4Mb0=",
+        "path": "/Users/cmacrae/src/github.com/cmacrae/nixpkgs",
+        "type": "path"
+      },
+      "original": {
+        "path": "/Users/cmacrae/src/github.com/cmacrae/nixpkgs",
+        "type": "path"
+      }
+    },
     "nur": {
       "locked": {
         "lastModified": 1616572943,
@@ -142,7 +153,22 @@
         "home": "home",
         "nixpkgs": "nixpkgs",
         "nur": "nur",
-        "rnix-lsp": "rnix-lsp"
+        "rnix-lsp": "rnix-lsp",
+        "spacebar": "spacebar"
+      }
+    },
+    "spacebar": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_3"
+      },
+      "locked": {
+        "narHash": "sha256-URYLlkelmWzeyAknCZh3EsfaUI+LReQnMCZS+rFInrc=",
+        "path": "/Users/cmacrae/src/github.com/cmacrae/spacebar",
+        "type": "path"
+      },
+      "original": {
+        "path": "/Users/cmacrae/src/github.com/cmacrae/spacebar",
+        "type": "path"
       }
     },
     "utils": {
