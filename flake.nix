@@ -39,6 +39,8 @@
           { pkgs, config, ... }: {
             networking.hostName = "macbook";
 
+            services.spacebar.config.right_shell_command = ''"mu find 'm:/fastmail/inbox' flag:unread | wc -l | tr -d \"[:blank:]\""'';
+
             nix.distributedBuilds = true;
             nix.buildMachines =
               pkgs.lib.forEach (pkgs.lib.range 1 3) (
@@ -78,6 +80,8 @@
                 aws-iam-authenticator
                 vault
               ];
+
+              services.spacebar.config.right_shell_command = ''"mu find 'm:/work/inbox' flag:unread | wc -l | tr -d \"[:blank:]\""'';
 
               accounts.email.accounts.fastmail.primary = false;
               accounts.email.accounts.work =

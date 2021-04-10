@@ -140,7 +140,6 @@ in
     right_shell = "on";
     right_shell_icon = "";
     right_shell_icon_color = "0xffd8dee9";
-    right_shell_command = ''"mu find 'm:/work/inbox' flag:unread | wc -l | tr -d \"[:blank:]\""'';
   };
 
   launchd.user.agents.spacebar.serviceConfig.EnvironmentVariables.PATH = pkgs.lib.mkForce
