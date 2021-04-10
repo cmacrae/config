@@ -7,7 +7,7 @@
         ]
       },
       "locked": {
-        "narHash": "sha256-oVMVszb+KSp0UeepD8oHBFOwp5RnysPDW1hcl6xZrB0=",
+        "narHash": "sha256-p2wcG7ihfInn7ouB6mbhbKI8qf3hPjZOyDVdQkB/xgo=",
         "path": "/Users/cmacrae/src/github.com/cmacrae/nix-darwin",
         "type": "path"
       },
@@ -18,11 +18,11 @@
     },
     "emacs": {
       "locked": {
-        "lastModified": 1616214656,
-        "narHash": "sha256-ceFOGcsbGlP/qtxMBlRGFH5fsbN+uGQYeHUrpgcRS4U=",
+        "lastModified": 1617965204,
+        "narHash": "sha256-tvAjsgboc4zfgARPrLXgYEG6/ZlVBQGW6dpVKRYetrE=",
         "owner": "nix-community",
         "repo": "emacs-overlay",
-        "rev": "d9530a7048f4b1c0f65825202a0ce1d111a1d39a",
+        "rev": "16968ada205aa0327a91fcc3d79e0bbf39f01a34",
         "type": "github"
       },
       "original": {
@@ -38,11 +38,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1616318638,
-        "narHash": "sha256-E6ABXtzw6bHmrIirB1sJL6S2MEa3sfcvRLzRa92frCo=",
+        "lastModified": 1617894699,
+        "narHash": "sha256-zlG3xNXgqo5pbMmfq8YaqGoVjElHnTDnEz13A+pUbZY=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "ddcd476603dfd3388b1dc8234fa9d550156a51f5",
+        "rev": "56f5f41ed42f7d476a7c79fa8ec71f5605487abf",
         "type": "github"
       },
       "original": {
@@ -71,11 +71,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1616578751,
-        "narHash": "sha256-lIPy0QSvo+IQlHqFIc+vR1lWlAXKqXXAGFrX2r8GGZs=",
+        "lastModified": 1618002222,
+        "narHash": "sha256-Oa0gnMgTeAACkg3sn5w/58r/H9WYpK3lfTSU9eIqTmk=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "c49825c5eebf01f7cd6e7050678aee37259aebef",
+        "rev": "c1c617ff8dcb42c05e4e8a20ddc0dde1a50b3dd3",
         "type": "github"
       },
       "original": {
@@ -100,22 +100,27 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "narHash": "sha256-Rn0uizXoSr9n2RGng1Bom2t4kVsy0B5y6B/mxml4Mb0=",
-        "path": "/Users/cmacrae/src/github.com/cmacrae/nixpkgs",
-        "type": "path"
+        "lastModified": 1616847335,
+        "narHash": "sha256-AQrNtJZRl9P78u+otHNXVxcQzu84vuTJLqynupp335g=",
+        "owner": "cmacrae",
+        "repo": "nixpkgs",
+        "rev": "7745d5338ad3c6cef295f40a732c6a739b1fcc7b",
+        "type": "github"
       },
       "original": {
-        "path": "/Users/cmacrae/src/github.com/cmacrae/nixpkgs",
-        "type": "path"
+        "owner": "cmacrae",
+        "ref": "fix_spacebar",
+        "repo": "nixpkgs",
+        "type": "github"
       }
     },
     "nur": {
       "locked": {
-        "lastModified": 1616572943,
-        "narHash": "sha256-QZxXBfzgZ7WunSWZfp4fUSVJaPxn63ddEba4DhCfzGU=",
+        "lastModified": 1617997944,
+        "narHash": "sha256-YwnZErW5wCmPmEUZwpZOOAazGw2VPivK2WgVlLX2jKs=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "ffcab46972b669ac2764595fbf971b52fe33475f",
+        "rev": "205118dbb304c749eadfc1da2975669a40d3d7c6",
         "type": "github"
       },
       "original": {
@@ -133,11 +138,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1615894508,
-        "narHash": "sha256-GvbKQyH31VNzJOadtUICeqZ4m3nH8ddFrB7Z7+6nRDU=",
+        "lastModified": 1617631723,
+        "narHash": "sha256-Qo09WUFFsqoj07ZNXxF3SL3eMaCg9UovNNJb1wa/O8s=",
         "owner": "nix-community",
         "repo": "rnix-lsp",
-        "rev": "fd1ad49a598a5d9c3e14b71fa47ff95ccecdf3d7",
+        "rev": "23df7ab20b71896ac47da8dab6d4bcc6e8f994d5",
         "type": "github"
       },
       "original": {
@@ -162,13 +167,17 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "narHash": "sha256-URYLlkelmWzeyAknCZh3EsfaUI+LReQnMCZS+rFInrc=",
-        "path": "/Users/cmacrae/src/github.com/cmacrae/spacebar",
-        "type": "path"
+        "lastModified": 1617981075,
+        "narHash": "sha256-qhD+rSmTkhLVizdOnUB0LzJ668+yuqDiWtFE6Co/w/w=",
+        "owner": "cmacrae",
+        "repo": "spacebar",
+        "rev": "01cb8bbb6aeb98339fe797f354021602dc7577b1",
+        "type": "github"
       },
       "original": {
-        "path": "/Users/cmacrae/src/github.com/cmacrae/spacebar",
-        "type": "path"
+        "owner": "cmacrae",
+        "repo": "spacebar",
+        "type": "github"
       }
     },
     "utils": {
