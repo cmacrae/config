@@ -27,6 +27,14 @@
     (setq use-package-always-ensure t)
     #+END_SRC
 
+*** Start the server
+    Start the Emacs server so other clients can connect and use the same session.
+    This is useful for when you may be oprating Emacs from the GUI usually, but want to use the same session from a TTY/terminal.
+    Also handy for when you have your ~EDITOR~ set to ~emacsclient~.
+    #+BEGIN_SRC emacs-lisp
+    (server-start)
+    #+END_SRC
+
 *** A few Darwin specific configurations
     To make Emacs play a little nicer with window management, enable menu-bar-mode.
     Also, set the frame's dimensions based on pixels - this makes Emacs play nicer with tiling
