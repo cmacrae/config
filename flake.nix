@@ -74,6 +74,9 @@
         (
           { pkgs, ... }: {
             networking.hostName = "workbook";
+
+            services.spacebar.config.right_shell_command = ''"mu find 'm:/work/inbox' flag:unread | wc -l | tr -d \"[:blank:]\""'';
+
             home-manager.users.cmacrae = {
               home.packages = with pkgs; [
                 awscli
@@ -81,7 +84,6 @@
                 vault
               ];
 
-              services.spacebar.config.right_shell_command = ''"mu find 'm:/work/inbox' flag:unread | wc -l | tr -d \"[:blank:]\""'';
 
               accounts.email.accounts.fastmail.primary = false;
               accounts.email.accounts.work =
