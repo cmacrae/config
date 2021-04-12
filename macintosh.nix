@@ -98,7 +98,7 @@ in
       left_padding = 10;
       right_padding = 10;
       window_gap = 10;
-      external_bar = "all:26:0";
+      external_bar = "main:26:0";
     };
 
     extraConfig = pkgs.lib.mkDefault ''
