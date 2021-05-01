@@ -4,137 +4,152 @@ let
   mailAddr = name: domain: "${name}@${domain}";
   primaryEmail = mailAddr "hi" "cmacr.ae";
   secondaryEmail = mailAddr "account" "cmacr.ae";
-  workEmail = mailAddr "calum.macrae" "nutmeg.com";
   fullName = "Calum MacRae";
 
-in {
+in
+{
   nix.package = pkgs.nixFlakes;
   nix.extraOptions = ''
-      experimental-features = nix-command flakes
-    '';
-  
+    experimental-features = nix-command flakes
+  '';
+
   system.stateVersion = 4;
   nix.maxJobs = 8;
   nix.buildCores = 0;
   services.nix-daemon.enable = true;
-  
+
   nixpkgs.overlays = [
     (import ./overlays)
   ];
 
   nix.trustedUsers = [ "root" "cmacrae" ];
   nixpkgs.config.allowUnfree = true;
-  
+
   environment.shells = [ pkgs.zsh ];
   environment.systemPackages = [ pkgs.zsh pkgs.gcc ];
   programs.bash.enable = false;
   programs.zsh.enable = true;
-  
+
   time.timeZone = "Europe/London";
   users.users.cmacrae.shell = pkgs.zsh;
   users.users.cmacrae.home = "/Users/cmacrae";
   users.nix.configureBuildUsers = true;
-  
+
   system.defaults = {
     dock = {
       autohide = true;
       mru-spaces = false;
       minimize-to-application = true;
     };
-    
+
     screencapture.location = "/tmp";
-    
+
     finder = {
       AppleShowAllExtensions = true;
       _FXShowPosixPathInTitle = true;
       FXEnableExtensionChangeWarning = false;
     };
-    
+
     trackpad = {
       Clicking = true;
       TrackpadThreeFingerDrag = true;
     };
-    
+
     NSGlobalDomain._HIHideMenuBar = true;
   };
-  
+
   fonts.enableFontDir = true;
   fonts.fonts = with pkgs; [ emacs-all-the-icons-fonts fira-code font-awesome roboto roboto-mono ];
-  
+
   system.keyboard = {
     enableKeyMapping = true;
     remapCapsLockToControl = true;
   };
-  
+
   services.skhd.enable = true;
   services.skhd.skhdConfig = builtins.readFile ./conf.d/skhd.conf;
-  
+
   services.yabai = {
     enable = true;
     package = pkgs.yabai;
     enableScriptingAddition = true;
     config = {
-      window_border              = "on";
-      window_border_width        = 5;
-      active_window_border_color = "0xff81a1c1";
+      window_border = "on";
+      window_border_width = 5;
+      active_window_border_color = "0xffd9adad";
       normal_window_border_color = "0xff3b4252";
-      focus_follows_mouse        = "autoraise";
-      mouse_follows_focus        = "off";
-      window_placement           = "second_child";
-      window_opacity             = "off";
-      window_topmost             = "on";
-      window_shadow              = "float";
-      active_window_opacity      = "1.0";
-      normal_window_opacity      = "1.0";
-      split_ratio                = "0.50";
-      auto_balance               = "on";
-      mouse_modifier             = "fn";
-      mouse_action1              = "move";
-      mouse_action2              = "resize";
-      layout                     = "bsp";
-      top_padding                = 10;
-      bottom_padding             = 10;
-      left_padding               = 10;
-      right_padding              = 10;
-      window_gap                 = 10;
-      external_bar               = "all:26:0";
+      focus_follows_mouse = "autoraise";
+      mouse_follows_focus = "off";
+      mouse_drop_action = "stack";
+      window_placement = "second_child";
+      window_opacity = "off";
+      window_topmost = "on";
+      window_shadow = "float";
+      active_window_opacity = "1.0";
+      normal_window_opacity = "1.0";
+      split_ratio = "0.50";
+      auto_balance = "on";
+      mouse_modifier = "fn";
+      mouse_action1 = "move";
+      mouse_action2 = "resize";
+      layout = "bsp";
+      top_padding = 10;
+      bottom_padding = 10;
+      left_padding = 10;
+      right_padding = 10;
+      window_gap = 10;
+      external_bar = "main:26:0";
     };
-    
+
     extraConfig = pkgs.lib.mkDefault ''
-        # rules
-        yabai -m rule --add app='System Preferences' manage=off
-        yabai -m rule --add app='Live' manage=off
-      '';
+      # rules
+      yabai -m rule --add app='System Preferences' manage=off
+      yabai -m rule --add app='Live' manage=off
+    '';
   };
-  
+
+  launchd.user.agents.yabai.serviceConfig.StandardErrorPath = "/tmp/yabai.log";
+  launchd.user.agents.yabai.serviceConfig.StandardOutPath = "/tmp/yabai.log";
+
   services.spacebar.enable = true;
   services.spacebar.package = pkgs.spacebar;
   services.spacebar.config = {
-    debug_output       = "on";
-    position           = "top";
-    clock_format       = "%R";
-    space_icon_strip   = "   ";
-    text_font          = ''"Roboto Mono:Regular:12.0"'';
-    icon_font          = ''"FontAwesome:Regular:12.0"'';
-    background_color   = "0xff2e3440";
-    foreground_color   = "0xffd8dee9";
-    space_icon_color   = "0xff81a1c1";
-    dnd_icon_color     = "0xff81a1c1";
-    clock_icon_color   = "0xff81a1c1";
-    power_icon_color   = "0xff81a1c1";
-    battery_icon_color = "0xff81a1c1";
-    power_icon_strip   = " ";
-    space_icon         = "";
-    clock_icon         = "";
-    dnd_icon           = "";
+    debug_output = "on";
+    display = "main";
+    position = "top";
+    clock_format = "%R";
+    text_font = ''"Roboto Mono:Regular:12.0"'';
+    icon_font = ''"Font Awesome 5 Free:Solid:12.0"'';
+    background_color = "0xff222222";
+    foreground_color = "0xffd8dee9";
+    space_icon_color = "0xffffab91";
+    dnd_icon_color = "0xffd8dee9";
+    clock_icon_color = "0xffd8dee9";
+    power_icon_color = "0xffd8dee9";
+    battery_icon_color = "0xffd8dee9";
+    power_icon_strip = " ";
+    space_icon = "•";
+    space_icon_strip = "1 2 3 4 5 6 7 8 9 10";
+    spaces_for_all_displays = "on";
+    display_separator = "on";
+    display_separator_icon = "";
+    space_icon_color_secondary = "0xff78c4d4";
+    space_icon_color_tertiary = "0xfffff9b0";
+    clock_icon = "";
+    dnd_icon = "";
+    right_shell = "on";
+    right_shell_icon = "";
+    right_shell_icon_color = "0xffd8dee9";
   };
-  
+
+  launchd.user.agents.spacebar.serviceConfig.EnvironmentVariables.PATH = pkgs.lib.mkForce
+    (builtins.replaceStrings [ "$HOME" ] [ config.users.users.cmacrae.home ] config.environment.systemPath);
   launchd.user.agents.spacebar.serviceConfig.StandardErrorPath = "/tmp/spacebar.err.log";
   launchd.user.agents.spacebar.serviceConfig.StandardOutPath = "/tmp/spacebar.out.log";
-  
+
   # Recreate /run/current-system symlink after boot
   services.activate-system.enable = true;
-  
+
   services.mbsync.enable = true;
   services.mbsync.postExec = ''
     if pgrep -f 'mu server'; then
@@ -146,7 +161,7 @@ in {
   '';
   launchd.user.agents.mbsync.serviceConfig.StandardErrorPath = "/tmp/mbsync.log";
   launchd.user.agents.mbsync.serviceConfig.StandardOutPath = "/tmp/mbsync.log";
-  
+
   home-manager.users.cmacrae = {
     home.stateVersion = "20.09";
     home.packages = with pkgs; [
@@ -171,6 +186,7 @@ in {
       python3
       ranger
       ripgrep
+      rnix-lsp
       rsync
       terraform
       unzip
@@ -205,12 +221,12 @@ in {
       kubernetes-helm
       kustomize
     ];
-    
+
     home.sessionVariables = {
       PAGER = "less -R";
       EDITOR = "emacsclient";
     };
-    
+
     programs.git = {
       enable = true;
       userName = fullName;
@@ -248,10 +264,10 @@ in {
       smtp.port = 465;
 
       passwordCommand = "${pkgs.writeShellScript "fastmail-mbsyncPass" ''
-          ${pkgs.pass}/bin/pass Tech/fastmail.com | ${pkgs.gawk}/bin/awk -F: '/mbsync/{gsub(/ /,""); print$NF}'
-        ''}";
+        ${pkgs.pass}/bin/pass Tech/fastmail.com | ${pkgs.gawk}/bin/awk -F: '/mbsync/{gsub(/ /,""); print$NF}'
+      ''}";
     };
-    
+
     ###########
     # Firefox #
     ###########
@@ -263,7 +279,7 @@ in {
         browserpass
         vimium
       ];
-    
+
     programs.firefox.profiles =
       let
         defaultSettings = {
@@ -294,55 +310,64 @@ in {
           "signon.rememberSignons" = false;
           "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
         };
-      in {
-        home = {
-          id = 0;
-          settings = defaultSettings;
-          userChrome = (builtins.readFile (pkgs.substituteAll {
-            name = "homeUserChrome";
-            src = ./conf.d/userChrome.css;
-            tabLineColour = "#5e81ac";
-          }));
-        };
-        
-        work = {
-          id = 1;
-          settings = defaultSettings // {
-            "browser.startup.homepage" = "about:blank";
-            "browser.urlbar.placeholderName" = "Google";
+      in
+        {
+          home = {
+            id = 0;
+            settings = defaultSettings;
+            userChrome = (
+              builtins.readFile (
+                pkgs.substituteAll {
+                  name = "homeUserChrome";
+                  src = ./conf.d/userChrome.css;
+                  tabLineColour = "#5e81ac";
+                }
+              )
+            );
           };
-          userChrome = (builtins.readFile (pkgs.substituteAll {
-            name = "workUserChrome";
-            src = ./conf.d/userChrome.css;
-            tabLineColour = "#d08770";
-          }));
+
+          work = {
+            id = 1;
+            settings = defaultSettings // {
+              "browser.startup.homepage" = "about:blank";
+              "browser.urlbar.placeholderName" = "Google";
+            };
+            userChrome = (
+              builtins.readFile (
+                pkgs.substituteAll {
+                  name = "workUserChrome";
+                  src = ./conf.d/userChrome.css;
+                  tabLineColour = "#d08770";
+                }
+              )
+            );
+          };
         };
-      };
-    
+
     #########
     # Emacs #
     #########
     programs.emacs.enable = true;
     home.file.".emacs.d/init.el".text = ''
-        ;;; init.el --- Where all the magic begins
-        ;;
-        ;;; Commentary:
-        ;; This file loads Org-mode and then loads the rest of the Emacs initialization from Emacs Lisp
-        ;; embedded in the literate Org-mode file: emacs.org
-        ;;
-        ;;; Code:
+      ;;; init.el --- Where all the magic begins
+      ;;
+      ;;; Commentary:
+      ;; This file loads Org-mode and then loads the rest of the Emacs initialization from Emacs Lisp
+      ;; embedded in the literate Org-mode file: emacs.org
+      ;;
+      ;;; Code:
 
-        (setq emacs-dir (file-name-directory (or (buffer-file-name) load-file-name)))
+      (setq emacs-dir (file-name-directory (or (buffer-file-name) load-file-name)))
         
-        ;; load up Org-mode and Org-babel
-        (require 'org-install)
-        (require 'ob-tangle)
+      ;; load up Org-mode and Org-babel
+      (require 'org-install)
+      (require 'ob-tangle)
         
-        ;; load up all literate org-mode files in this directory
-        (mapc #'org-babel-load-file (directory-files emacs-dir t "\\.org$"))
+      ;; load up all literate org-mode files in this directory
+      (mapc #'org-babel-load-file (directory-files emacs-dir t "\\.org$"))
 
-        ;;; init.el ends here
-      '';
+      ;;; init.el ends here
+    '';
     home.file.".emacs.d/emacs.org".source = ./conf.d/emacs.org;
 
     programs.emacs.package =
@@ -350,74 +375,86 @@ in {
         # TODO: derive 'name' from assignment
         elPackage = name: src:
           pkgs.runCommand "${name}.el" {} ''
-              mkdir -p  $out/share/emacs/site-lisp
-              cp -r ${src}/* $out/share/emacs/site-lisp/
-            '';
+            mkdir -p  $out/share/emacs/site-lisp
+            cp -r ${src}/* $out/share/emacs/site-lisp/
+          '';
       in
-        (pkgs.emacsWithPackagesFromUsePackage {
-          alwaysEnsure = true;
-          alwaysTangle = true;
+        (
+          pkgs.emacsWithPackagesFromUsePackage {
+            alwaysEnsure = true;
+            alwaysTangle = true;
 
-          config = ./conf.d/emacs.org;
+            config = ./conf.d/emacs.org;
 
-          override = epkgs: epkgs // {
-            nano-emacs = elPackage "nano-emacs" (pkgs.fetchFromGitHub {
-              # NOTE: Using my own fork whilst I work on features
-              #       'emhancements' branch
-              # owner = "rougier";
-              owner = "cmacrae";
-              repo = "nano-emacs";
-              rev = "01a51d2a8e18ef5a4e8540a01d110ae4e8d693e9";
-              sha256 = "1cc8bbxjmyfgwiq01y0zin5l31qclyr9vjp0f8d9xr4wv5d1cap4";
-            });
+            override = epkgs: epkgs // {
+              nano-emacs = elPackage "nano-emacs" (
+                pkgs.fetchFromGitHub {
+                  # NOTE: Using my own fork whilst I work on features
+                  #       'emhancements' branch
+                  # owner = "rougier";
+                  owner = "cmacrae";
+                  repo = "nano-emacs";
+                  rev = "01a51d2a8e18ef5a4e8540a01d110ae4e8d693e9";
+                  sha256 = "1cc8bbxjmyfgwiq01y0zin5l31qclyr9vjp0f8d9xr4wv5d1cap4";
+                }
+              );
 
-            hydra-posframe = elPackage "hydra-posframe" (pkgs.fetchFromGitHub {
-              owner = "Ladicle";
-              repo = "hydra-posframe";
-              rev = "343a269b52d6fb6e5ae6c09d91833ff4620490ec";
-              sha256 = "03f9r8glyjvbnwwy5dmy42643r21dr4vii0js8lzlds7h7qnd9jm";
-            });
+              hydra-posframe = elPackage "hydra-posframe" (
+                pkgs.fetchFromGitHub {
+                  owner = "Ladicle";
+                  repo = "hydra-posframe";
+                  rev = "343a269b52d6fb6e5ae6c09d91833ff4620490ec";
+                  sha256 = "03f9r8glyjvbnwwy5dmy42643r21dr4vii0js8lzlds7h7qnd9jm";
+                }
+              );
 
-            mu4e-dashboard = elPackage "mu4e-dashboard" (pkgs.fetchFromGitHub {
-              owner = "rougier";
-              repo = "mu4e-dashboard";
-              rev = "143e87a770689d9402addaeb43ff48efcc5ce40c";
-              sha256 = "13ximpz77fbgwl4a91nh8wy9qm83q7s11hbnlx3bi04pcgz4cchj";
-            });
+              mu4e-dashboard = elPackage "mu4e-dashboard" (
+                pkgs.fetchFromGitHub {
+                  owner = "rougier";
+                  repo = "mu4e-dashboard";
+                  rev = "143e87a770689d9402addaeb43ff48efcc5ce40c";
+                  sha256 = "13ximpz77fbgwl4a91nh8wy9qm83q7s11hbnlx3bi04pcgz4cchj";
+                }
+              );
 
-            mu4e-thread-folding = elPackage "mu4e-thread-folding" (pkgs.fetchFromGitHub {
-              owner = "rougier";
-              repo = "mu4e-thread-folding";
-              rev = "db0fadeb1f7262cf43cfe98c3b1d08682f9c5f25";
-              sha256 = "1rgvnqxkiparslk7n76h5iad0xq4pdjici21c94l7rpxsp9vsrvh";
-            });
-          };
+              mu4e-thread-folding = elPackage "mu4e-thread-folding" (
+                pkgs.fetchFromGitHub {
+                  owner = "rougier";
+                  repo = "mu4e-thread-folding";
+                  rev = "db0fadeb1f7262cf43cfe98c3b1d08682f9c5f25";
+                  sha256 = "1rgvnqxkiparslk7n76h5iad0xq4pdjici21c94l7rpxsp9vsrvh";
+                }
+              );
+            };
 
-          extraEmacsPackages = epkgs: with epkgs; [
-            nano-emacs
-            hydra-posframe
-            mu4e-dashboard
-            mu4e-thread-folding
-          ];
+            extraEmacsPackages = epkgs: with epkgs; [
+              nano-emacs
+              hydra-posframe
+              mu4e-dashboard
+              mu4e-thread-folding
+            ];
 
-          package = pkgs.emacsMacport.overrideAttrs (o: {
-            # patches = o.patches ++ [ ./patches/borderless-emacs.patch ];
-            patches = [ ./patches/borderless-emacs.patch ];
-            
-            # Copy vterm module & elisp from overlay
-            postInstall = o.postInstall + ''
-                cp ${pkgs.emacs-vterm}/vterm-module.so $out/share/emacs/site-lisp/vterm-module.so
-                cp ${pkgs.emacs-vterm}/vterm.el $out/share/emacs/site-lisp/vterm.el
-              '';
-          });
-        });
-    
+            package = pkgs.emacsMacport.overrideAttrs (
+              o: {
+                # patches = o.patches ++ [ ./patches/borderless-emacs.patch ];
+                patches = [ ./patches/borderless-emacs.patch ];
+
+                # Copy vterm module & elisp from overlay
+                postInstall = o.postInstall + ''
+                  cp ${pkgs.emacs-vterm}/vterm-module.so $out/share/emacs/site-lisp/vterm-module.so
+                  cp ${pkgs.emacs-vterm}/vterm.el $out/share/emacs/site-lisp/vterm.el
+                '';
+              }
+            );
+          }
+        );
+
     programs.fzf.enable = true;
     programs.fzf.enableZshIntegration = true;
-    
+
     programs.browserpass.enable = true;
     programs.browserpass.browsers = [ "firefox" ];
-    
+
     programs.alacritty = {
       enable = true;
       settings = {
@@ -430,66 +467,70 @@ in {
         selection.save_to_clipboard = true;
         mouse.hide_when_typing = true;
         use_thin_strokes = true;
-        
+
         font = {
           size = 12;
           normal.family = "Roboto Mono";
         };
-        
+
         colors = {
-          cursor.cursor      = "#81a1c1";
+          cursor.cursor = "#81a1c1";
           primary.background = "#2e3440";
           primary.foreground = "#d8dee9";
-          
+
           normal = {
-            black   = "#3b4252";
-            red     = "#bf616a";
-            green   = "#a3be8c";
-            yellow  = "#ebcb8b";
-            blue    = "#81a1c1";
+            black = "#3b4252";
+            red = "#bf616a";
+            green = "#a3be8c";
+            yellow = "#ebcb8b";
+            blue = "#81a1c1";
             magenta = "#b48ead";
-            cyan    = "#88c0d0";
-            white   = "#e5e9f0";
+            cyan = "#88c0d0";
+            white = "#e5e9f0";
           };
-          
+
           bright = {
-            black   = "#4c566a";
-            red     = "#bf616a";
-            green   = "#a3be8c";
-            yellow  = "#ebcb8b";
-            blue    = "#81a1c1";
+            black = "#4c566a";
+            red = "#bf616a";
+            green = "#a3be8c";
+            yellow = "#ebcb8b";
+            blue = "#81a1c1";
             magenta = "#b48ead";
-            cyan    = "#8fbcbb";
-            white   = "#eceff4";
+            cyan = "#8fbcbb";
+            white = "#eceff4";
           };
         };
-        
+
         key_bindings = [
           { key = "V"; mods = "Command"; action = "Paste"; }
-          { key = "C"; mods = "Command"; action = "Copy";  }
-          { key = "Q"; mods = "Command"; action = "Quit";  }
+          { key = "C"; mods = "Command"; action = "Copy"; }
+          { key = "Q"; mods = "Command"; action = "Quit"; }
           { key = "Q"; mods = "Control"; chars = "\\x11"; }
           { key = "F"; mods = "Alt"; chars = "\\x1bf"; }
           { key = "B"; mods = "Alt"; chars = "\\x1bb"; }
           { key = "D"; mods = "Alt"; chars = "\\x1bd"; }
+          { key = "Key3"; mods = "Alt"; chars = "#"; }
           { key = "Slash"; mods = "Control"; chars = "\\x1f"; }
           { key = "Period"; mods = "Alt"; chars = "\\e-\\e."; }
-          { key = "N"; mods = "Command"; command = {
+          {
+            key = "N";
+            mods = "Command";
+            command = {
               program = "open";
-              args = ["-nb" "io.alacritty"];
+              args = [ "-nb" "io.alacritty" ];
             };
           }
         ];
       };
-    } ;
-    
+    };
+
     programs.zsh = {
       enable = true;
       enableAutosuggestions = true;
       enableCompletion = true;
       defaultKeymap = "emacs";
       sessionVariables = { RPROMPT = ""; };
-      
+
       shellAliases = {
         k = "kubectl";
         kp = "kube-prompt";
@@ -497,9 +538,9 @@ in {
         kn = "kubens";
         t = "cd $(mktemp -d)";
       };
-      
+
       oh-my-zsh.enable = true;
-      
+
       plugins = [
         {
           name = "autopair";
@@ -532,7 +573,7 @@ in {
           };
         }
       ];
-      
+
       initExtra = ''
           PROMPT=' %{$fg_bold[blue]%}$(get_pwd)%{$reset_color%} ''${prompt_suffix}'
           local prompt_suffix="%(?:%{$fg_bold[green]%}❯ :%{$fg_bold[red]%}❯%{$reset_color%} "
@@ -564,9 +605,9 @@ in {
                   printf "\e]%s\e\\" "$1"
               fi
         }
-        '';
+      '';
     };
-    
+
     programs.tmux =
       let
         kubeTmux = pkgs.fetchFromGitHub {
@@ -575,24 +616,25 @@ in {
           rev = "7f196eeda5f42b6061673825a66e845f78d2449c";
           sha256 = "1dvyb03q2g250m0bc8d2621xfnbl18ifvgmvf95nybbwyj2g09cm";
         };
-        
+
         tmuxYank = pkgs.fetchFromGitHub {
           owner = "tmux-plugins";
           repo = "tmux-yank";
           rev = "ce21dafd9a016ef3ed4ba3988112bcf33497fc83";
           sha256 = "04ldklkmc75azs6lzxfivl7qs34041d63fan6yindj936r4kqcsp";
         };
-        
-        
-      in {
-        enable = true;
-        shortcut = "q";
-        keyMode = "vi";
-        clock24 = true;
-        terminal = "screen-256color";
-        customPaneNavigationAndResize = true;
-        secureSocket = false;
-        extraConfig = ''
+
+
+      in
+        {
+          enable = true;
+          shortcut = "q";
+          keyMode = "vi";
+          clock24 = true;
+          terminal = "screen-256color";
+          customPaneNavigationAndResize = true;
+          secureSocket = false;
+          extraConfig = ''
             unbind [
             unbind ]
       
@@ -642,57 +684,57 @@ in {
       
             run-shell ${tmuxYank}/yank.tmux
           '';
-      };
-    
+        };
+
     # Global Emacs keybindings
     home.file."Library/KeyBindings/DefaultKeyBinding.dict".text = ''
-         {
-             /* Ctrl shortcuts */
-             "^l"        = "centerSelectionInVisibleArea:";  /* C-l          Recenter */
-             "^/"        = "undo:";                          /* C-/          Undo */
-             "^_"        = "undo:";                          /* C-_          Undo */
-             "^ "        = "setMark:";                       /* C-Spc        Set mark */
-             "^\@"       = "setMark:";                       /* C-@          Set mark */
-             "^w"        = "deleteToMark:";                  /* C-w          Delete to mark */
+      {
+          /* Ctrl shortcuts */
+          "^l"        = "centerSelectionInVisibleArea:";  /* C-l          Recenter */
+          "^/"        = "undo:";                          /* C-/          Undo */
+          "^_"        = "undo:";                          /* C-_          Undo */
+          "^ "        = "setMark:";                       /* C-Spc        Set mark */
+          "^\@"       = "setMark:";                       /* C-@          Set mark */
+          "^w"        = "deleteToMark:";                  /* C-w          Delete to mark */
          
-             /* Meta shortcuts */
-             "~f"        = "moveWordForward:";               /* M-f          Move forward word */
-             "~b"        = "moveWordBackward:";              /* M-b          Move backward word */
-             "~<"        = "moveToBeginningOfDocument:";     /* M-<          Move to beginning of document */
-             "~>"        = "moveToEndOfDocument:";           /* M->          Move to end of document */
-             "~v"        = "pageUp:";                        /* M-v          Page Up */
-             "~/"        = "complete:";                      /* M-/          Complete */
-             "~c"        = ( "capitalizeWord:",              /* M-c          Capitalize */
-                             "moveForward:",
-                             "moveForward:");
-             "~u"        = ( "uppercaseWord:",               /* M-u          Uppercase */
-                             "moveForward:",
-                             "moveForward:");
-             "~l"        = ( "lowercaseWord:",               /* M-l          Lowercase */
-                             "moveForward:",
-                             "moveForward:");
-             "~d"        = "deleteWordForward:";             /* M-d          Delete word forward */
-             "^~h"       = "deleteWordBackward:";            /* M-C-h        Delete word backward */
-             "~\U007F"   = "deleteWordBackward:";            /* M-Bksp       Delete word backward */
-             "~t"        = "transposeWords:";                /* M-t          Transpose words */
-             "~\@"       = ( "setMark:",                     /* M-@          Mark word */
-                             "moveWordForward:",
-                             "swapWithMark");
-             "~h"        = ( "setMark:",                     /* M-h          Mark paragraph */
-                             "moveToEndOfParagraph:",
-                             "swapWithMark");
+          /* Meta shortcuts */
+          "~f"        = "moveWordForward:";               /* M-f          Move forward word */
+          "~b"        = "moveWordBackward:";              /* M-b          Move backward word */
+          "~<"        = "moveToBeginningOfDocument:";     /* M-<          Move to beginning of document */
+          "~>"        = "moveToEndOfDocument:";           /* M->          Move to end of document */
+          "~v"        = "pageUp:";                        /* M-v          Page Up */
+          "~/"        = "complete:";                      /* M-/          Complete */
+          "~c"        = ( "capitalizeWord:",              /* M-c          Capitalize */
+                          "moveForward:",
+                          "moveForward:");
+          "~u"        = ( "uppercaseWord:",               /* M-u          Uppercase */
+                          "moveForward:",
+                          "moveForward:");
+          "~l"        = ( "lowercaseWord:",               /* M-l          Lowercase */
+                          "moveForward:",
+                          "moveForward:");
+          "~d"        = "deleteWordForward:";             /* M-d          Delete word forward */
+          "^~h"       = "deleteWordBackward:";            /* M-C-h        Delete word backward */
+          "~\U007F"   = "deleteWordBackward:";            /* M-Bksp       Delete word backward */
+          "~t"        = "transposeWords:";                /* M-t          Transpose words */
+          "~\@"       = ( "setMark:",                     /* M-@          Mark word */
+                          "moveWordForward:",
+                          "swapWithMark");
+          "~h"        = ( "setMark:",                     /* M-h          Mark paragraph */
+                          "moveToEndOfParagraph:",
+                          "swapWithMark");
          
-             /* C-x shortcuts */
-             "^x" = {
-                 "u"     = "undo:";                          /* C-x u        Undo */
-                 "k"     = "performClose:";                  /* C-x k        Close */
-                 "^f"    = "openDocument:";                  /* C-x C-f      Open (find file) */
-                 "^x"    = "swapWithMark:";                  /* C-x C-x      Swap with mark */
-                 "^m"    = "selectToMark:";                  /* C-x C-m      Select to mark*/
-                 "^s"    = "saveDocument:";                  /* C-x C-s      Save */
-                 "^w"    = "saveDocumentAs:";                /* C-x C-w      Save as */
-             };
-         }
-      '';
+          /* C-x shortcuts */
+          "^x" = {
+              "u"     = "undo:";                          /* C-x u        Undo */
+              "k"     = "performClose:";                  /* C-x k        Close */
+              "^f"    = "openDocument:";                  /* C-x C-f      Open (find file) */
+              "^x"    = "swapWithMark:";                  /* C-x C-x      Swap with mark */
+              "^m"    = "selectToMark:";                  /* C-x C-m      Select to mark*/
+              "^s"    = "saveDocument:";                  /* C-x C-s      Save */
+              "^w"    = "saveDocumentAs:";                /* C-x C-w      Save as */
+          };
+      }
+    '';
   };
 }
