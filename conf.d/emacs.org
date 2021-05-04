@@ -160,6 +160,7 @@
      (require 'nano-modeline)
      (require 'nano-writer)
      (require 'nano-layout)
+     (require 'nano-mu4e)
 
      (defun cm/nano-modeline-term-mode ()
        "Modline for term/vterm mode with current project (or directory) and kubectl context/namespace."
@@ -852,6 +853,12 @@
                                              to))
                                      args)))))
           (apply f args))))
+    #+END_SRC
+
+*** svg-tag-mode
+    Fancy SVG labels for particular key words
+    #+BEGIN_SRC emacs-lisp
+    (use-package svg-tag-mode)
     #+END_SRC
 
 *** Languages
