@@ -881,6 +881,13 @@
       :mode "\\.html"
       :custom
       (web-mode-engines-alist '(("go" . "\\.gotmpl\\'"))))
+
+    (use-package swift-mode
+      :mode "\\.swift"
+      :hook (swift-mode . (lambda () (lsp)))
+      :config
+      (use-package swift-helpful
+        :ensure t))
     #+END_SRC
 
     Language Server Protocol integration
@@ -915,7 +922,11 @@
         :ensure t
         :hook (go-mode . yas-minor-mode))
 
-      (use-package lsp-ui      :ensure t :commands lsp-ui-mode))
+      (use-package lsp-ui      :ensure t :commands lsp-ui-mode)
+      (use-package lsp-sourcekit
+        :after lsp-mode
+        :custom
+        (lsp-sourcekit-executable "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp")))
     #+END_SRC
 
 ** Custom functions

@@ -105,6 +105,7 @@ in
       # rules
       yabai -m rule --add app='System Preferences' manage=off
       yabai -m rule --add app='Live' manage=off
+      yabai -m rule --add app='Xcode' manage=off
     '';
   };
 

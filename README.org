@@ -22,6 +22,15 @@
    $ ./result/sw/bin/darwin-rebuild switch --flake ~/src/github.com/cmacrae/config\#macbook
    #+END_EXAMPLE
    /Note: Subsequent rebuilds won't need the =\#<system>= notation, as this'll match the hostname automatically/
+
+*** Homebrew
+    With the absence of some tooling in nixpkgs, some machines defined in this repository lean on nix-darwin's Homebrew module
+    to manage some packages and App Store apps. For this to work, Homebrew must be installed.
+
+    Don't forget to turn off analytics!
+    ```
+    brew analytics off
+    ```
    
 **  Features
 /Coming soon..../
