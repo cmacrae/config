@@ -941,7 +941,10 @@
         :ensure t
         :hook (go-mode . yas-minor-mode))
 
-      (use-package lsp-ui      :ensure t :commands lsp-ui-mode)
+      (use-package lsp-ui
+        :ensure t
+        :commands lsp-ui-mode)
+
       (use-package lsp-sourcekit
         :after lsp-mode
         :custom
