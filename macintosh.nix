@@ -14,7 +14,7 @@ in
   '';
 
   system.stateVersion = 4;
-  nix.maxJobs = 8;
+  nix.maxJobs = "auto";
   nix.buildCores = 0;
   services.nix-daemon.enable = true;
 
