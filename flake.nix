@@ -2,26 +2,20 @@
   description = "cmacrae's darwin systems configuration";
 
   inputs = {
-    # TODO: Move to 20.09 when stdenv fix on Big Sur is backported
-    # nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-${release}-darwin";
     nixpkgs.url = "github:nixos/nixpkgs";
-    # TODO: Move back to upstream nix-darwin when done with local dev
-    # darwin.url = "github:lnl7/nix-darwin/master";
     darwin.url = "/Users/cmacrae/src/github.com/cmacrae/nix-darwin";
     darwin.inputs.nixpkgs.follows = "nixpkgs";
-    # TODO: Move back to release branch when msmtp passwordCommand no longer
-    #       uses appended 'echo'
-    # home.url = "github:nix-community/home-manager/release-20.09";
     home.url = "github:nix-community/home-manager";
     home.inputs.nixpkgs.follows = "nixpkgs";
     nur.url = "github:nix-community/NUR";
-    emacs.url = "github:nix-community/emacs-overlay";
+    emacs.url = "github:cmacrae/emacs";
+    emacs-overlay.url = "github:nix-community/emacs-overlay";
     rnix-lsp.url = "github:nix-community/rnix-lsp";
     rnix-lsp.inputs.nixpkgs.follows = "nixpkgs";
     spacebar.url = "github:cmacrae/spacebar";
   };
 
-  outputs = { self, nixpkgs, darwin, home, nur, emacs, rnix-lsp, spacebar }: {
+  outputs = { self, nixpkgs, darwin, home, nur, emacs, emacs-overlay, rnix-lsp, spacebar }: {
     darwinConfigurations.macbook = darwin.lib.darwinSystem {
       modules = [
         ./macintosh.nix
@@ -31,6 +25,7 @@
           nixpkgs.overlays = [
             nur.overlay
             emacs.overlay
+            emacs-overlay.overlay
             spacebar.overlay
           ];
         }
@@ -79,6 +74,7 @@
           nixpkgs.overlays = [
             nur.overlay
             emacs.overlay
+            emacs-overlay.overlay
             spacebar.overlay
           ];
         }

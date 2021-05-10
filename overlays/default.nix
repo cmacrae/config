@@ -1,8 +1,6 @@
 self: super: {
   Firefox = super.callPackage ./firefox {};
 
-  emacs-vterm = super.callPackage ./emacs-vterm {};
-
   # TODO: Switch back to src build when SkyLight issue is fixed
   yabai = super.yabai.overrideAttrs (
     o: rec {
@@ -20,8 +18,4 @@ self: super: {
       '';
     }
   );
-
-  # spacebar = super.spacebar.overrideAttrs (o: {
-  #   src = "${builtins.getEnv("HOME")}/src/github.com/cmacrae/spacebar";
-  # });
 }

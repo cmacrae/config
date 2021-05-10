@@ -23,6 +23,16 @@ in
   ];
 
   nix.trustedUsers = [ "root" "cmacrae" ];
+
+  nix.binaryCaches = [
+    "https://cachix.org/api/v1/cache/emacs" # my personal Emacs cache
+    "https://cachix.org/api/v1/cache/nix-community"
+  ];
+  nix.binaryCachePublicKeys = [
+    "emacs.cachix.org-1:b1SMJNLY/mZF6GxQE+eDBeps7WnkT0Po55TAyzwOxTY="
+    "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+  ];
+
   nixpkgs.config.allowUnfree = true;
 
   environment.shells = [ pkgs.zsh ];
@@ -106,6 +116,7 @@ in
       yabai -m rule --add app='System Preferences' manage=off
       yabai -m rule --add app='Live' manage=off
       yabai -m rule --add app='Xcode' manage=off
+      yabai -m rule --add app='Emacs' title='.*Minibuf.*' manage=off border=off
     '';
   };
 
@@ -385,6 +396,8 @@ in
             alwaysEnsure = true;
             alwaysTangle = true;
 
+            # Custom overlay derived from 'emacs' flake input
+            package = pkgs.emacs;
             config = ./conf.d/emacs.org;
 
             override = epkgs: epkgs // {
@@ -397,15 +410,6 @@ in
                   repo = "nano-emacs";
                   rev = "01a51d2a8e18ef5a4e8540a01d110ae4e8d693e9";
                   sha256 = "1cc8bbxjmyfgwiq01y0zin5l31qclyr9vjp0f8d9xr4wv5d1cap4";
-                }
-              );
-
-              hydra-posframe = elPackage "hydra-posframe" (
-                pkgs.fetchFromGitHub {
-                  owner = "Ladicle";
-                  repo = "hydra-posframe";
-                  rev = "343a269b52d6fb6e5ae6c09d91833ff4620490ec";
-                  sha256 = "03f9r8glyjvbnwwy5dmy42643r21dr4vii0js8lzlds7h7qnd9jm";
                 }
               );
 
@@ -430,23 +434,9 @@ in
 
             extraEmacsPackages = epkgs: with epkgs; [
               nano-emacs
-              hydra-posframe
               mu4e-dashboard
               mu4e-thread-folding
             ];
-
-            package = pkgs.emacsMacport.overrideAttrs (
-              o: {
-                # patches = o.patches ++ [ ./patches/borderless-emacs.patch ];
-                patches = [ ./patches/borderless-emacs.patch ];
-
-                # Copy vterm module & elisp from overlay
-                postInstall = o.postInstall + ''
-                  cp ${pkgs.emacs-vterm}/vterm-module.so $out/share/emacs/site-lisp/vterm-module.so
-                  cp ${pkgs.emacs-vterm}/vterm.el $out/share/emacs/site-lisp/vterm.el
-                '';
-              }
-            );
           }
         );
 
