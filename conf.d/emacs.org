@@ -478,7 +478,22 @@
 	(:map mu4e-dashboard-mode-map
 	  ("C-;"     . (lambda () (interactive) (select-window (previous-window))))))
 
-      (add-to-list 'mu4e-view-actions '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+      (defun my-mu4e-action-view-with-xwidget (msg)
+        "View the body of the message inside xwidget-webkit."
+        (unless (fboundp 'xwidget-webkit-browse-url)
+          (mu4e-error "No xwidget support available"))
+        (let* ((html (mu4e-message-field msg :body-html))
+                (txt (mu4e-message-field msg :body-txt))
+                (tmpfile (format "%s%x.html" temporary-file-directory (random t))))
+        (unless (or html txt)
+          (mu4e-error "No body part for this message"))
+        (with-temp-buffer
+          (insert (or html (concat "<pre>" txt "</pre>")))
+            (write-file tmpfile)
+            (xwidget-webkit-browse-url (concat "file://" tmpfile) t))))
+
+      (add-to-list 'mu4e-view-actions '("xViewXWidget" . my-mu4e-action-view-with-xwidget) t)
+      (add-to-list 'mu4e-view-actions '("bViewInBrowser" . mu4e-action-view-in-browser) t)
 
       (setq mu4e-index-update-in-background      nil
             mu4e-change-filenames-when-moving    t
