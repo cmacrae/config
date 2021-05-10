@@ -201,6 +201,7 @@ in
       rnix-lsp
       rsync
       terraform
+      terraform-ls
       unzip
       up
       vim

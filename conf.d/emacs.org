@@ -883,7 +883,14 @@
     (use-package terraform-mode
       :hook
       (terraform-mode . company-mode)
-      (before-save . terraform-format-buffer))
+      (terraform-mode . (lambda () (lsp)))
+      (before-save    . terraform-format-buffer)
+      :config
+      (lsp-register-client
+        ;;(make-lsp-client :new-connection (lsp-stdio-connection '((locate-file "terraform-ls" exec-path) "serve"))
+        (make-lsp-client :new-connection (lsp-stdio-connection '("/Users/cmacrae/.nix-profile/bin/terraform-ls" "serve"))
+                         :major-modes '(terraform-mode)
+                         :server-id 'terraform-ls)))
 
     (use-package dockerfile-mode
       :mode "\\Dockerfile\\'")
