@@ -727,9 +727,7 @@
     - Transpose: transpose various constructs of text
     - Toggle mode: turn frequently "toggled" modes on and off
 
-    Enhancement packages:
-    - =hydra-posframe=: use =posframe= to display hydra buffers at custom positions
-    #+begin_src emacs-lisp
+    #+BEGIN_SRC emacs-lisp
     (use-package hydra
       :bind
       ("C-c z" . hydra-zoom/body)
@@ -752,22 +750,13 @@
         ("s" transpose-sentences "Sentences")
         ("p" transpose-paragraphs "Paragraphs")
         ("q" nil "Quit" :color blue)))
-
-    ;; TODO: [hydra/posframe] Waiting for MELPA package
-    ;;       https://github.com/Ladicle/hydra-posframe/issues/3
-    (use-package hydra-posframe
-      :ensure nil
-      :hook (after-init . hydra-posframe-mode)
-      :custom
-      (hydra-posframe-border-width 1)
-      (hydra-posframe-parameters '((left-fringe . 8) (right-fringe . 8))))
-    #+end_src
+    #+END_SRC
 
 *** ace-window
     Jump around Emacs windows & frames using character prefixes.
     I use this constantly - it even works across multiple frames.
     Also added a hydra borrowed from [[https://oremacs.com/2015/01/29/more-hydra-goodness/][here]] for some really convenient movement/manipulation!
-    #+begin_src emacs-lisp
+    #+BEGIN_SRC emacs-lisp
     (use-package ace-window
       :bind ("M-o" . hydra-window/body)
       :custom
@@ -784,7 +773,7 @@
         ("s" (lambda () (interactive) (ace-window 4)) "swap")
         ("d" (lambda () (interactive) (ace-window 16)) "delete")
         ("q" nil "Quit")))
-    #+end_src
+    #+END_SRC
 
 *** Smartparens
     Brilliant automatic balancing of pairs. Makes for a really nice experience when typing in any language - programming or not.
