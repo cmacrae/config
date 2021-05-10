@@ -258,7 +258,7 @@
       :hook (after-init . selectrum-mode)
       :bind ("C-x C-z" . selectrum-repeat))
     #+END_SRC
- 
+
 **** consult
     #+BEGIN_SRC emacs-lisp
     ;; Example configuration for Consult
@@ -298,7 +298,7 @@
              ("M-s k" . consult-keep-lines)
              ("M-s u" . consult-focus-lines)
              ("M-s e" . consult-isearch)
-	     
+
              ("C-s" . consult-line)
 
              :map isearch-mode-map
@@ -307,28 +307,28 @@
              ("M-s l" . consult-line))
 
       :init
-    
+
       ;; Configure the register formatting. This improves the register
       ;; preview for `consult-register', `consult-register-load',
       ;; `consult-register-store' and the Emacs built-ins.
       (setq register-preview-delay 0
             register-preview-function #'consult-register-format)
-    
+
       ;; Tweak the register preview window.
       ;; This adds thin lines, sorting and hides the mode line of the window.
       (advice-add #'register-preview :override #'consult-register-window)
-    
+
       ;; Use Consult to select xref locations with preview
       (setq xref-show-xrefs-function #'consult-xref
             xref-show-definitions-function #'consult-xref)
-    
+
       :custom
       ;; Configure preview.
       (consult-preview-key 'any)
-    
+
       ;; Configure the narrowing key.
       (consult-narrow-key "<")
-      
+
       :config
       (use-package consult-flycheck
         :bind (:map flycheck-command-map
@@ -547,7 +547,7 @@
       (projectile-switch-project-action 'neotree-projectile-action)
       :bind
         (:map projectile-mode-map
-	 ("C-c p f" . projectile-find-file)
+         ("C-c p f" . projectile-find-file)
          ("C-c p p" . projectile-persp-switch-project)))
        #+END_SRC
 
