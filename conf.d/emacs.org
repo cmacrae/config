@@ -887,6 +887,7 @@
       (before-save    . terraform-format-buffer)
       :config
       (lsp-register-client
+        ;; TODO: Derive the terraform-ls bin location from PATH
         ;;(make-lsp-client :new-connection (lsp-stdio-connection '((locate-file "terraform-ls" exec-path) "serve"))
         (make-lsp-client :new-connection (lsp-stdio-connection '("/Users/cmacrae/.nix-profile/bin/terraform-ls" "serve"))
                          :major-modes '(terraform-mode)
