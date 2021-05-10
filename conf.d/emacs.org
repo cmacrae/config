@@ -691,19 +691,21 @@
       (evil-define-key 'normal vterm-mode-map (kbd "p")        #'vterm-yank)
       (evil-define-key 'normal vterm-mode-map (kbd "i")        #'evil-insert-resume)
       (evil-define-key 'normal vterm-mode-map (kbd "o")        #'evil-insert-resume)
-      (evil-define-key 'normal vterm-mode-map (kbd "<return>") #'evil-insert-resume))
+      (evil-define-key 'normal vterm-mode-map (kbd "<return>") #'evil-insert-resume)
+
+      (setq vterm-ignore-blink-cursor t)
+
+      (use-package multi-vterm
+        :ensure t
+        :bind
+        ("C-c p t" . multi-vterm-project)))
     #+END_SRC
 
 *** Flycheck
     Have Flycheck turned on for everything - checking stuff is always good!
-    And for convenience, add a ~posframe~.
     #+BEGIN_SRC emacs-lisp
     (use-package flycheck
       :hook (after-init . global-flycheck-mode))
-
-    (use-package flycheck-posframe
-      :after flycheck
-      :hook (flycheck-mode . flycheck-posframe-mode))
     #+END_SRC
 
 *** Company
