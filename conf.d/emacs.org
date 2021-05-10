@@ -135,6 +135,21 @@
         (erc-tls :server "irc.freenode.net" :port 6697 :nick "cmacrae")))
     #+end_src
 
+*** Native compilation
+    I'm using the native compilation features introduced in Emacs 28.
+    The following setting suppresses automatic display of warning messages.
+    #+BEGIN_SRC emacs-lisp
+    (setq comp-async-report-warnings-errors nil)
+    (setq native-comp-async-report-warnings-errors nil)
+    #+END_SRC
+
+*** org-mode
+    Various pieces of configuration for the mighty org-mode.
+    Honour source block indentation.
+    #+BEGIN_SRC emacs-lisp
+    (setq org-src-preserve-indentation t)
+    #+END_SRC
+
 ** Meta Configurations
    This section includes the use of any "meta" collection of Emacs configurations provided by others.
    I'm using [[https://github.com/rougier/nano-emacs/issues/37][rougier/nano-emacs]] as a base. The configuration is shaped around principles that align with my own.
