@@ -370,11 +370,11 @@ in
       ;;; Code:
 
       (setq emacs-dir (file-name-directory (or (buffer-file-name) load-file-name)))
-        
+
       ;; load up Org-mode and Org-babel
       (require 'org-install)
       (require 'ob-tangle)
-        
+
       ;; load up all literate org-mode files in this directory
       (mapc #'org-babel-load-file (directory-files emacs-dir t "\\.org$"))
 
@@ -568,7 +568,7 @@ in
       initExtra = ''
           PROMPT=' %{$fg_bold[blue]%}$(get_pwd)%{$reset_color%} ''${prompt_suffix}'
           local prompt_suffix="%(?:%{$fg_bold[green]%}❯ :%{$fg_bold[red]%}❯%{$reset_color%} "
-          
+
           function get_pwd(){
               git_root=$PWD
               while [[ $git_root != / && ! -e $git_root/.git ]]; do
@@ -628,27 +628,27 @@ in
           extraConfig = ''
             unbind [
             unbind ]
-      
+
             bind ] next-window
             bind [ previous-window
-      
+
             bind Escape copy-mode
             bind P paste-buffer
             bind-key -T copy-mode-vi v send-keys -X begin-selection
             bind-key -T copy-mode-vi y send-keys -X copy-selection
             bind-key -T copy-mode-vi r send-keys -X rectangle-toggle
             set -g mouse on
-      
+
             bind-key -r C-k resize-pane -U
             bind-key -r C-j resize-pane -D
             bind-key -r C-h resize-pane -L
             bind-key -r C-l resize-pane -R
-      
+
             bind-key -r C-M-k resize-pane -U 5
             bind-key -r C-M-j resize-pane -D 5
             bind-key -r C-M-h resize-pane -L 5
             bind-key -r C-M-l resize-pane -R 5
-      
+
             set -g display-panes-colour white
             set -g display-panes-active-colour red
             set -g display-panes-time 1000
@@ -658,13 +658,13 @@ in
             set -g repeat-time 100
             set -g renumber-windows on
             set -g renumber-windows on
-      
+
             setw -g monitor-activity on
             setw -g automatic-rename on
             setw -g clock-mode-colour red
             setw -g clock-mode-style 24
             setw -g alternate-screen on
-      
+
             set -g status-left-length 100
             set -g status-left "#(${pkgs.bash}/bin/bash ${kubeTmux}/kube.tmux 250 green colour3)  "
             set -g status-right-length 100
@@ -672,7 +672,7 @@ in
             set -g status-bg default
             setw -g window-status-format "#[fg=blue,bg=black] #I #[fg=blue,bg=black] #W "
             setw -g window-status-current-format "#[fg=blue,bg=default] #I #[fg=red,bg=default] #W "
-      
+
             run-shell ${tmuxYank}/yank.tmux
           '';
         };
@@ -687,7 +687,7 @@ in
           "^ "        = "setMark:";                       /* C-Spc        Set mark */
           "^\@"       = "setMark:";                       /* C-@          Set mark */
           "^w"        = "deleteToMark:";                  /* C-w          Delete to mark */
-         
+
           /* Meta shortcuts */
           "~f"        = "moveWordForward:";               /* M-f          Move forward word */
           "~b"        = "moveWordBackward:";              /* M-b          Move backward word */
@@ -714,7 +714,7 @@ in
           "~h"        = ( "setMark:",                     /* M-h          Mark paragraph */
                           "moveToEndOfParagraph:",
                           "swapWithMark");
-         
+
           /* C-x shortcuts */
           "^x" = {
               "u"     = "undo:";                          /* C-x u        Undo */
