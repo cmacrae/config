@@ -856,23 +856,7 @@
       (mini-frame-show-parameters '((top . 10)
                                     (width . 0.5)
                                     (left . 0.5)))
-      (mini-frame-internal-border-color (face-attribute 'nano-face-subtle :background nil t))
-
-      :config
-      ;; NOTE: This is fixed in 27.2 
-      (define-advice fit-frame-to-buffer (:around (f &rest args) dont-skip-ws-for-mini-frame)
-        (cl-letf* ((orig (symbol-function #'window-text-pixel-size))
-                   ((symbol-function #'window-text-pixel-size)
-                    (lambda (win from to &rest args)
-                      (apply orig
-                             (append (list win from 
-                                           (if (and (window-minibuffer-p win)
-                                                    (frame-root-window-p win)
-                                                    (eq t to))
-                                               nil
-                                             to))
-                                     args)))))
-          (apply f args))))
+      (mini-frame-internal-border-color (face-attribute 'nano-face-subtle :background nil t)))
     #+END_SRC
 
 *** svg-tag-mode
