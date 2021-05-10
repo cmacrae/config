@@ -505,7 +505,6 @@
             message-send-mail-function           'message-send-mail-with-sendmail
 	    mml-secure-openpgp-sign-with-sender  t
 	    mu4e-fold-threads-in-search-results  t)
-      (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
 
       (setq mu4e-contexts `(
         ,(make-mu4e-context
