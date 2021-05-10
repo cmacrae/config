@@ -916,6 +916,7 @@
       (read-process-output-max (* 1024 1024))
       (lsp-before-save-edits t)
       (lsp-imenu-show-container-name nil)
+      (lsp-headerline-breadcrumb-enable nil)
 
       :config
       (defun lsp-install-save-hooks ()
