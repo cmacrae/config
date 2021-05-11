@@ -7,13 +7,17 @@
         ]
       },
       "locked": {
-        "narHash": "sha256-JEaWt30+6m6/3hGGM0uoIc8PWgsH8Ya5VqJcKV3UQOw=",
-        "path": "/Users/cmacrae/src/github.com/cmacrae/nix-darwin",
-        "type": "path"
+        "lastModified": 1617693609,
+        "narHash": "sha256-/+6wm08yHK8mhyljzELD4WE9Gh8XUVbHL0R1TQpZtTQ=",
+        "owner": "lnl7",
+        "repo": "nix-darwin",
+        "rev": "a7492a8c76dcc702d0a65cd820a5f9baa8702684",
+        "type": "github"
       },
       "original": {
-        "path": "/Users/cmacrae/src/github.com/cmacrae/nix-darwin",
-        "type": "path"
+        "owner": "lnl7",
+        "repo": "nix-darwin",
+        "type": "github"
       }
     },
     "emacs": {

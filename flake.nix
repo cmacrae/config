@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs";
-    darwin.url = "/Users/cmacrae/src/github.com/cmacrae/nix-darwin";
+    darwin.url = "github:lnl7/nix-darwin";
     darwin.inputs.nixpkgs.follows = "nixpkgs";
     home.url = "github:nix-community/home-manager";
     home.inputs.nixpkgs.follows = "nixpkgs";
@@ -19,6 +19,7 @@
     darwinConfigurations.macbook = darwin.lib.darwinSystem {
       modules = [
         ./macintosh.nix
+        ./modules/mbsync.nix
         home.darwinModules.home-manager
 
         {
@@ -62,6 +63,7 @@
     darwinConfigurations.workbook = darwin.lib.darwinSystem {
       modules = [
         ./macintosh.nix
+        ./modules/mbsync.nix
         home.darwinModules.home-manager
 
         {
