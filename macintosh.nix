@@ -25,7 +25,8 @@ in
   nix.trustedUsers = [ "root" "cmacrae" ];
 
   nix.binaryCaches = [
-    "https://cachix.org/api/v1/cache/emacs" # my personal Emacs cache
+    # Nightly Emacs build cache for github.com/cmacrae/emacs
+    "https://cachix.org/api/v1/cache/emacs"
     "https://cachix.org/api/v1/cache/nix-community"
   ];
   nix.binaryCachePublicKeys = [
