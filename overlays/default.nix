@@ -1,6 +1,4 @@
 self: super: {
-  Firefox = super.callPackage ./firefox {};
-
   # TODO: Switch back to src build when SkyLight issue is fixed
   yabai = super.yabai.overrideAttrs (
     o: rec {

@@ -76,6 +76,28 @@ in
     remapCapsLockToControl = true;
   };
 
+  ############
+  # Homebrew #
+  ############
+  homebrew.enable = true;
+  homebrew.autoUpdate = true;
+  homebrew.cleanup = "zap";
+  homebrew.global.brewfile = true;
+  homebrew.global.noLock = true;
+  homebrew.extraConfig = ''
+    cask "firefox", args: { language: "en-GB" }
+  '';
+
+  homebrew.taps = [
+    "homebrew/core"
+    "homebrew/cask"
+  ];
+
+  homebrew.casks = [
+    "firefox"
+    "discord"
+  ];
+
   services.skhd.enable = true;
   services.skhd.skhdConfig = builtins.readFile ./conf.d/skhd.conf;
 
@@ -285,7 +307,9 @@ in
     # Firefox #
     ###########
     programs.firefox.enable = true;
-    programs.firefox.package = pkgs.Firefox; # custom overlay
+    # Handled by the Homebrew module
+    # This populates a dummy package to satsify the requirement
+    programs.firefox.package = pkgs.runCommand "firefox-0.0.0" {} "mkdir $out";
     programs.firefox.extensions =
       with pkgs.nur.repos.rycee.firefox-addons; [
         ublock-origin
