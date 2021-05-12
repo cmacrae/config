@@ -19,7 +19,7 @@ in
   services.nix-daemon.enable = true;
 
   nixpkgs.overlays = [
-    (import ./overlays)
+    (import ../overlays)
   ];
 
   nix.trustedUsers = [ "root" "cmacrae" ];
@@ -100,7 +100,7 @@ in
   ];
 
   services.skhd.enable = true;
-  services.skhd.skhdConfig = builtins.readFile ./conf.d/skhd.conf;
+  services.skhd.skhdConfig = builtins.readFile ../conf.d/skhd.conf;
 
   services.yabai = {
     enable = true;
@@ -357,7 +357,7 @@ in
               builtins.readFile (
                 pkgs.substituteAll {
                   name = "homeUserChrome";
-                  src = ./conf.d/userChrome.css;
+                  src = ../conf.d/userChrome.css;
                   tabLineColour = "#5e81ac";
                 }
               )
@@ -374,7 +374,7 @@ in
               builtins.readFile (
                 pkgs.substituteAll {
                   name = "workUserChrome";
-                  src = ./conf.d/userChrome.css;
+                  src = ../conf.d/userChrome.css;
                   tabLineColour = "#d08770";
                 }
               )
@@ -406,7 +406,7 @@ in
 
       ;;; init.el ends here
     '';
-    home.file.".emacs.d/emacs.org".source = ./conf.d/emacs.org;
+    home.file.".emacs.d/emacs.org".source = ../conf.d/emacs.org;
 
     programs.emacs.package =
       let
@@ -424,7 +424,7 @@ in
 
             # Custom overlay derived from 'emacs' flake input
             package = pkgs.emacs;
-            config = ./conf.d/emacs.org;
+            config = ../conf.d/emacs.org;
 
             override = epkgs: epkgs // {
               nano-emacs = elPackage "nano-emacs" (

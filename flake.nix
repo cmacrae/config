@@ -24,7 +24,7 @@
   outputs = { self, nixpkgs, darwin, home, nur, emacs, emacs-overlay, rnix-lsp, spacebar, deploy-rs, sops-nix }:
     let
       commonConfig = [
-        ./macintosh.nix
+        ./modules/macintosh.nix
         ./modules/mbsync.nix
         home.darwinModules.home-manager
 
