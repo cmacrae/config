@@ -1,8 +1,7 @@
 * About
   [[https://builtwithnix.org][https://img.shields.io/badge/Built_With-Nix-5277C3.svg?logo=nixos&labelColor=73C3D5]]
 
-  A collection of Darwin machine configurations - expressed in [[https://nixos.org/nix][Nix]] - leveraging [[https://github.com/LnL7/nix-darwin][LnL7/nix-darwin]], [[https://github.com/nix-community/home-manager][nix-community/home-manager]],
-  [[https://github.com/nix-community/NUR][nix-community/NUR]], and [[https://github.com/nix-community/emacs-overlay][nix-community/emacs-overlay]]
+  A collection of machine configurations, expressed in [[https://nixos.org/nix][Nix]]
 
 ** Usage
    This repository is based on [[https://nixos.wiki/wiki/Flakes][Nix Flakes]], an experimental feature of Nix that solves some of the problems around hermeticism.
@@ -11,26 +10,35 @@
    - [[https://www.tweag.io/blog/2020-06-25-eval-cache][Part 2]]
    - [[https://www.tweag.io/blog/2020-07-31-nixos-flakes/][Part 3]]
 
-   Once Nix is installed, you can bootstrap into a system configuration using the following command
-   #+BEGIN_EXAMPLE
-   $ nix run nixpkgs.nixUnstable -c \
-       nix --experimental-features \
-       "nix-command flakes" \
-       build .#darwinConfigurations.macbook.system # <- 'macbook' here should be the system you want to use
-       
-   # Use the resulting rebuild script to switch into the configuration
-   $ ./result/sw/bin/darwin-rebuild switch --flake ~/src/github.com/cmacrae/config\#macbook
-   #+END_EXAMPLE
-   /Note: Subsequent rebuilds won't need the =\#<system>= notation, as this'll match the hostname automatically/
-
 *** Homebrew
-    With the absence of some tooling in nixpkgs, some machines defined in this repository lean on nix-darwin's Homebrew module
-    to manage some packages and App Store apps. For this to work, Homebrew must be installed.
+    With the absence of some tooling in nixpkgs, the Darwin machines defined in this repository lean on nix-darwin's Homebrew module
+    to manage some packages, App Store apps, and macOS Applications. For this to work, Homebrew must be installed.
 
     Don't forget to turn off analytics!
-    ```
+    #+BEGIN_EXAMPLE
     brew analytics off
-    ```
+    #+END_EXAMPLE
    
-**  Features
-/Coming soon..../
+*** deploy-rs
+    For management of remote systems, I use [[https://github.com/serokell/deploy-rs][serokell/deploy-rs]]
+
+** Machines
+   There are several machines defined in =flake.nix=
+ 
+*** macbook
+    As you might've guessed from the name, this is my personal MacBook.
+    It provides a darwin environment of which every aspect is expressed, including: [[https://github.com/koekeishiya/yabai][yabai]], [[https://github.com/cmacrae/spacebar][spacebar]], [[https://github.com/koekeishiya/skhd][skhd]], [[https://cmacr.ae/post/2020-05-09-managing-firefox-on-macos-with-nix/][Firefox profiles]]
+    with [[conf.d/userChrome.css][a minimal theme (à la surf/xombrero)]], [[https://github.com/cmacrae/emacs][nightly Emacs (with native comp, WebKit support, libvterm)]],
+    [[conf.d/emacs.org][literate Emacs config]] with [[https://github.com/nix-community/emacs-overlay/#extra-library-functionality][declarative use-package statements]], [[modules/mbsync.nix][an mbsync module]] for mail retrieval for use with [[https://www.djcbsoftware.nl/code/mu/mu4e.html][mu4e]], 
+    declarative Homebrew packages/casks for macOS Application installation, and various other pieces.
+    
+*** workbook
+    My work MacBook. The same as macbook but with some work specific configuration layered on top.
+
+*** net1
+    A Raspberry Pi 4 that acts as a DHCP (ISC) server, DNS (unbound) server, and [[https://www.wireguard.com/][Wireguard]] gateway for my home network.
+
+*** compute1, compute2, compute3
+    3 Intel NUCs that occupy 1u in my cabinet. The workhorses of my home lab.
+    They're not doing much interesting stuff at the moment, but I have some custom Nix tooling used to provision them into
+    a Kubernetes cluster built on [[https://cri-o.io/][CRI-O]], [[https://cilium.io/][Cilium]], and [[https://argoproj.github.io/argo-cd/][Argo CD]] which I'll be making public soon enough.
