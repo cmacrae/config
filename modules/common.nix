@@ -3,6 +3,7 @@
 
   nix.gc.automatic = true;
   nix.gc.options = "--delete-older-than 14d";
+  nix.trustedUsers = [ "root" "@wheel" ];
   nixpkgs.config.allowUnfree = true;
   time.timeZone = "Europe/London";
   environment.systemPackages = with pkgs; [ file vim ];
