@@ -198,7 +198,7 @@ in
   launchd.user.agents.mbsync.serviceConfig.StandardOutPath = "/tmp/mbsync.log";
 
   home-manager.users.cmacrae = {
-    home.stateVersion = "20.09";
+    home.stateVersion = "21.05";
     home.packages = with pkgs; [
       aspell
       aspellDicts.en
