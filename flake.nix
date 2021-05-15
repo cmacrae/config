@@ -17,7 +17,6 @@
     darwin.inputs.nixpkgs.follows = "nixpkgs";
     home.inputs.nixpkgs.follows = "nixpkgs";
     rnix-lsp.inputs.nixpkgs.follows = "nixpkgs";
-    deploy-rs.inputs.nixpkgs.follows = "nixpkgs";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
