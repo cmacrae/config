@@ -88,7 +88,7 @@ in
 
       nat.enable = true;
       nat.externalInterface = "eth0";
-      nat.internalInterfaces = [ "wg0" ];
+      # nat.internalInterfaces = [ "wg0" ];
       firewall = {
         enable = true;
         allowedTCPPorts = [ 22 ];
@@ -99,35 +99,35 @@ in
         '';
       };
 
-      wireguard.interfaces = {
-        wg0 = {
-          listenPort = 51820;
-          ips = [ "10.100.0.1/24" ];
-          # TODO: Populate this with secrets management.
-          #       Historically I've used pass via NixOps, but want to move to
-          #       something like sops-nix or agenix.
-          #       So for the time being, this file isn't real.
-          privateKeyFile = "/run/keys/wg-private";
+      # wireguard.interfaces = {
+      #   wg0 = {
+      #     listenPort = 51820;
+      #     ips = [ "10.100.0.1/24" ];
+      #     # TODO: Populate this with secrets management.
+      #     #       Historically I've used pass via NixOps, but want to move to
+      #     #       something like sops-nix or agenix.
+      #     #       So for the time being, this file isn't real.
+      #     privateKeyFile = "/run/keys/wg-private";
 
-          peers = [
-            {
-              # iPhone
-              publicKey = "XPXwuPmplD4Cw6lPZAFpHvPmHMDy/rj1hrHvJjAaTDM=";
-              allowedIPs = [ "10.100.0.2/32" ];
-            }
-            {
-              # iPad
-              publicKey = "X8k3Bp8qEyAwIKuf36YMLmtmQk7YUKJSOMDqj8Nx5Rs=";
-              allowedIPs = [ "10.100.0.3/32" ];
-            }
-            {
-              # MacBook
-              publicKey = "FUCNqeSNgMdpSEatYd/RL9MG3rF7mR006lwU8JQTE0k=";
-              allowedIPs = [ "10.100.0.4/32" ];
-            }
-          ];
-        };
-      };
+      #     peers = [
+      #       {
+      #         # iPhone
+      #         publicKey = "XPXwuPmplD4Cw6lPZAFpHvPmHMDy/rj1hrHvJjAaTDM=";
+      #         allowedIPs = [ "10.100.0.2/32" ];
+      #       }
+      #       {
+      #         # iPad
+      #         publicKey = "X8k3Bp8qEyAwIKuf36YMLmtmQk7YUKJSOMDqj8Nx5Rs=";
+      #         allowedIPs = [ "10.100.0.3/32" ];
+      #       }
+      #       {
+      #         # MacBook
+      #         publicKey = "FUCNqeSNgMdpSEatYd/RL9MG3rF7mR006lwU8JQTE0k=";
+      #         allowedIPs = [ "10.100.0.4/32" ];
+      #       }
+      #     ];
+      #   };
+      # };
     };
 
     services.timesyncd.enable = true;
