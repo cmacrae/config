@@ -160,8 +160,8 @@ in
 
     services.unbound = {
       enable = true;
-      settings = {
-        server.interface = [ "0.0.0.0" ];
+      settings.server = {
+        interface = [ "0.0.0.0" ];
 
         prefetch = "yes";
         prefetch-key = "yes";
@@ -207,17 +207,19 @@ in
         local-zone = [
           ''"localhost." static''
           ''"127.in-addr.arpa." static''
-          ''"localhost. 10800 IN NS localhost."''
-          ''"localhost. 10800 IN SOA localhost. nobody.invalid. 1 3600 1200 604800 10800"''
 
           ''"${domain}" transparent''
         ];
 
         local-data = [
+          ''"localhost. 10800 IN NS localhost."''
+          ''"localhost. 10800 IN SOA localhost. nobody.invalid. 1 3600 1200 604800 10800"''
+
           ''"localhost. 10800 IN A 127.0.0.1"''
           ''"127.in-addr.arpa. 10800 IN NS localhost."''
           ''"127.in-addr.arpa. 10800 IN SOA localhost. nobody.invalid. 2 3600 1200 604800 10800"''
           ''"1.0.0.127.in-addr.arpa. 10800 IN PTR localhost."''
+
           ''"k8s.${domain}. IN A ${ipReservations.compute1.ip}"''
         ] ++ (
           mapAttrsToList (
@@ -232,23 +234,23 @@ in
         ];
 
         domain-insecure = ''"pantheon.${domain}."'';
-
-        forward-zone = [
-          {
-            name = "pantheon.${domain}.";
-            forward-tls-upstream = "no";
-            forward-addr = ipReservations.compute1.ip;
-            forward-no-cache = "yes";
-          }
-          {
-            name = ".";
-            forward-tls-upstream = "yes";
-            forward-addr = [
-              "1.1.1.1@853"
-              "1.0.0.1@853"
-            ];
-          }
-        ];
       };
+
+      settings.forward-zone = [
+        {
+          name = "pantheon.${domain}.";
+          forward-tls-upstream = "no";
+          forward-addr = ipReservations.compute1.ip;
+          forward-no-cache = "yes";
+        }
+        {
+          name = ".";
+          forward-tls-upstream = "yes";
+          forward-addr = [
+            "1.1.1.1@853"
+            "1.0.0.1@853"
+          ];
+        }
+      ];
     };
   }
