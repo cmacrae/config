@@ -261,11 +261,11 @@
         };
 
         deploy.nodes.net1 = {
-          hostname = "10.0.0.1";
+          hostname = "10.0.0.2";
           fastConnection = true;
           profiles = {
             system = {
-              sshUser = "root";
+              sshUser = "admin";
               user = "root";
               path = deploy-rs.lib.aarch64-linux.activate.nixos
                 self.nixosConfigurations.net1;
