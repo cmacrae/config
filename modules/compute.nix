@@ -44,7 +44,6 @@ in
       boot.loader.grub.device = "nodev";
       boot.loader.efi.efiSysMountPoint = "/boot";
       boot.initrd.checkJournalingFS = false;
-      boot.kernelPackages = pkgs.linuxPackages_latest;
       boot.supportedFilesystems = [ "zfs" ];
       boot.initrd.availableKernelModules = [ "xhci_pci" "ehci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
       boot.kernelModules = [
