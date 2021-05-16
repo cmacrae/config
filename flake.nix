@@ -22,6 +22,7 @@
 
   outputs = { self, nixpkgs, darwin, home, nur, emacs, emacs-overlay, rnix-lsp, spacebar, deploy-rs, sops-nix }:
     let
+      domain = "cmacr.ae";
       commonDarwinConfig = [
         ./modules/macintosh.nix
         ./modules/mbsync.nix
@@ -160,7 +161,7 @@
               compute.id = 1;
               compute.hostId = "ef32e32d";
               compute.efiBlockId = "9B1E-7DE0";
-              compute.domain = "cmacr.ae";
+              compute.domain = domain;
 
               virtualisation.oci-containers.containers = {
                 nzbget = baseContainer // {
@@ -202,7 +203,7 @@
               compute.id = 2;
               compute.hostId = "7df67865";
               compute.efiBlockId = "0DDD-4E07";
-              compute.domain = "cmacr.ae";
+              compute.domain = domain;
 
               virtualisation.oci-containers.containers = {
                 sonarr = baseContainer // {
@@ -228,7 +229,7 @@
               compute.id = 3;
               compute.hostId = "11dc35bc";
               compute.efiBlockId = "A181-EEC7";
-              compute.domain = "cmacr.ae";
+              compute.domain = domain;
 
               virtualisation.oci-containers.containers = {
                 radarr = baseContainer // {
