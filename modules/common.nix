@@ -13,6 +13,8 @@
     "deploy-rs.cachix.org-1:M+ZN++7fdqZFeIsvJyqeQrgnAbgsPNuv8z93uAJO43w="
   ];
 
+  nix.trustedBinaryCaches = config.nix.binaryCaches;
+
   nixpkgs.config.allowUnfree = true;
   time.timeZone = "Europe/London";
   environment.systemPackages = with pkgs; [ file vim ];
