@@ -260,57 +260,24 @@
           ];
         };
 
-        deploy.nodes.net1 = {
-          hostname = "10.0.0.2";
-          fastConnection = true;
-          profiles = {
-            system = {
-              sshUser = "admin";
-              user = "root";
-              path = deploy-rs.lib.aarch64-linux.activate.nixos
-                self.nixosConfigurations.net1;
-            };
-          };
-        };
-
-        deploy.nodes.compute1 = {
-          hostname = "compute1";
-          fastConnection = true;
-          profiles = {
-            system = {
-              sshUser = "admin";
-              user = "root";
-              path = deploy-rs.lib.x86_64-linux.activate.nixos
-                self.nixosConfigurations.compute1;
-            };
-          };
-        };
-
-        deploy.nodes.compute2 = {
-          hostname = "compute2";
-          fastConnection = true;
-          profiles = {
-            system = {
-              sshUser = "admin";
-              user = "root";
-              path = deploy-rs.lib.x86_64-linux.activate.nixos
-                self.nixosConfigurations.compute2;
-            };
-          };
-        };
-
-        deploy.nodes.compute3 = {
-          hostname = "compute3";
-          fastConnection = true;
-          profiles = {
-            system = {
-              sshUser = "admin";
-              user = "root";
-              path = deploy-rs.lib.x86_64-linux.activate.nixos
-                self.nixosConfigurations.compute3;
-            };
-          };
-        };
+        # Map each system in 'nixosConfigurations' to a common
+        # deployment description
+        deploy.nodes = (
+          builtins.mapAttrs (
+            hostname: attr: {
+              inherit hostname;
+              fastConnection = true;
+              profiles = {
+                system = {
+                  sshUser = "admin";
+                  user = "root";
+                  path = deploy-rs.lib."${attr.config.nixpkgs.system}".activate.nixos
+                    self.nixosConfigurations."${hostname}";
+                };
+              };
+            }
+          ) self.nixosConfigurations
+        );
 
         checks = builtins.mapAttrs
           (system: deployLib: deployLib.deployChecks self.deploy)
