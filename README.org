@@ -40,5 +40,5 @@
 
 *** compute1, compute2, compute3
     3 Intel NUCs that occupy 1u in my cabinet. The workhorses of my home lab.
-    They're not doing much interesting stuff at the moment, but I have some custom Nix tooling used to provision them into
-    a Kubernetes cluster built on [[https://cri-o.io/][CRI-O]], [[https://cilium.io/][Cilium]], and [[https://argoproj.github.io/argo-cd/][Argo CD]] which I'll be making public soon enough.
+    They're not doing much interesting stuff at the moment, as they're on a Kubernetes hiatus.
+    More to come soon...
