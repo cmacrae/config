@@ -11,16 +11,16 @@
     rnix-lsp.url = "github:nix-community/rnix-lsp";
     spacebar.url = "github:cmacrae/spacebar";
     deploy-rs.url = "github:serokell/deploy-rs";
-    sops-nix.url = "github:Mic92/sops-nix";
+    sops.url = "github:Mic92/sops-nix";
 
     # Follows
     darwin.inputs.nixpkgs.follows = "nixpkgs";
     home.inputs.nixpkgs.follows = "nixpkgs";
     rnix-lsp.inputs.nixpkgs.follows = "nixpkgs";
-    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+    sops.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, darwin, home, nur, emacs, emacs-overlay, rnix-lsp, spacebar, deploy-rs, sops-nix }:
+  outputs = { self, nixpkgs, darwin, home, nur, emacs, emacs-overlay, rnix-lsp, spacebar, deploy-rs, sops }:
     let
       domain = "cmacr.ae";
       commonDarwinConfig = [
@@ -148,6 +148,12 @@
           modules = [
             ./modules/common.nix
             ./modules/net1.nix
+            sops.nixosModules.sops
+
+            {
+              sops.defaultSopsFile = ./secrets.yaml;
+              sops.secrets.wireguard_privatekey = {};
+            }
           ];
         };
 
