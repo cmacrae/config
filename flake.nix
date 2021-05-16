@@ -22,7 +22,7 @@
 
   outputs = { self, nixpkgs, darwin, home, nur, emacs, emacs-overlay, rnix-lsp, spacebar, deploy-rs, sops-nix }:
     let
-      commonConfig = [
+      commonDarwinConfig = [
         ./modules/macintosh.nix
         ./modules/mbsync.nix
         home.darwinModules.home-manager
@@ -55,7 +55,7 @@
     in
       {
         darwinConfigurations.macbook = darwin.lib.darwinSystem {
-          modules = commonConfig ++ [
+          modules = commonDarwinConfig ++ [
             (
               { pkgs, config, ... }: {
                 networking.hostName = "macbook";
@@ -92,7 +92,7 @@
         };
 
         darwinConfigurations.workbook = darwin.lib.darwinSystem {
-          modules = commonConfig ++ [
+          modules = commonDarwinConfig ++ [
             (
               { pkgs, ... }: {
                 networking.hostName = "workbook";
