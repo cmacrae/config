@@ -46,20 +46,6 @@ jobs:
         key: emacs-drv-${{ hashFiles('emacs.drv') }}
 
     - run: >-
-        nix build
+        nix build -L
         .#darwinConfigurations.macbook.config.home-manager.users.cmacrae.programs.emacs.finalPackage
       if: steps.cache-drv.outputs.cache-hit != 'true'
-
-    - run: >-
-        nix log
-        $(nix show-derivation
-        .#darwinConfigurations.macbook.config.home-manager.users.cmacrae.programs.emacs.finalPackage
-        | jq -r '.|keys[0]')
-        > emacs-build.log
-      if: ${{ failure() }}
-
-    - uses: actions/upload-artifact@v2
-      if: ${{ failure() }}
-      with:
-        name: emacs-build.log
-        path: emacs-build.log
