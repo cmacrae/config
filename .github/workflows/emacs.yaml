@@ -33,6 +33,7 @@ jobs:
       with:
         name: cmacrae
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+        extraPullNames: emacs
 
     - run: >-
         nix show-derivation
