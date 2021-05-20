@@ -20,7 +20,7 @@
     sops.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, darwin, home, nur, emacs, emacs-overlay, rnix-lsp, spacebar, deploy-rs, sops }:
+  outputs = { self, nixpkgs, darwin, home, deploy-rs, sops, ... }@inputs:
     let
       domain = "cmacr.ae";
 
@@ -45,7 +45,7 @@
         home.darwinModules.home-manager
 
         {
-          nixpkgs.overlays = [
+          nixpkgs.overlays = with inputs; [
             nur.overlay
             emacs.overlay
             emacs-overlay.overlay
