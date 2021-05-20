@@ -234,6 +234,7 @@ in
       mpv
       nix-prefetch-git
       nmap
+      nomad
       open-policy-agent
       pass
       python3

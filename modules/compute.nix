@@ -46,33 +46,7 @@ in
       boot.initrd.checkJournalingFS = false;
       boot.supportedFilesystems = [ "zfs" ];
       boot.initrd.availableKernelModules = [ "xhci_pci" "ehci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
-      boot.kernelModules = [
-        "kvm-intel"
-
-        # NOTE: Required by cilium
-        "ebtable_nat"
-        "ebtable_broute"
-        "bridge"
-        "ip6table_nat"
-        "nf_nat_ipv6"
-        "ip6table_mangle"
-        "ip6table_raw"
-        "ip6table_security"
-        "iptable_nat"
-        "nf_nat_ipv4"
-        "iptable_mangle"
-        "iptable_raw"
-        "iptable_security"
-        "ebtable_filter"
-        "ebtables"
-        "ip6table_filter"
-        "ip6_tables"
-        "iptable_filter"
-        "ip_tables"
-        "x_tables"
-        "xt_socket"
-      ];
-
+      boot.kernelModules = [ "kvm-intel" ];
       boot.extraModulePackages = [];
 
       # aarch64 emulation
@@ -124,22 +98,8 @@ in
         ];
       };
 
-      boot.kernel.sysctl = {
-        # Needed for packet routing on the 'cilium_host' interface
-        # NOTE: This is a workaround for the following issue
-        # https://github.com/cilium/cilium/issues/10645
-        "net.ipv4.conf.lxc*.rp_filter" = 0;
-        "net.ipv4.conf.cilium_*.rp_filter" = 0;
-
-        # NOTE: Various parameters usually set by cilium agent at startup
-        "net.core.bpf_jit_enable" = 1;
-        "net.ipv4.conf.all.rp_filter" = 0;
-        "kernel.unprivileged_bpf_disabled" = 1;
-        "kernel.timer_migration" = 0;
-      };
-
       # System packages
-      environment.systemPackages = with pkgs; [ kubectl nfs-utils iptables ];
+      environment.systemPackages = with pkgs; [ nfs-utils podman ];
 
       # nix-serve
       services.nix-serve.enable = true;
@@ -149,115 +109,14 @@ in
         serviceConfig.SupplementaryGroups = [ config.users.groups.keys.name ];
       };
 
-      ##############
-      # Kubernetes #
-      ##############
-
-      # nixpkgs.overlays = [
-      #   (self: super: {
-      #     kube-autojoin = super.callPackage ../utils/nixos-kube-autojoin;
-      #   })
-      # ];
-
-      # kube-autojoin
-      # TODO: Get overlay working here
-      # systemd.services."kube-autojoin" =
-      #   let
-      #     kube-autojoin = pkgs.callPackage ../../utils/nixos-kube-autojoin { inherit (pkgs) lib; };
-      #   in mkMerge [
-      #     {
-      #       description = "Autojoin kubernetes clusters";
-      #       after = if (cfg.id == 1) then ["etcd.service"] else ["kubernetes.target"];
-      #       wantedBy = ["kubernetes.target"];
-      #       serviceConfig = {
-      #         Restart = if (cfg.id == 1) then "always" else "on-failure";
-      #         Type = "simple";
-      #         ExecStart =
-      #           if (cfg.id == 1)
-      #           then "${kube-autojoin}/bin/nixos-kube-autojoin -server -no-kube-proxy -no-flannel"
-      #           else "${kube-autojoin}/bin/nixos-kube-autojoin -no-kube-proxy -no-flannel -endpoint http://${config.services.kubernetes.masterAddress}:3000";
-      #       };
-      #     }
-
-      #     (mkIf (cfg.id != 0) {
-      #       unitConfig.ConditionFileNotEmpty = "!/var/lib/kubernetes/secrets/apitoken.secret";
-      #     })
-      #   ];
-
-
-      # # CRI-O
-      # virtualisation.docker.enable = false;
-      # virtualisation.cri-o.enable = true;
-      # virtualisation.cri-o.storageDriver = "zfs";
-      # virtualisation.cri-o.extraPackages = [ pkgs.conntrack-tools pkgs.iptables ];
-      # systemd.services.kubelet.path = with pkgs; [ zfs conntrack-tools ];
-
-      # ###########################
-      # # Cluster bootstrap fixes #
-      # ###########################
-      # # etcd
-      # # NOTE: Workaround for initial deployment failure
-      # systemd.services.etcd.preStart = ''${pkgs.writeShellScript "etcd-wait" ''
-      #   while [ ! -f /var/lib/kubernetes/secrets/etcd.pem ]; do sleep 1; done
-      # ''}'';
-
-      # # kubelet
-      # # NOTE: Workaround for initial deployment failure
-      # systemd.services.kubelet.preStart = mkAfter ''
-      #   while [ ! -f /var/lib/kubernetes/secrets/ca.pem ]; do sleep 1; done
-      #   while [ ! -f /var/lib/kubernetes/secrets/kubelet-client.pem ]; do sleep 1; done
-      # '';
-
-      # # kube-apiserver
-      # # NOTE: Workaround for initial deployment failure
-      # systemd.services.kube-apiserver.preStart = mkAfter ''
-      #   while [ ! -f /var/lib/kubernetes/secrets/kube-apiserver.pem ]; do sleep 1; done
-      # '';
-
-      # services.kubernetes = {
-      #   easyCerts = true;
-
-      #   masterAddress = "k8s.${cfg.domain}";
-      #   apiserverAddress = "https://${config.services.kubernetes.masterAddress}:6443";
-      #   addonManager.enable = false;
-      #   apiserver.serviceClusterIpRange = "10.2.0.0/24";
-      #   apiserver.extraSANs =
-      #     optional (builtins.elem "master" config.services.kubernetes.roles)
-      #       "10.0.10.${builtins.toString cfg.id}";
-
-      #   apiserver.authorizationMode = [ "AlwaysAllow" ];
-      #   # NOTE: allow-privileged is needed for cilium
-      #   apiserver.extraOpts = ''
-      #     --allow-privileged=true
-      #     --requestheader-client-ca-file=${config.services.kubernetes.apiserver.clientCaFile}
-      # # # #     --requestheader-allowed-names=front-proxy-client
-      #     --requestheader-extra-headers-prefix=X-Remote-Extra-
-      #     --requestheader-group-headers=X-Remote-Group
-      #     --requestheader-username-headers=X-Remote-User
-      #   '';
-
-
-      #   # More CRI-O
-      #   kubelet.cri.runtime = "cri-o";
-      #   kubelet.extraOpts = ''
-      #     --cgroup-driver systemd \
-      #   '';
-
-      #   # CNI configuration
-      #   proxy.enable = false;
-      #   flannel.enable = false;
-      #   kubelet.networkPlugin = "cni";
-      #   kubelet.cni.configDir = "/etc/cni/net.d";
-      #   kubelet.clusterDns = "10.2.0.254";
-      #   controllerManager.allocateNodeCIDRs = true;
-      #   controllerManager.clusterCidr = "10.1.0.0/16";
-      # };
-
-      # pantheon = {
-      #   iscsi.enable = true;
-      #   iscsi.initiatorPrefix = "iqn.2000-01.ae.cmacr";
-      #   iscsi.portal = "10.0.1.1";
-      # };
-
+      # Nomad
+      services.nomad.enable = true;
+      services.nomad.enableDocker = false;
+      services.nomad.settings = {
+        datacenter = "pantheon";
+        server.enabled = true;
+        server.bootstrap_expect = 3;
+        client.enabled = true;
+      };
     };
   }

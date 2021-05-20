@@ -23,6 +23,22 @@
   outputs = { self, nixpkgs, darwin, home, nur, emacs, emacs-overlay, rnix-lsp, spacebar, deploy-rs, sops }:
     let
       domain = "cmacr.ae";
+
+      computeParticipants = 3;
+      commonComputeConfig = [
+        {
+          sops.defaultSopsFile = ./secrets.yaml;
+
+          services.nomad.settings.region = "lan";
+          services.nomad.settings.server = {
+            bootstrap_expect = computeParticipants;
+            server_join.retry_join =
+              nixpkgs.lib.forEach (nixpkgs.lib.range 1 computeParticipants)
+                (n: "10.0.10.${toString n}");
+          };
+        }
+      ];
+
       commonDarwinConfig = [
         ./modules/macintosh.nix
         ./modules/mbsync.nix
@@ -65,7 +81,7 @@
 
                 nix.distributedBuilds = true;
                 nix.buildMachines =
-                  pkgs.lib.forEach (pkgs.lib.range 1 3) (
+                  pkgs.lib.forEach (pkgs.lib.range 1 computeParticipants) (
                     n:
                       {
                         hostName = "compute${builtins.toString n}";
@@ -159,7 +175,7 @@
 
         nixosConfigurations.compute1 = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          modules = [
+          modules = commonComputeConfig ++ [
             ./modules/common.nix
             ./modules/compute.nix
             sops.nixosModules.sops
@@ -170,8 +186,6 @@
               compute.efiBlockId = "9B1E-7DE0";
               compute.domain = domain;
 
-
-              sops.defaultSopsFile = ./secrets.yaml;
               sops.secrets.compute1_store_privatekey.owner = "nix-serve";
 
               virtualisation.oci-containers.containers = {
@@ -204,81 +218,81 @@
           ];
         };
 
-        nixosConfigurations.compute2 = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          modules = [
-            ./modules/common.nix
-            ./modules/compute.nix
-            sops.nixosModules.sops
+        nixosConfigurations.compute2 = nixpkgs.lib.nixosSystem
+          {
+            system = "x86_64-linux";
+            modules = commonComputeConfig ++ [
+              ./modules/common.nix
+              ./modules/compute.nix
+              sops.nixosModules.sops
 
-            {
-              compute.id = 2;
-              compute.hostId = "7df67865";
-              compute.efiBlockId = "0DDD-4E07";
-              compute.domain = domain;
+              {
+                compute.id = 2;
+                compute.hostId = "7df67865";
+                compute.efiBlockId = "0DDD-4E07";
+                compute.domain = domain;
 
-              sops.defaultSopsFile = ./secrets.yaml;
-              sops.secrets.compute2_store_privatekey.owner = "nix-serve";
+                sops.secrets.compute2_store_privatekey.owner = "nix-serve";
 
-              virtualisation.oci-containers.containers = {
-                sonarr = baseContainer // {
-                  image = "ghcr.io/linuxserver/sonarr";
-                  volumes = [
-                    "config:/config"
-                    "/media/downloads:/downloads"
-                    "/media/tv:/tv"
-                  ];
-                };
-              };
-            }
-          ];
-        };
-
-        nixosConfigurations.compute3 = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          modules = [
-            ./modules/common.nix
-            ./modules/compute.nix
-            sops.nixosModules.sops
-
-            {
-              compute.id = 3;
-              compute.hostId = "11dc35bc";
-              compute.efiBlockId = "A181-EEC7";
-              compute.domain = domain;
-
-              sops.defaultSopsFile = ./secrets.yaml;
-              sops.secrets.compute3_store_privatekey.owner = "nix-serve";
-
-              virtualisation.oci-containers.containers = {
-                radarr = baseContainer // {
-                  image = "ghcr.io/linuxserver/radarr";
-                  volumes = [
-                    "config:/config"
-                    "/media/downloads:/downloads"
-                    "/media/movies:/movies"
-                  ];
-                };
-
-                plex = {
-                  image = "plexinc/pms-docker";
-                  volumes = [
-                    "config:/config"
-                    "/media/movies:/data/movies"
-                    "/media/tv:/data/tv"
-                  ];
-                  extraOptions = [ "--network=host" ];
-                  environment = {
-                    HOSTNAME = "plex.cmacr.ae";
-                    TZ = "Europe/London";
-                    PLEX_UID = "1001";
-                    PLEX_GID = "1001";
+                virtualisation.oci-containers.containers = {
+                  sonarr = baseContainer // {
+                    image = "ghcr.io/linuxserver/sonarr";
+                    volumes = [
+                      "config:/config"
+                      "/media/downloads:/downloads"
+                      "/media/tv:/tv"
+                    ];
                   };
                 };
-              };
-            }
-          ];
-        };
+              }
+            ];
+          };
+
+        nixosConfigurations.compute3 = nixpkgs.lib.nixosSystem
+          {
+            system = "x86_64-linux";
+            modules = commonComputeConfig ++ [
+              ./modules/common.nix
+              ./modules/compute.nix
+              sops.nixosModules.sops
+
+              {
+                compute.id = 3;
+                compute.hostId = "11dc35bc";
+                compute.efiBlockId = "A181-EEC7";
+                compute.domain = domain;
+
+                sops.secrets.compute3_store_privatekey.owner = "nix-serve";
+
+                virtualisation.oci-containers.containers = {
+                  radarr = baseContainer // {
+                    image = "ghcr.io/linuxserver/radarr";
+                    volumes = [
+                      "config:/config"
+                      "/media/downloads:/downloads"
+                      "/media/movies:/movies"
+                    ];
+                  };
+
+                  plex = {
+                    image = "plexinc/pms-docker";
+                    volumes = [
+                      "config:/config"
+                      "/media/movies:/data/movies"
+                      "/media/tv:/data/tv"
+                    ];
+                    extraOptions = [ "--network=host" ];
+                    environment = {
+                      HOSTNAME = "plex.cmacr.ae";
+                      TZ = "Europe/London";
+                      PLEX_UID = "1001";
+                      PLEX_GID = "1001";
+                    };
+                  };
+                };
+              }
+            ];
+          };
 
         # Map each system in 'nixosConfigurations' to a common
         # deployment description
