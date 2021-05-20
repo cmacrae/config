@@ -31,6 +31,12 @@ in
     "https://cachix.org/api/v1/cache/emacs"
     # Binary cache for the srokell/deploy-rs binary
     "https://cachix.org/api/v1/cache/deploy-rs"
+
+    # Personal local network caches
+    "http://compute1.cmacr.ae:5000"
+    "http://compute2.cmacr.ae:5000"
+    "http://compute3.cmacr.ae:5000"
+
     "https://cachix.org/api/v1/cache/nix-community"
   ];
 
@@ -39,6 +45,9 @@ in
     "emacs.cachix.org-1:b1SMJNLY/mZF6GxQE+eDBeps7WnkT0Po55TAyzwOxTY="
     "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
     "deploy-rs.cachix.org-1:M+ZN++7fdqZFeIsvJyqeQrgnAbgsPNuv8z93uAJO43w="
+    "compute1.cmacr.ae-1:IOsUhW3iV0YqgaRNxnBROk8w586zC78jdp/fof5pPl4="
+    "compute2.cmacr.ae-1:mBaXeUjr9z7bx8bnzrROjd/vI/q461A/TFtYHqeD3G8="
+    "compute3.cmacr.ae-1:0Xb2N8z/co9+PDO2rx8ix9whG4itRp8TvmPBzD7Pzr4="
   ];
 
   nix.trustedBinaryCaches = config.nix.binaryCaches;

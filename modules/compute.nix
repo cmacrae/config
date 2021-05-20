@@ -141,6 +141,14 @@ in
       # System packages
       environment.systemPackages = with pkgs; [ kubectl nfs-utils iptables ];
 
+      # nix-serve
+      services.nix-serve.enable = true;
+      services.nix-serve.secretKeyFile =
+        config.sops.secrets."${config.networking.hostName}_store_privatekey".path;
+      systemd.services.nix-serve = {
+        serviceConfig.SupplementaryGroups = [ config.users.groups.keys.name ];
+      };
+
       ##############
       # Kubernetes #
       ##############

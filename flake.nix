@@ -152,7 +152,7 @@
 
             {
               sops.defaultSopsFile = ./secrets.yaml;
-              sops.secrets.wireguard_privatekey = {};
+              sops.secrets.net1_wireguard_privatekey = {};
             }
           ];
         };
@@ -162,12 +162,17 @@
           modules = [
             ./modules/common.nix
             ./modules/compute.nix
+            sops.nixosModules.sops
 
             {
               compute.id = 1;
               compute.hostId = "ef32e32d";
               compute.efiBlockId = "9B1E-7DE0";
               compute.domain = domain;
+
+
+              sops.defaultSopsFile = ./secrets.yaml;
+              sops.secrets.compute1_store_privatekey.owner = "nix-serve";
 
               virtualisation.oci-containers.containers = {
                 nzbget = baseContainer // {
@@ -204,12 +209,16 @@
           modules = [
             ./modules/common.nix
             ./modules/compute.nix
+            sops.nixosModules.sops
 
             {
               compute.id = 2;
               compute.hostId = "7df67865";
               compute.efiBlockId = "0DDD-4E07";
               compute.domain = domain;
+
+              sops.defaultSopsFile = ./secrets.yaml;
+              sops.secrets.compute2_store_privatekey.owner = "nix-serve";
 
               virtualisation.oci-containers.containers = {
                 sonarr = baseContainer // {
@@ -230,12 +239,16 @@
           modules = [
             ./modules/common.nix
             ./modules/compute.nix
+            sops.nixosModules.sops
 
             {
               compute.id = 3;
               compute.hostId = "11dc35bc";
               compute.efiBlockId = "A181-EEC7";
               compute.domain = domain;
+
+              sops.defaultSopsFile = ./secrets.yaml;
+              sops.secrets.compute3_store_privatekey.owner = "nix-serve";
 
               virtualisation.oci-containers.containers = {
                 radarr = baseContainer // {

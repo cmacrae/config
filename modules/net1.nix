@@ -104,7 +104,7 @@ in
           listenPort = 51820;
           ips = [ "10.100.0.1/24" ];
 
-          privateKeyFile = config.sops.secrets.wireguard_privatekey.path;
+          privateKeyFile = config.sops.secrets.net1_wireguard_privatekey.path;
 
           peers = [
             {
