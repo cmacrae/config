@@ -117,6 +117,10 @@ in
     "discord"
   ];
 
+  homebrew.masApps = {
+    WireGuard = 1451685025;
+  };
+
   services.skhd.enable = true;
   services.skhd.skhdConfig = builtins.readFile ../conf.d/skhd.conf;
 
