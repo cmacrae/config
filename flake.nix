@@ -29,13 +29,11 @@
         {
           sops.defaultSopsFile = ./secrets.yaml;
 
-          services.nomad.settings.region = "lan";
-          services.nomad.settings.server = {
-            bootstrap_expect = computeParticipants;
-            server_join.retry_join =
-              nixpkgs.lib.forEach (nixpkgs.lib.range 1 computeParticipants)
-                (n: "10.0.10.${toString n}");
-          };
+          services.consul.extraConfig.bootstrap_expect = computeParticipants;
+          services.nomad.settings.server.bootstrap_expect = computeParticipants;
+          services.consul.extraConfig.retry_join =
+            nixpkgs.lib.forEach (nixpkgs.lib.range 1 computeParticipants)
+              (n: "10.0.10.${toString n}");
         }
       ];
 

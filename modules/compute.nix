@@ -109,13 +109,23 @@ in
         serviceConfig.SupplementaryGroups = [ config.users.groups.keys.name ];
       };
 
+      # Consul
+      services.consul.enable = true;
+      services.consul.webUi = true;
+      services.consul.interface.bind = "enp0s25";
+      services.consul.extraConfig = {
+        server = true;
+        datacenter = "pantheon";
+        client_addr = "127.0.0.1 10.0.10.${builtins.toString cfg.id}";
+      };
+
       # Nomad
       services.nomad.enable = true;
       services.nomad.enableDocker = false;
       services.nomad.settings = {
+        region = "lan";
         datacenter = "pantheon";
         server.enabled = true;
-        server.bootstrap_expect = 3;
         client.enabled = true;
       };
     };

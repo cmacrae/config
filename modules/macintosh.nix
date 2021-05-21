@@ -228,6 +228,7 @@ in
       bc
       bind
       clang
+      consul
       ffmpeg-full
       gnumake
       gnupg
