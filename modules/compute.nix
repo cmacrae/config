@@ -109,6 +109,9 @@ in
         serviceConfig.SupplementaryGroups = [ config.users.groups.keys.name ];
       };
 
+      # Podman
+      virtualisation.podman.enable = true;
+
       # Consul
       services.consul.enable = true;
       services.consul.webUi = true;
@@ -122,11 +125,15 @@ in
       # Nomad
       services.nomad.enable = true;
       services.nomad.enableDocker = false;
+      services.nomad.dropPrivileges = false; # for use with podman
+      systemd.services.podman.path = mkAfter [ pkgs.zfs ];
       services.nomad.settings = {
         region = "lan";
         datacenter = "pantheon";
         server.enabled = true;
         client.enabled = true;
+        plugin_dir = "${pkgs.nomad-driver-podman}/bin";
+        plugin.nomad-driver-podman.config.socket_path = "unix://run/podman/podman.sock";
       };
     };
   }
