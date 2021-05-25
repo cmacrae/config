@@ -216,8 +216,6 @@ in
           ''"127.in-addr.arpa. 10800 IN NS localhost."''
           ''"127.in-addr.arpa. 10800 IN SOA localhost. nobody.invalid. 2 3600 1200 604800 10800"''
           ''"1.0.0.127.in-addr.arpa. 10800 IN PTR localhost."''
-
-          ''"k8s.${domain}. IN A ${ipReservations.compute1.ip}"''
         ] ++ (
           mapAttrsToList (
             name: attributes:
@@ -233,21 +231,22 @@ in
         domain-insecure = ''"pantheon.${domain}."'';
       };
 
-      settings.forward-zone = [
-        {
-          name = "pantheon.${domain}.";
-          forward-tls-upstream = "no";
-          forward-addr = ipReservations.compute1.ip;
-          forward-no-cache = "yes";
-        }
-        {
-          name = ".";
-          forward-tls-upstream = "yes";
-          forward-addr = [
-            "1.1.1.1@853"
-            "1.0.0.1@853"
-          ];
-        }
-      ];
+      settings.stub-zone = {
+        name = "consul.";
+        stub-addr = [
+          "${ipReservations.compute1.ip}@8600"
+          "${ipReservations.compute2.ip}@8600"
+          "${ipReservations.compute3.ip}@8600"
+        ];
+      };
+
+      settings.forward-zone = {
+        name = ".";
+        forward-tls-upstream = "yes";
+        forward-addr = [
+          "1.1.1.1@853"
+          "1.0.0.1@853"
+        ];
+      };
     };
   }
