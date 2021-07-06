@@ -38,21 +38,19 @@
  */
 #navigator-toolbox {
     font-family: 'Menlo' !important;
-    border-bottom: 1px;
-    border-bottom-color: #93a1a1 !important;
 }
 
 #navigator-toolbox toolbarspring {
     display: none;
 }
 
-/* Move tab line to the bottom */
-#navigator-toolbox .tab-line {
-    -moz-box-ordinal-group: 2;
+/* Hide filler */
+#customizableui-special-spring2{
+	display:none;
 }
 
-.tab-line[selected=true] {
-    background-color: @tabLineColour@ !important;
+.tab-background{
+	padding-bottom: 0 !important;
 }
 
 #navigator-toolbox #urlbar-container {
@@ -73,7 +71,6 @@
 }
 
 #navigator-toolbox #nav-bar {
-    background: #2e3440 !important;
     box-shadow: none !important;
 }
 
@@ -103,46 +100,19 @@
     display: none;
 }
 
-#navigator-toolbox .toolbar-items {
-    background: #2e3440  !important;
-}
-
 #navigator-toolbox #urlbar {
-    background: #2e3440 !important;;
-    color: #d8dee9 !important;
     padding: 0 !important;
     padding-left: 1ch !important;
     font-size: 13px;
-    height: 20px;
 }
 
 #navigator-toolbox #urlbar-background {
-    background: #2e3440 !important;;
     border: none !important;
     margin: 0 !important;
 }
 
-#navigator-toolbox #nav-bar-customization-target {
-    background: #2e3440 !important;;
-}
-
 #navigator-toolbox .toolbarbutton-1 {
     width: 22px;
-}
-
-#navigator-toolbox #downloads-button {
-    color: #2e3440 ;
-    background: #2e3440 !important;
-}
-
-#navigator-toolbox #PanelUI-button {
-    opacity: 1 !important;
-    background: #2e3440 !important;
-}
-
-#navigator-toolbox #PanelUI-menu-button {
-    background: #2e3440 !important;
-    color: #d8dee9 !important;
 }
 
 #navigator-toolbox .tabbrowser-tab {
@@ -150,21 +120,8 @@
 }
 
 #navigator-toolbox .tab-background {
-    background: #2e3440  !important;
     box-shadow: none!important;
     border: none !important;
-}
-
-#navigator-toolbox .tabbrowser-tab .tab-label {
-    color: #d8dee9 !important;
-}
-
-#navigator-toolbox .tab-background[selected="true"] {
-    background: #2e3440  !important;
-}
-
-#navigator-toolbox .tabbrowser-tab[selected="true"] .tab-label {
-    color: #d8dee9 !important;
 }
 
 #navigator-toolbox .tabbrowser-tab::after {
@@ -199,7 +156,7 @@
 }
 
 :root[uidensity=compact] #PanelUI-button {
-    margin-top: -28px;
+    margin-top: -30px;
 }
 
 #PanelUI-button {
@@ -220,7 +177,7 @@
     --uc-toolbar-height: 40px;
 }
 /* Override for other densities */
-:root[uidensity="compact"] #navigator-toolbox{ --uc-toolbar-height: 28px; }
+:root[uidensity="compact"] #navigator-toolbox{ --uc-toolbar-height: 30px; }
 :root[uidensity="touch"] #navigator-toolbox{ --uc-toolbar-height: 40px; }
 
 :root[uidensity=compact] #urlbar-container.megabar{
@@ -256,7 +213,7 @@
 .tab-close-button{ margin-top: 0 !important }
 
 /* Hide dropdown placeholder */
-#urlbar-container:not(:hover) .urlbar-history-dropmarker{ margin-inline-start: -28px; }
+#urlbar-container:not(:hover) .urlbar-history-dropmarker{ margin-inline-start: -30px; }
 
 /* Fix customization view */
 #customization-panelWrapper > .panel-arrowbox > .panel-arrow{ margin-inline-end: initial !important; }
