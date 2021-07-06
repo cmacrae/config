@@ -344,7 +344,8 @@ in
 
     programs.firefox.profiles =
       let
-        defaultSettings = {
+        userChrome = builtins.readFile ../conf.d/userChrome.css;
+        settings = {
           "app.update.auto" = false;
           "browser.startup.homepage" = "https://lobste.rs";
           "browser.search.region" = "GB";
@@ -375,34 +376,18 @@ in
       in
         {
           home = {
+            inherit settings;
+            inherit userChrome;
             id = 0;
-            settings = defaultSettings;
-            userChrome = (
-              builtins.readFile (
-                pkgs.substituteAll {
-                  name = "homeUserChrome";
-                  src = ../conf.d/userChrome.css;
-                  tabLineColour = "#5e81ac";
-                }
-              )
-            );
           };
 
           work = {
+            inherit userChrome;
             id = 1;
-            settings = defaultSettings // {
+            settings = settings // {
               "browser.startup.homepage" = "about:blank";
               "browser.urlbar.placeholderName" = "Google";
             };
-            userChrome = (
-              builtins.readFile (
-                pkgs.substituteAll {
-                  name = "workUserChrome";
-                  src = ../conf.d/userChrome.css;
-                  tabLineColour = "#d08770";
-                }
-              )
-            );
           };
         };
 
