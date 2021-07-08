@@ -36,17 +36,5 @@ jobs:
         extraPullNames: emacs
 
     - run: >-
-        nix show-derivation
-        .#darwinConfigurations.macbook.config.home-manager.users.cmacrae.programs.emacs.finalPackage
-        > emacs.drv
-
-    - uses: actions/cache@v2
-      id: cache-drv
-      with:
-        path: ./emacs.drv
-        key: emacs-drv-${{ hashFiles('emacs.drv') }}
-
-    - run: >-
         nix build -L
         .#darwinConfigurations.macbook.config.home-manager.users.cmacrae.programs.emacs.finalPackage
-      if: steps.cache-drv.outputs.cache-hit != 'true'
