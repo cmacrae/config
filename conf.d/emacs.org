@@ -250,118 +250,86 @@
     (use-package use-package)
     #+END_SRC
 
-*** TODO selectrum|consult|prescient|marginalia
-    Still fleshing this out...
-**** selectrum
+*** Ivy|Counsel|Swiper
+    Absolutely brilliant interactive interface and completion frameworks.
+    These packages improve the Emacs experience so much.
+    As you can see from the =:bind= sections, I use these to replace some of the most used actions.
+
+**** Ivy
+    - Suppress count visibility for =ivy-read=
+    - Set initial chars for certain inputs
+    - Display the candidate menu at the current point position with =ivy-posframe=
+
     #+BEGIN_SRC emacs-lisp
-    (use-package selectrum
-      :hook (after-init . selectrum-mode)
-      :bind ("C-x C-z" . selectrum-repeat))
-    #+END_SRC
-
-**** consult
-    #+BEGIN_SRC emacs-lisp
-    ;; Example configuration for Consult
-    (use-package consult
-      :bind (
-             ("C-c h" . consult-history)
-             ("C-c m" . consult-mode-command)
-             ("C-c b" . consult-bookmark)
-             ("C-c k" . consult-kmacro)
-
-             ("C-x M-:" . consult-complex-command)
-             ("C-x b"   . consult-buffer)
-             ("C-x 4 b" . consult-buffer-other-window)
-             ("C-x 5 b" . consult-buffer-other-frame)
-
-             ("M-#"   . consult-register-load)
-             ("M-'"   . consult-register-store)
-             ("C-M-#" . consult-register)
-             ("M-y"   . consult-yank-pop)
-
-             ("M-g e"   . consult-compile-error)
-             ("M-g g"   . consult-goto-line)
-             ("M-g M-g" . consult-goto-line)
-             ("M-g o"   . consult-outline)
-             ("M-g m"   . consult-mark)
-             ("M-g k"   . consult-global-mark)
-             ("M-g i"   . consult-imenu)
-             ("M-g I"   . consult-project-imenu)
-
-             ("M-s f" . consult-find)
-             ("M-s L" . consult-locate)
-             ("M-s g" . consult-grep)
-             ("M-s G" . consult-git-grep)
-             ("M-s r" . consult-ripgrep)
-             ("M-s l" . consult-line)
-             ("M-s m" . consult-multi-occur)
-             ("M-s k" . consult-keep-lines)
-             ("M-s u" . consult-focus-lines)
-             ("M-s e" . consult-isearch)
-
-             ("C-s" . consult-line)
-
-             :map isearch-mode-map
-             ("M-e" . consult-isearch)
-             ("M-s e" . consult-isearch)
-             ("M-s l" . consult-line))
-
-      :init
-
-      ;; Configure the register formatting. This improves the register
-      ;; preview for `consult-register', `consult-register-load',
-      ;; `consult-register-store' and the Emacs built-ins.
-      (setq register-preview-delay 0
-            register-preview-function #'consult-register-format)
-
-      ;; Tweak the register preview window.
-      ;; This adds thin lines, sorting and hides the mode line of the window.
-      (advice-add #'register-preview :override #'consult-register-window)
-
-      ;; Use Consult to select xref locations with preview
-      (setq xref-show-xrefs-function #'consult-xref
-            xref-show-definitions-function #'consult-xref)
+    (use-package ivy
+      :hook (after-init . ivy-mode)
+      :bind
+      ("C-s"     . swiper)
+      ("M-x"     . counsel-M-x)
+      ("C-x C-f" . counsel-find-file)
 
       :custom
-      ;; Configure preview.
-      (consult-preview-key 'any)
-
-      ;; Configure the narrowing key.
-      (consult-narrow-key "<")
+      (ivy-height 4)
+      (ivy-count-format "")
+      (ivy-use-virtual-buffers t)
+      (enable-recursive-minibuffers t)
+      (ivy-initial-inputs-alist: '((counsel-minor            . "^+" )
+                                   (counsel-package          . "^+" )
+                                   (counsel-org-capture      . "^"  )
+                                   (counsel-M-x              . "^"  )
+                                   (counsel-describe-symbol  . "^"  )
+                                   (org-refile               . ""   )
+                                   (org-agenda-refile        . ""   )
+                                   (org-capture-refile       . ""   )
+                                   (Man-completion-table     . "^"  )
+                                   (woman                    . "^"  )))
 
       :config
-      (use-package consult-flycheck
-        :bind (:map flycheck-command-map
-                ("!" . consult-flycheck))))
+      (use-package ivy-posframe
+        :ensure t
+        :after ivy
+        :hook (ivy-mode . ivy-posframe-mode)
+        :custom
+        (ivy-posframe-border-width 1)
+	(ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-point)))
+        (ivy-posframe-parameters '((left-fringe . 8) (right-fringe . 8))
+                                  (swiper . nil)))
+      (use-package ivy-rich
+        :ensure t
+        :hook (ivy-mode . ivy-rich-mode)
+        :custom (ivy-rich-path-style 'abbrev)))
+   #+END_SRC
+
+**** Counsel
+     - Set a prettier candidate delimiter for killring
+     - Bind common functions
+     - Bind common org functions
+     - Ensure `smex` is installed for better candidate matching
+    #+BEGIN_SRC emacs-lisp
+    (use-package counsel
+      :custom
+      (counsel-yank-pop-separator (concat "\n\n"
+          (concat (apply 'concat (make-list 50 "---")) "\n")))
+
+      :bind
+      (("M-y"   . counsel-yank-pop)
+       ("C-h f" . counsel-describe-function)
+       ("C-h v" . counsel-describe-variable)
+
+       :map org-mode-map
+       ("C-c  C-j" . counsel-org-goto)
+       ("C-c  C-q" . counsel-org-tag))
+
+      :config
+      (use-package smex :ensure t))
     #+END_SRC
 
-**** prescient
-     #+BEGIN_SRC emacs-lisp
-     (use-package prescient
-       :config
-       (use-package selectrum-prescient
-	 :hook (selectrum-mode . selectrum-prescient-mode))
-       (use-package company-prescient
-	 :hook (company-mode . company-prescient-mode)))
-     #+END_SRC
-
-**** marginalia
-     #+BEGIN_SRC emacs-lisp
-     (use-package marginalia
-       :hook (after-init . marginalia-mode)
-       :custom
-       (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil)))
-     #+END_SRC
-
-*** TODO ivy-pass & auth-password-store
-    Need an alternative to ivy-pass.
-    Can use =M-x password-store-copy= in the meantime
-
+*** ivy-pass & auth-password-store
     I use [[https://www.passwordstore.org/][pass]] to manage my passwords. This is a handy little package for interfacing with it.
     #+BEGIN_SRC emacs-lisp
-    ;; (use-package ivy-pass
-    ;;   :bind ("C-c M-p" . ivy-pass)
-    ;;   :custom (password-store-password-length 30))
+    (use-package ivy-pass
+      :bind ("C-c M-p" . ivy-pass)
+      :custom (password-store-password-length 30))
     #+END_SRC
 
     And this package allows it to act as an auth-source
@@ -552,17 +520,26 @@
     Not only that, but it allows project-wide actions. Like killing all buffers for a project, performing a project-wide find-and-replace, or a grep, etc.
 
     Some configuration I use:
+    - Setting the completion system to =ivy=
     - Further integration of Counsel with Projectile than what's provided natively
     #+BEGIN_SRC emacs-lisp
     (use-package projectile
       :hook
       (after-init . projectile-global-mode)
       :custom
+      (projectile-completion-system 'ivy)
       (projectile-switch-project-action 'neotree-projectile-action)
-      :bind
+      :config
+      (use-package counsel-projectile
+        :ensure t
+        :after projectile
+        :hook
+        (projectile-global-mode . counsel-projectile-mode)
+        :bind
+        ("C-c p s r" . counsel-projectile-rg)
         (:map projectile-mode-map
-         ("C-c p f" . projectile-find-file)
-         ("C-c p p" . projectile-persp-switch-project)))
+         ("C-c p p" . projectile-persp-switch-project)
+         ("C-c p f" . counsel-projectile-find-file))))
        #+END_SRC
 
 *** perspective
@@ -846,25 +823,6 @@
     (use-package centered-window)
     #+END_SRC
 
-*** mini-frame
-    Place a minibuffer on top of the current frame
-    #+BEGIN_SRC emacs-lisp
-    (use-package mini-frame
-      :hook (after-init . mini-frame-mode)
-      :custom
-      (mini-frame-resize t)
-      (mini-frame-show-parameters '((top . 10)
-                                    (width . 0.5)
-                                    (left . 0.5)))
-      (mini-frame-internal-border-color (face-attribute 'nano-face-subtle :background nil t)))
-    #+END_SRC
-
-*** svg-tag-mode
-    Fancy SVG labels for particular key words
-    #+BEGIN_SRC emacs-lisp
-    (use-package svg-tag-mode)
-    #+END_SRC
-
 *** Languages
     Configuration for working with various languages
     #+BEGIN_SRC emacs-lisp
@@ -950,6 +908,8 @@
         :after lsp-mode
         :custom
         (lsp-sourcekit-executable "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp")))
+      (use-package company-lsp :ensure t :commands company-lsp)
+      (use-package lsp-ivy     :ensure t :commands lsp-ivy-workspace-symbol))
     #+END_SRC
 
 ** Custom functions
