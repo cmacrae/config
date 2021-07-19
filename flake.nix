@@ -90,6 +90,19 @@
                       }
                   );
 
+                # Personal local network caches
+                nix.binaryCaches = [
+                  "http://compute1.cmacr.ae:5000"
+                  "http://compute2.cmacr.ae:5000"
+                  "http://compute3.cmacr.ae:5000"
+                ];
+
+                nix.binaryCachePublicKeys = [
+                  "compute1.cmacr.ae-1:IOsUhW3iV0YqgaRNxnBROk8w586zC78jdp/fof5pPl4="
+                  "compute2.cmacr.ae-1:mBaXeUjr9z7bx8bnzrROjd/vI/q461A/TFtYHqeD3G8="
+                  "compute3.cmacr.ae-1:0Xb2N8z/co9+PDO2rx8ix9whG4itRp8TvmPBzD7Pzr4="
+                ];
+
                 home-manager.users.cmacrae = {
                   home.packages = [
                     deploy-rs.defaultPackage.x86_64-darwin
