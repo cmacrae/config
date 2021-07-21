@@ -908,8 +908,7 @@
       (use-package lsp-sourcekit
         :after lsp-mode
         :custom
-        (lsp-sourcekit-executable "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp")))
-      (use-package company-lsp :ensure t :commands company-lsp)
+        (lsp-sourcekit-executable "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp"))
       (use-package lsp-ivy     :ensure t :commands lsp-ivy-workspace-symbol))
     #+END_SRC
 
