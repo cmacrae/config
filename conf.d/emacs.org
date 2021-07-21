@@ -335,6 +335,7 @@
     And this package allows it to act as an auth-source
     #+BEGIN_SRC emacs-lisp
     (use-package auth-source-pass
+      :ensure nil
       :hook (after-init . auth-source-pass-enable))
     #+END_SRC
 
