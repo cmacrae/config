@@ -840,6 +840,7 @@
       (markdown-mode . flyspell-mode))
 
     (use-package terraform-mode
+      :after lsp-mode
       :hook
       (terraform-mode . company-mode)
       (terraform-mode . (lambda () (lsp)))
