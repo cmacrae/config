@@ -806,6 +806,16 @@ Also added a hydra borrowed from [[https://oremacs.com/2015/01/29/more-hydra-goo
     ("q" nil "Quit")))
 #+END_SRC
 
+*** password-store
+I use [[https://www.passwordstore.org/][pass]] as my password manager, which comes with its own functions for Emacs
+#+BEGIN_SRC emacs-lisp
+(use-package password-store
+  :ensure nil
+  :load-path "~/.nix-profile/share/emacs/site-lisp/password-store.el"
+  :bind
+  ("C-c M-p" . password-store-copy))
+#+END_SRC
+
 *** Smartparens
 Brilliant automatic balancing of pairs. Makes for a really nice experience when typing in any language - programming or not.
 Just check out some of the gifs in the project's README.
