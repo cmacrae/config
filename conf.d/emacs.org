@@ -347,7 +347,14 @@ control it from within this file. Whilst this statement may seem recursive, it e
 (use-package use-package)
 #+END_SRC
 
-*** Vertico | savehist | corfu | orderless 
+*** Vertico | savehist | corfu | orderless | marginalia | Embark
+This section outlines my preference for Emacs' completion system/interface.
+- Vertico: consistent, minimalistic completion UI
+- savehist: persists completion history
+- corfu: enhanced =completion-in-region= functionality, mainly for extension of =completion-at-point= & Capfs based tooling (including LSP)
+- orderless: intuitive completion style for candidates based on space separated patterns
+- marginalia: annotations for minibuffer candidates
+- Embark: act on targets, sort of like a right-click menu
 #+BEGIN_SRC emacs-lisp
 (use-package vertico
   :hook (after-init . vertico-mode)
@@ -362,12 +369,33 @@ control it from within this file. Whilst this statement may seem recursive, it e
 (use-package corfu
   :hook (after-init . corfu-global-mode))
 
+;; TODO [orderless] failing to be found in Nix's ELPA/MELPA repositories
 ;; (use-package orderless
 ;;   :hook after-init
 ;;   :custom
 ;;   (completion-styles '(orderless)
 ;;   (completion-category-defaults nil)
 ;;   (completion-category-overrides '((file (styles partial-completion))))
+
+;; TODO: [marginalia] byte-compilation issue
+;; (use-package marginalia
+;;   :hook (after-init .marginalia-mode)
+;;   :custom
+;;   (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil)))
+
+(use-package embark
+  :bind
+  (("C-," . embark-act))
+
+  :init
+  (setq prefix-help-command #'embark-prefix-help-command))
+#+END_SRC
+
+*** which-key
+Helpful reminders for which keybindings are available
+#+BEGIN_SRC emacs-lisp
+(use-package which-key
+  :hook (after-init . which-key-mode))
 #+END_SRC
 
 *** Evil
