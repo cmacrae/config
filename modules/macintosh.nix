@@ -80,7 +80,14 @@ in
   };
 
   fonts.enableFontDir = true;
-  fonts.fonts = with pkgs; [ emacs-all-the-icons-fonts fira-code font-awesome roboto roboto-mono ];
+  fonts.fonts = with pkgs; [
+    emacs-all-the-icons-fonts
+    etBook
+    fira-code
+    font-awesome
+    roboto
+    roboto-mono
+  ];
 
   system.keyboard = {
     enableKeyMapping = true;
@@ -428,24 +435,30 @@ in
             config = ../conf.d/emacs.org;
 
             override = epkgs: epkgs // {
-              nano-emacs = elPackage "nano-emacs" (
-                pkgs.fetchFromGitHub {
-                  # NOTE: Using my own fork whilst I work on features
-                  #       'emhancements' branch
-                  # owner = "rougier";
-                  owner = "cmacrae";
-                  repo = "nano-emacs";
-                  rev = "01a51d2a8e18ef5a4e8540a01d110ae4e8d693e9";
-                  sha256 = "1cc8bbxjmyfgwiq01y0zin5l31qclyr9vjp0f8d9xr4wv5d1cap4";
-                }
-              );
+              # nano-theme = elPackage "nano-theme" (
+              #   pkgs.fetchFromGitHub {
+              #     owner = "rougier";
+              #     repo = "nano-theme";
+              #     rev = "4a231787a32b3019f9f0abb3511a112fd54bf685";
+              #     sha256 = "1xr1yyhapmyp8dpxa5gpkdqkga1k3gml3ycn2jqgp14bq823vjkr";
+              #   }
+              # );
+
+              # nano-modeline = elPackage "nano-modeline" (
+              #   pkgs.fetchFromGitHub {
+              #     owner = "rougier";
+              #     repo = "nano-modeline";
+              #     rev = "5036cd2f164311c10c39a87e6e4f2b7739b8e369";
+              #     sha256 = "171xnmn35dpcm20hv1993ryi3c3dmi8kvd7jlww9vdkljsm0gxc7";
+              #   }
+              # );
 
               mu4e-dashboard = elPackage "mu4e-dashboard" (
                 pkgs.fetchFromGitHub {
                   owner = "rougier";
                   repo = "mu4e-dashboard";
-                  rev = "143e87a770689d9402addaeb43ff48efcc5ce40c";
-                  sha256 = "13ximpz77fbgwl4a91nh8wy9qm83q7s11hbnlx3bi04pcgz4cchj";
+                  rev = "40b2d48da55b7ac841d62737ea9cdf54e8442cf3";
+                  sha256 = "1i94gdyk9f5c2vyr184znr54cbvg6apcq38l2389m3h8lxg1m5na";
                 }
               );
 
@@ -453,14 +466,15 @@ in
                 pkgs.fetchFromGitHub {
                   owner = "rougier";
                   repo = "mu4e-thread-folding";
-                  rev = "db0fadeb1f7262cf43cfe98c3b1d08682f9c5f25";
-                  sha256 = "1rgvnqxkiparslk7n76h5iad0xq4pdjici21c94l7rpxsp9vsrvh";
+                  rev = "c6915585263a744b4da4a0e334393150603136dc";
+                  sha256 = "0fki9506q42fz6a86pnx2ll3kl25d6nh4b735c323abnwjirjd50";
                 }
               );
             };
 
             extraEmacsPackages = epkgs: with epkgs; [
-              nano-emacs
+              # nano-theme
+              # nano-modeline
               mu4e-dashboard
               mu4e-thread-folding
             ];
