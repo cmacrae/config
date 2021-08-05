@@ -2,12 +2,11 @@ name: "Build Emacs with packages"
 
 on:
   push:
-    branches:
-      - master
     paths:
       - modules/macintosh.nix
       - flake.*
-      - .github/**
+      - conf.d/emacs.org
+      - .github/workflows/emacs.yaml
 
   schedule:
     - cron: '00 00 * * *'
