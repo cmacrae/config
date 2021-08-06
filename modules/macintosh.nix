@@ -301,7 +301,7 @@ in
     programs.mu.enable = true;
     programs.mbsync.enable = true;
     programs.msmtp.enable = true;
-    accounts.email.maildirBasePath = ".mail";
+    accounts.email.maildirBasePath = "${config.users.users.cmacrae.home}/.mail";
     accounts.email.accounts.fastmail = {
       mu.enable = true;
       msmtp.enable = true;
