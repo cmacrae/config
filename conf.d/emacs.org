@@ -240,105 +240,6 @@ The following setting suppresses automatic display of warning messages.
       native-comp-async-report-warnings-errors nil)
 #+END_SRC
 
-** Meta Configurations
-This section includes the use of any "meta" collection of Emacs configurations provided by others.
-I'm using [[https://github.com/rougier/nano-emacs/issues/37][rougier/nano-emacs]] as a base. The configuration is shaped around principles that align with my own.
-
-Currently I'm making some changes locally that I intend to send for review upstream, so I'm loading from a local
-path.
-
-Any customisations that I'd deem too specific to my preference I'll explicitly outline here.
-- Override the modeline for term/vterm mode to show current directory & =kubectl= context and namespace (if not =default=)
-- Override the modeline for mu4e's main & header views to inject some fancy icons
-
-  #+BEGIN_SRC emacs-lisp
-(use-package ts)
-(use-package nano-theme
-  :ensure nil
-  :demand t
-  :load-path "~/src/github.com/cmacrae/nano-theme"
-  :config
-  (load-theme 'nano t))
- 
-(use-package nano-modeline
-  :ensure nil
-  :load-path "~/src/github.com/cmacrae/nano-modeline"
-  :hook (after-init . nano-modeline))
-
-;; (use-package nano-emacs
-;;   :ensure nil
-;;   :load-path "~/src/github.com/cmacrae/nano-emacs"
-;;   :init
-;;   ;; (require 'nano-modeline)
-;;   (require 'nano-writer)
-;;   ;; (require 'nano-layout)
-;;   (require 'nano-mu4e))
-
-;;   ;; (defun cm/nano-modeline-term-mode ()
-;;   ;;   "Modline for term/vterm mode with current project (or directory) and kubectl context/namespace."
-;;   ;;   (nano-modeline-compose " >_ "
-;;   ;;                         "Terminal"
-;;   ;; 			     (concat "| "
-;;   ;; 			       (if (fboundp 'projectile-default-project-name)
-;;   ;; 			             (projectile-project-name)
-;;   ;; 			           (substring (shorten-directory default-directory 32) 0 -1)))
-;;   ;;                         (let
-;;   ;; 			     ((ns (shell-command-to-string "kubectl config view --minify --output 'jsonpath={..namespace}'"))
-;;   ;; 			      (context (substring (shell-command-to-string "kubectl config current-context") 0 -1)))
-;;   ;; 			       (if (string= "default" ns)
-;;   ;; 			         (format "%s" context)
-;;   ;; 			         (format "%s:%s" context ns)))))
-
-;;   ;; (defun cm/nano-modeline-mu4e-main-mode ()
-;;   ;;   "Modeline for mu4e's main view with a fancy mail icon"
-;;   ;;   (nano-modeline-compose (if (fboundp 'all-the-icons-faicon)
-;;   ;; 			       (concat " " (all-the-icons-faicon
-;;   ;; 			        "envelope"
-;;   ;; 			        :height 5
-;;   ;; 			        :face 'nano-face-header-faded
-;;   ;; 			        :v-adjust -0.1) " ")
-;;   ;; 			       (nano-modeline-status))
-;;   ;;                          "Mail"
-;;   ;;                          (nano-modeline-mu4e-context)
-;;   ;;                          (format-time-string "%A %d %B %Y, %H:%M")))
-
-
-;;   ;; (defun cm/nano-modeline-mu4e-headers-mode ()
-;;   ;;  "Modeline for mu4e's headers view with a fancy search icon"
-;;   ;;   (nano-modeline-compose (if (fboundp 'all-the-icons-faicon)
-;;   ;;                           (concat " " (all-the-icons-faicon
-;;   ;;                            "search"
-;;   ;;                            :height 5
-;;   ;;                            :face 'nano-face-header-faded
-;;   ;;                            :v-adjust -0.1) " ")
-;;   ;;                            (nano-modeline-status))
-;;   ;;                           (mu4e~quote-for-modeline mu4e~headers-last-query)
-;;   ;;                          ""
-;;   ;;                          ""))
-
-;;   ;; (defun cm/nano-modeline-mu4e-dashboard-mode ()
-;;   ;;  "Modeline for mu4e-dashboard with a fancy mail icon"
-;;   ;;   (nano-modeline-compose (if (fboundp 'all-the-icons-faicon)
-;;   ;; 			       (concat " " (all-the-icons-faicon
-;;   ;; 			        "envelope"
-;;   ;; 			        :height 5
-;;   ;; 			        :face 'nano-face-header-faded
-;;   ;; 			        :v-adjust -0.1) " ")
-;;   ;; 			       (nano-modeline-status))
-;;   ;;                          "Mail"
-;;   ;;                          (nano-modeline-mu4e-context)
-;;   ;;                          ""))
-
-;;   ;; (advice-add #'nano-modeline-term-mode :override #'cm/nano-modeline-term-mode)
-;;   ;; (advice-add #'nano-modeline-mu4e-main-mode :override #'cm/nano-modeline-mu4e-main-mode)
-;;   ;; (advice-add #'nano-modeline-mu4e-headers-mode :override #'cm/nano-modeline-mu4e-headers-mode)
-;;   ;; (advice-add #'nano-modeline-mu4e-dashboard-mode :override #'cm/nano-modeline-mu4e-dashboard-mode)
-
-;;   :hook
-;;   (after-init . nano-faces)
-;;   (after-init . nano-theme))
-  #+END_SRC
-
 ** Packages
 *** use-package
 I use [[https://github.com/nix-community/emacs-overlay][nix-community/emacs-overlay]]'s =emacsWithPackagesFromUsePackage= function to manage my package installation with Nix, but still
@@ -389,6 +290,24 @@ This section outlines my preference for Emacs' completion system/interface.
 
   :init
   (setq prefix-help-command #'embark-prefix-help-command))
+#+END_SRC
+
+*** nano-theme|nano-modeline
+Modular parts of [[https://github.com/rougier/nano-emacs/issues/37][rougier/nano-emacs]].
+Currently I'm making some changes locally that I intend to send for review upstream, so I'm loading from local
+paths.
+#+BEGIN_SRC emacs-lisp
+(use-package nano-theme
+  :ensure nil
+  :demand t
+  :load-path "~/src/github.com/cmacrae/nano-theme"
+  :config
+  (load-theme 'nano t))
+ 
+(use-package nano-modeline
+  :ensure nil
+  :load-path "~/src/github.com/cmacrae/nano-modeline"
+  :hook (after-init . nano-modeline))
 #+END_SRC
 
 *** which-key
