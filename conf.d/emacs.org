@@ -930,6 +930,19 @@ Language Server Protocol integration
     (lsp-sourcekit-executable "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp"))
 #+END_SRC
 
+*** mini-frame
+Place a minibuffer on top of the current frame
+#+BEGIN_SRC emacs-lisp
+(use-package mini-frame
+  :hook (after-init . mini-frame-mode)
+  :custom
+  (mini-frame-resize t)
+  (mini-frame-show-parameters '((top . 10)
+                                (width . 0.7)
+                                (left . 0.5)))
+  (mini-frame-internal-border-color (face-attribute 'nano-faded :foreground nil t)))
+#+END_SRC
+
 ** Custom functions
 Useful functions gathered that don’t quite require an entire package.
 
