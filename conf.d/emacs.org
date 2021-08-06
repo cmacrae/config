@@ -297,6 +297,7 @@ Modular parts of [[https://github.com/rougier/nano-emacs/issues/37][rougier/nano
 Currently I'm making some changes locally that I intend to send for review upstream, so I'm loading from local
 paths.
 #+BEGIN_SRC emacs-lisp
+(use-package ts)
 (use-package nano-theme
   :ensure nil
   :demand t
