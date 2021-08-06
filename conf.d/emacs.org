@@ -829,15 +829,19 @@ NOTE/TODO/FIXME highlighting in comments
 #+END_SRC
 
 *** centered-window-mode
-Keep buffer text centered
+Keep buffer text centered. I've added a hook to ensure my preferred =internal-border-width= setting is retained.
 #+BEGIN_SRC emacs-lisp
-(use-package centered-window)
+(use-package centered-window
+  :commands centered-window-mode
+  :hook
+  (centered-window-mode . (lambda ()
+                            (set-frame-parameter nil 'internal-border-width 10))))
 #+END_SRC
 
 *** Kubernetes
 #+BEGIN_SRC emacs-lisp
 (use-package kubernetes
-  :commands (kubernetes-overview)
+  :commands kubernetes-overview
   :config
   (use-package kubernetes-evil
     :ensure t
