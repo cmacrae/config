@@ -833,6 +833,16 @@ Keep buffer text centered
 (use-package centered-window)
 #+END_SRC
 
+*** Kubernetes
+#+BEGIN_SRC emacs-lisp
+(use-package kubernetes
+  :commands (kubernetes-overview)
+  :config
+  (use-package kubernetes-evil
+    :ensure t
+    :after kubernetes))
+#+END_SRC
+
 *** Languages
 Configuration for working with various languages
 #+BEGIN_SRC emacs-lisp
