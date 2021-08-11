@@ -129,11 +129,18 @@ Not really all that useful, but cleaner than the default comment, and I like hav
 (setq initial-scratch-message (format ";; Scratch buffer - started on %s\n\n" (current-time-string)))
 #+END_SRC
 
-*** Configure FlySpell to use aspell
+*** FlySpell settings
 I use =aspell=, so this simply sets [[https://www.emacswiki.org/emacs/FlySpell][Flyspell]] to use it and passes a couple extra arguments
+- Configure FlySpell to use aspell
+- Set =C-;= to a =nil= binding so it doesn't clash with NeoTree
 #+BEGIN_SRC emacs-lisp
-(setq ispell-program-name "aspell"
-      ispell-extra-args   '("--sug-mode=ultra" "--lang=en_GB"))
+(use-package flyspell
+  :ensure nil
+  :bind
+  (:map flyspell-mode-map ("C-;" . nil))
+  :init
+  (setq ispell-program-name "aspell"
+        ispell-extra-args   '("--sug-mode=ultra" "--lang=en_GB")))
 #+END_SRC
 
 *** Calendar/Diary
