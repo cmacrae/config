@@ -461,6 +461,7 @@ Email! mu4e comes bundled as part of the =mu= package, so I load it from my Nix 
   (setq mu4e-index-update-in-background      nil
         mu4e-change-filenames-when-moving    t
         mu4e-headers-date-format             "%a %d/%m/%y"
+        mu4e-attachment-dir                  "~/Downloads"
         sendmail-program                     "msmtp"
         message-sendmail-f-is-evil           t
         send-mail-function                   'smtpmail-send-it
