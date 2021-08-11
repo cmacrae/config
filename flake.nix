@@ -129,6 +129,7 @@
 
                 home-manager.users.cmacrae = {
                   home.packages = with pkgs; [
+                    argocd
                     awscli
                     aws-iam-authenticator
                     vault
