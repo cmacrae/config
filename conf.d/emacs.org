@@ -18,7 +18,7 @@ Tell Emacs who's driving
       user-mail-address "hi@cmacr.ae")
 #+END_SRC
 
-*** Global =:ensure= & =:defer= for use-package statements
+*** Global =:ensure= for use-package statements
 =use-package= has an =:ensure= keyword which dictates whether packages are installed or not.
 As most of my =use-package= configurations are for external packages, I set this to always ensure.
 Then, in cases where I don't want this to be true, I simply set =:ensure nil=.
@@ -176,67 +176,67 @@ For convenience, I've also defined a =erc-conn= function for my usual connection
 *** org-mode
 Various pieces of configuration for the mighty org-mode.
 #+BEGIN_SRC emacs-lisp
-  (use-package org-mode
-    :ensure nil
-    :hook
-    (org-mode . org-indent-mode)
-    (org-mode . variable-pitch-mode)
-    (org-mode . visual-line-mode)
-    :custom-face
-    (avy-lead             ((t (:inherit fixed-pitch))))
-    (avy-lead-face-0      ((t (:inherit fixed-pitch))))
-    (avy-lead-face-1      ((t (:inherit fixed-pitch))))
-    (avy-lead-face-2      ((t (:inherit fixed-pitch))))
-    (company-tooltip      ((t (:inherit fixed-pitch))))
-    (org-table            ((t (:inherit fixed-pitch))))
-    (org-formula          ((t (:inherit fixed-pitch))))
-    (org-checkbox         ((t (:inherit fixed-pitch))))
-    (org-code             ((t (:inherit fixed-pitch))))
-    (org-verbatim         ((t (:inherit fixed-pitch))))
-    (org-special-keyword  ((t (:inherit fixed-pitch))))
-    (org-meta-line        ((t (:inherit fixed-pitch))))
-    (org-block            ((t (:foreground nil :inherit fixed-pitch))))
-    (org-indent           ((t (:inherit (org-hide fixed-pitch)))))
-    (fixed-pitch          ((t (:family "Menlo" :height 120))))
-    (variable-pitch       ((t (:family "ETBembo" :height 160))))
+(use-package org-mode
+  :ensure nil
+  :hook
+  (org-mode . org-indent-mode)
+  (org-mode . variable-pitch-mode)
+  (org-mode . visual-line-mode)
+  :custom-face
+  (avy-lead             ((t (:inherit fixed-pitch))))
+  (avy-lead-face-0      ((t (:inherit fixed-pitch))))
+  (avy-lead-face-1      ((t (:inherit fixed-pitch))))
+  (avy-lead-face-2      ((t (:inherit fixed-pitch))))
+  (company-tooltip      ((t (:inherit fixed-pitch))))
+  (org-table            ((t (:inherit fixed-pitch))))
+  (org-formula          ((t (:inherit fixed-pitch))))
+  (org-checkbox         ((t (:inherit fixed-pitch))))
+  (org-code             ((t (:inherit fixed-pitch))))
+  (org-verbatim         ((t (:inherit fixed-pitch))))
+  (org-special-keyword  ((t (:inherit fixed-pitch))))
+  (org-meta-line        ((t (:inherit fixed-pitch))))
+  (org-block            ((t (:foreground nil :inherit fixed-pitch))))
+  (org-indent           ((t (:inherit (org-hide fixed-pitch)))))
+  (fixed-pitch          ((t (:family "Menlo" :height 120))))
+  (variable-pitch       ((t (:family "ETBembo" :height 160))))
 
-    :init
-    (setq org-ellipsis " ▾"
-	  org-hide-emphasis-markers t
-	  org-src-fontify-natively t
-	  org-fontify-quote-and-verse-blocks t
-	  org-src-tab-acts-natively t
-	  org-edit-src-content-indentation 0 
-	  org-src-preserve-indentation t
-	  org-cycle-separator-lines 2)
+  :init
+  (setq org-ellipsis " ▾"
+	org-hide-emphasis-markers t
+	org-src-fontify-natively t
+	org-fontify-quote-and-verse-blocks t
+	org-src-tab-acts-natively t
+	org-edit-src-content-indentation 0 
+	org-src-preserve-indentation t
+	org-cycle-separator-lines 2)
   
-    (font-lock-add-keywords 'org-mode
-                            '(("^ *\\([-]\\) "
-                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+  (font-lock-add-keywords 'org-mode
+                          '(("^ *\\([-]\\) "
+                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
   
-    :config
-    (evil-define-key '(normal insert visual) org-mode-map (kbd "M-k") 'org-metaup)
-    (evil-define-key '(normal insert visual) org-mode-map (kbd "M-j") 'org-metadown)
-    (evil-define-key '(normal insert visual) org-mode-map (kbd "C-j") 'org-next-visible-heading)
-    (evil-define-key '(normal insert visual) org-mode-map (kbd "C-k") 'org-previous-visible-heading)
+  :config
+  (evil-define-key '(normal insert visual) org-mode-map (kbd "M-k") 'org-metaup)
+  (evil-define-key '(normal insert visual) org-mode-map (kbd "M-j") 'org-metadown)
+  (evil-define-key '(normal insert visual) org-mode-map (kbd "C-j") 'org-next-visible-heading)
+  (evil-define-key '(normal insert visual) org-mode-map (kbd "C-k") 'org-previous-visible-heading)
   
-    (dolist (face '((org-level-1 . 1.2)
-                    (org-level-2 . 1.1)
-                    (org-level-3 . 1.05)
-                    (org-level-4 . 1.0)
-                    (org-level-5 . 1.1)
-                    (org-level-6 . 1.1)
-                    (org-level-7 . 1.1)
-                    (org-level-8 . 1.1)))))
-   
-  (use-package org-superstar
-    :hook (org-mode . org-superstar-mode)
-    :custom
-    (org-superstar-remove-leading-stars t)
-    (org-superstar-headline-bullets-list '("◉" "○" "●" "○" "●" "○" "●")))
+  (dolist (face '((org-level-1 . 1.2)
+                  (org-level-2 . 1.1)
+                  (org-level-3 . 1.05)
+                  (org-level-4 . 1.0)
+                  (org-level-5 . 1.1)
+                  (org-level-6 . 1.1)
+                  (org-level-7 . 1.1)
+                  (org-level-8 . 1.1)))))
 
-  (use-package org-appear
-    :hook (org-mode . org-appear-mode))
+(use-package org-superstar
+  :hook (org-mode . org-superstar-mode)
+  :custom
+  (org-superstar-remove-leading-stars t)
+  (org-superstar-headline-bullets-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+(use-package org-appear
+  :hook (org-mode . org-appear-mode))
 #+END_SRC
 
 *** Native compilation
@@ -418,15 +418,15 @@ Email! mu4e comes bundled as part of the =mu= package, so I load it from my Nix 
     :hook (mu4e-headers-mode . mu4e-thread-folding-mode)
     :config
     (add-to-list 'mu4e-header-info-custom
-                 '(:empty . (:name "Empty"
-                                   :shortname ""
-                                   :function (lambda (msg) "  "))))
+		 '(:empty . (:name "Empty"
+				   :shortname ""
+				   :function (lambda (msg) "  "))))
     (setq mu4e-headers-fields '((:empty         .    2)
-                                (:human-date    .   12)
-                                (:flags         .    6)
-                                (:mailing-list  .   10)
-                                (:from          .   22)
-                                (:subject       .   nil)))
+				(:human-date    .   12)
+				(:flags         .    6)
+				(:mailing-list  .   10)
+				(:from          .   22)
+				(:subject       .   nil)))
     (evil-define-key 'normal mu4e-headers-mode-map (kbd "<S-h>") 'mu4e-headers-fold-all)
     (evil-define-key 'normal mu4e-headers-mode-map (kbd "<S-l>") 'mu4e-headers-unfold-all)
     (evil-define-key 'normal mu4e-headers-mode-map (kbd "h")     'mu4e-headers-fold-at-point)
@@ -453,67 +453,67 @@ Email! mu4e comes bundled as part of the =mu= package, so I load it from my Nix 
     (unless (fboundp 'xwidget-webkit-browse-url)
       (mu4e-error "No xwidget support available"))
     (let* ((html (mu4e-message-field msg :body-html))
-           (txt (mu4e-message-field msg :body-txt))
-           (tmpfile (format "%s%x.html" temporary-file-directory (random t))))
+	   (txt (mu4e-message-field msg :body-txt))
+	   (tmpfile (format "%s%x.html" temporary-file-directory (random t))))
       (unless (or html txt)
-        (mu4e-error "No body part for this message"))
+	(mu4e-error "No body part for this message"))
       (with-temp-buffer
-        (insert (or html (concat "<pre>" txt "</pre>")))
-        (write-file tmpfile)
-        (xwidget-webkit-browse-url (concat "file://" tmpfile) t))))
+	(insert (or html (concat "<pre>" txt "</pre>")))
+	(write-file tmpfile)
+	(xwidget-webkit-browse-url (concat "file://" tmpfile) t))))
 
   (add-to-list 'mu4e-view-actions '("xViewXWidget" . my-mu4e-action-view-with-xwidget) t)
   (add-to-list 'mu4e-view-actions '("bViewInBrowser" . mu4e-action-view-in-browser) t)
 
   (setq mu4e-index-update-in-background      nil
-        mu4e-change-filenames-when-moving    t
-        mu4e-headers-date-format             "%a %d/%m/%y"
-        mu4e-attachment-dir                  "~/Downloads"
-        sendmail-program                     "msmtp"
-        message-sendmail-f-is-evil           t
-        send-mail-function                   'smtpmail-send-it
-        message-sendmail-extra-arguments     '("--read-envelope-from")
-        message-send-mail-function           'message-send-mail-with-sendmail
-        mml-secure-openpgp-sign-with-sender  t
-        mu4e-fold-threads-in-search-results  t)
+	mu4e-change-filenames-when-moving    t
+	mu4e-headers-date-format             "%a %d/%m/%y"
+	mu4e-attachment-dir                  "~/Downloads"
+	sendmail-program                     "msmtp"
+	message-sendmail-f-is-evil           t
+	send-mail-function                   'smtpmail-send-it
+	message-sendmail-extra-arguments     '("--read-envelope-from")
+	message-send-mail-function           'message-send-mail-with-sendmail
+	mml-secure-openpgp-sign-with-sender  t
+	mu4e-fold-threads-in-search-results  t)
 
   (setq mu4e-contexts `(
-                        ,(make-mu4e-context
-                          :name "Fastmail"
-                          :enter-func (lambda ()
-                                        (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
-                                        (mu4e-message "Switch to the Fastmail context"))
-                          :leave-func (lambda ()
-                                        (remove-hook 'message-send-hook 'mml-secure-message-sign-pgpmime))
-                          :match-func (lambda (msg)
-                                        (when msg
-                                          (string-match-p "^/fastmail" (mu4e-message-field msg :maildir))))
+			,(make-mu4e-context
+			  :name "Fastmail"
+			  :enter-func (lambda ()
+					(add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
+					(mu4e-message "Switch to the Fastmail context"))
+			  :leave-func (lambda ()
+					(remove-hook 'message-send-hook 'mml-secure-message-sign-pgpmime))
+			  :match-func (lambda (msg)
+					(when msg
+					  (string-match-p "^/fastmail" (mu4e-message-field msg :maildir))))
 
-                          :vars '( ( user-mail-address       . "hi@cmacr.ae" )
-                                   ( mml-secure-openpgp-sign-with-sender . t )
-                                   ( mu4e-compose-signature . "Calum MacRae\n" )
-                                   ( mu4e-sent-folder   . "/fastmail/Sent"   )
-                                   ( mu4e-drafts-folder . "/fastmail/Drafts" )
-                                   ( mu4e-maildir-shortcuts . ( ("/fastmail/Inbox"   . ?i)
-                                                                ("/fastmail/Sent"    . ?s)
-                                                                ("/fastmail/Archive" . ?a) ))))
+			  :vars '( ( user-mail-address       . "hi@cmacr.ae" )
+				   ( mml-secure-openpgp-sign-with-sender . t )
+				   ( mu4e-compose-signature . "Calum MacRae\n" )
+				   ( mu4e-sent-folder   . "/fastmail/Sent"   )
+				   ( mu4e-drafts-folder . "/fastmail/Drafts" )
+				   ( mu4e-maildir-shortcuts . ( ("/fastmail/Inbox"   . ?i)
+								("/fastmail/Sent"    . ?s)
+								("/fastmail/Archive" . ?a) ))))
 
-                        ,(make-mu4e-context
-                          :name "Work"
-                          :enter-func (lambda () (mu4e-message "Switch to the Work context"))
-                          :match-func (lambda (msg)
-                                        (when msg
-                                          (string-match-p "^/work" (mu4e-message-field msg :maildir))))
-                          :vars '( ( user-mail-address       . "calum.macrae@nutmeg.com" )
-                                   ( mu4e-compose-signature  .
-                                     (concat
-                                      "Calum MacRae\n"
-                                      "DevOps\n"
-                                      "Engineering Efficiency\n") )
-                                   ( mu4e-sent-folder   . "/work/Sent"   )
-                                   ( mu4e-drafts-folder . "/work/Drafts" )
-                                   ( mu4e-maildir-shortcuts . ( ("/work/Inbox"   . ?i)
-                                                                ("/work/Sent"    . ?s)
+			,(make-mu4e-context
+			  :name "Work"
+			  :enter-func (lambda () (mu4e-message "Switch to the Work context"))
+			  :match-func (lambda (msg)
+					(when msg
+					  (string-match-p "^/work" (mu4e-message-field msg :maildir))))
+			  :vars '( ( user-mail-address       . "calum.macrae@nutmeg.com" )
+				   ( mu4e-compose-signature  .
+				     (concat
+				      "Calum MacRae\n"
+				      "DevOps\n"
+				      "Engineering Efficiency\n") )
+				   ( mu4e-sent-folder   . "/work/Sent"   )
+				   ( mu4e-drafts-folder . "/work/Drafts" )
+				   ( mu4e-maildir-shortcuts . ( ("/work/Inbox"   . ?i)
+								("/work/Sent"    . ?s)
                                                                 ("/work/Archive" . ?a) )))))))
 #+END_SRC
 
