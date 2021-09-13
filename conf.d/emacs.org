@@ -326,7 +326,8 @@ Below you'll find various extensions to my Evil layer that generally improve the
   :init
   (setq evil-want-C-u-scroll t)
   (setq evil-want-keybinding nil)
-  :hook (after-init . evil-mode))
+  :hook (after-init . evil-mode)
+  :custom (evil-respect-visual-line-mode t))
 #+END_SRC
 
 **** Evil Collection
