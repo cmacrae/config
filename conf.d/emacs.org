@@ -255,35 +255,28 @@ control it from within this file. Whilst this statement may seem recursive, it e
 (use-package use-package)
 #+END_SRC
 
-*** Vertico | savehist | corfu | orderless | marginalia | Embark
+*** Vertico | savehist | orderless | marginalia | Embark
 This section outlines my preference for Emacs' completion system/interface.
 - Vertico: consistent, minimalistic completion UI
 - savehist: persists completion history
-- corfu: enhanced =completion-in-region= functionality, mainly for extension of =completion-at-point= & Capfs based tooling (including LSP)
 - orderless: intuitive completion style for candidates based on space separated patterns
 - marginalia: annotations for minibuffer candidates
 - Embark: act on targets, sort of like a right-click menu
 #+BEGIN_SRC emacs-lisp
 (use-package vertico
   :hook (after-init . vertico-mode)
-
   :custom
   (vertico-resize t))
- 
+
 (use-package savehist-mode
   :ensure nil
   :hook (after-init . savehist-mode))
- 
-(use-package corfu
-  :hook (after-init . corfu-global-mode))
 
-;; TODO [orderless] failing to be found in Nix's ELPA/MELPA repositories
-;; (use-package orderless
-;;   :hook after-init
-;;   :custom
-;;   (completion-styles '(orderless)
-;;   (completion-category-defaults nil)
-;;   (completion-category-overrides '((file (styles partial-completion))))
+(use-package orderless
+  :custom
+  (completion-styles '(orderless))
+  (completion-category-defaults nil)
+  (completion-category-overrides '((file (styles partial-completion)))))
 
 ;; TODO: [marginalia] byte-compilation issue
 ;; (use-package marginalia
@@ -311,7 +304,7 @@ paths.
   :load-path "~/src/github.com/cmacrae/nano-theme"
   :config
   (load-theme 'nano t))
- 
+
 (use-package nano-modeline
   :ensure nil
   :load-path "~/src/github.com/cmacrae/nano-modeline"
