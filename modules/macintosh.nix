@@ -114,6 +114,7 @@ in
   homebrew.casks = [
     "firefox"
     "discord"
+    "spotify"
   ];
 
   homebrew.masApps = {
