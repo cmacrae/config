@@ -612,14 +612,24 @@ Sidebar filebrowser, very handy. People seem to have accepted Treemacs as the ne
 
 *** Magit
 The one true Git porcelain!
-Truely a joy to use - it surfaces the power of Git in such a fluent manner.
+Truly a joy to use - it surfaces the power of Git in such a fluent manner.
 Anyone using Git and Emacs *needs* Magit in their life!
+
+Here I'm extending Magit's functionality to work with  popular "git forges". Specific configuration for this is to:
+- Only show open topics (issues/PRs)
+- Only show authored PRs
+
+I'm also using a handy package to layer on TODO notes in the Magit status buffer.
 #+BEGIN_SRC emacs-lisp
 (use-package magit
   :bind ("C-c m" . magit-status))
 
 (use-package forge
-  :after magit)
+  :after magit
+  :custom
+  (forge-topic-list-limit '(30 . -1))
+  :config
+  (magit-add-section-hook 'magit-status-sections-hook 'forge-insert-authored-pullreqs 'forge-insert-pullreqs 'replace))
 
 (use-package magit-todos
   :after magit)
