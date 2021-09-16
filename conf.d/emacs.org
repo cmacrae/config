@@ -603,6 +603,7 @@ Sidebar filebrowser, very handy. People seem to have accepted Treemacs as the ne
         ("C-;"     . (lambda () (interactive) (select-window (previous-window)))))
   :custom
   (neo-theme (if window-system 'icons 'arrows))
+  (warning-suppress-log-types '((iedit)))
   :config
   (evil-define-key 'normal neotree-mode-map (kbd "TAB") 'neotree-enter)
   (evil-define-key 'normal neotree-mode-map (kbd "SPC") 'neotree-quick-look)
