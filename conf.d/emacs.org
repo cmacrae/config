@@ -201,15 +201,15 @@ Various pieces of configuration for the mighty org-mode.
   (variable-pitch       ((t (:family "ETBembo" :height 160))))
 
   :init
-  (setq org-ellipsis " ▾"
-	org-hide-emphasis-markers t
-	org-src-fontify-natively t
-	org-fontify-quote-and-verse-blocks t
-	org-src-tab-acts-natively t
-	org-edit-src-content-indentation 0 
-	org-src-preserve-indentation t
-	org-cycle-separator-lines 2)
-  
+  (setq org-ellipsis                     " ▾"
+        org-hide-emphasis-markers           t
+        org-src-fontify-natively            t
+        org-fontify-quote-and-verse-blocks  t
+        org-src-tab-acts-natively           t
+        org-src-preserve-indentation        t
+        org-edit-src-content-indentation    0
+        org-cycle-separator-lines           2)
+
   (font-lock-add-keywords 'org-mode
                           '(("^ *\\([-]\\) "
                              (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
