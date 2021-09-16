@@ -763,7 +763,9 @@ I use [[https://www.passwordstore.org/][pass]] as my password manager, which com
   :ensure nil
   :load-path "~/.nix-profile/share/emacs/site-lisp/password-store.el"
   :bind
-  ("C-c M-p" . password-store-copy))
+  ("C-c M-p" . password-store-copy)
+  :custom
+  (auth-sources '(password-store)))
 #+END_SRC
 
 *** Smartparens
