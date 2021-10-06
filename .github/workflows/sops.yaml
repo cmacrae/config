@@ -38,7 +38,7 @@ jobs:
 
     - name: Get the latest derivation
       run: |
-        nix show-derivation github:Mic92/sops-nix#defaultPackage.${{ matrix.arch }}-linux > ${{ matrix.arch }}-linux.drv
+        nix show-derivation github:Mic92/sops-nix#packages.${{ matrix.arch }}-linux.sops-install-secrets > ${{ matrix.arch }}-linux.drv
 
     - name: Get the latest commit
       run: >-
@@ -72,7 +72,7 @@ jobs:
     - name: Build Linux
       if: steps.linux-drv.outputs.cache-hit != 'true' || steps.latest-commit-linux.outputs.cache-hit != 'true' 
       run: |
-        nix build -L -j4 --option system ${{ matrix.arch }}-linux --option sandbox false --extra-platforms ${{ matrix.arch }}-linux github:Mic92/sops-nix#defaultPackage.${{ matrix.arch }}-linux
+        nix build -L -j4 --option system ${{ matrix.arch }}-linux --option sandbox false --extra-platforms ${{ matrix.arch }}-linux github:Mic92/sops-nix#packages.${{ matrix.arch }}-linux.sops-install-secrets
 
   darwin:
     runs-on: macos-latest
@@ -98,7 +98,7 @@ jobs:
 
     - name: Get the latest derivation
       run: |
-        nix show-derivation github:Mic92/sops-nix#defaultPackage.x86_64-darwin > x86_64-darwin.drv
+        nix show-derivation github:Mic92/sops-nix#packages.x86_64-darwin.sops-install-secrets > x86_64-darwin.drv
  
     - name: Get the latest commit
       run: >-
@@ -124,4 +124,4 @@ jobs:
     - name: Build Darwin
       if: steps.darwin-drv.outputs.cache-hit != 'true' || steps.latest-commit-darwin.outputs.cache-hit != 'true' 
       run: |
-        nix build -L github:Mic92/sops-nix#defaultPackage.x86_64-darwin
+        nix build -L github:Mic92/sops-nix#packages.x86_64-darwin.sops-install-secrets
