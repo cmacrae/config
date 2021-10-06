@@ -1,9 +1,18 @@
 { config, pkgs, ... }: {
-  system.stateVersion = "21.05";
+  system.stateVersion = "21.11";
 
+  nix.autoOptimiseStore = true;
   nix.gc.automatic = true;
+  nix.gc.dates = "weekly";
   nix.gc.options = "--delete-older-than 14d";
   nix.trustedUsers = [ "root" "@wheel" ];
+  nix.maxJobs = "auto";
+
+  # Free up to 1GiB whenever there is less than 100MiB left.
+  nix.extraOptions = ''
+    min-free = ${toString (100 * 1024 * 1024)}
+    max-free = ${toString (1024 * 1024 * 1024)}
+  '';
 
   nixpkgs.config.allowUnfree = true;
   time.timeZone = "Europe/London";

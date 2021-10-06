@@ -38,37 +38,45 @@ let
     xbox.mac = "98:5f:d3:f6:87:b1";
   };
 
+  proxyServices = {
+    hydra2.port = 5076;
+    hydra2.host = "compute1";
+    nzbget.port = 6789;
+    nzbget.host = "compute1";
+    sonarr.port = 8989;
+    sonarr.host = "compute2";
+    radarr.port = 7878;
+    radarr.host = "compute2";
+    bazarr.port = 6767;
+    bazarr.host = "compute2";
+    plex.port = 32400;
+    plex.host = "compute3";
+  };
+
 in
   with pkgs.lib; {
-    boot.cleanTmpDir = true;
+    boot.tmpOnTmpfs = true;
     boot.kernelPackages = pkgs.linuxPackages_rpi4;
-    boot.kernelParams = [ "cma=64M" "console=tty0" ];
     boot.loader.raspberryPi.enable = true;
     boot.loader.raspberryPi.version = 4;
-    boot.initrd.checkJournalingFS = false;
     boot.loader.grub.enable = false;
-    boot.initrd.availableKernelModules = [ "usbhid" ];
+    boot.loader.generic-extlinux-compatible.enable = true;
+    boot.initrd.checkJournalingFS = false;
+    boot.initrd.availableKernelModules = [ "usbhid" "usb_storage" ];
     hardware.enableRedistributableFirmware = true;
-
-    swapDevices = [
-      {
-        device = "/swapfile";
-        size = 2048;
-      }
-    ];
-
-    nix.maxJobs = "auto";
-
     powerManagement.cpuFreqGovernor = "ondemand";
+
+    boot.kernelParams = [
+      "cma=64M"
+      "8250.nr_uarts=1"
+      "console=tty1"
+      "console=ttyAMA0,115200"
+    ];
 
     fileSystems."/" = {
       device = "/dev/disk/by-label/NIXOS_SD";
       fsType = "ext4";
-    };
-
-    fileSystems."/boot" = {
-      device = "/dev/disk/by-label/FIRMWARE";
-      fsType = "vfat";
+      options = [ "noatime" ];
     };
 
     networking = {
@@ -91,7 +99,7 @@ in
       # nat.internalInterfaces = [ "wg0" ];
       firewall = {
         enable = true;
-        allowedTCPPorts = [ 22 ];
+        allowedTCPPorts = [ 22 80 ];
         allowedUDPPorts = [ 53 51820 ];
 
         extraCommands = ''
@@ -221,22 +229,15 @@ in
             name: attributes:
               ''"${name}.${domain}. IN A ${builtins.toString (catAttrs "ip" (singleton attributes))}"''
           ) ipReservations
+        ) ++ (
+          mapAttrsToList (
+            name: _:
+              ''"${name}.${domain} CNAME net1.${domain}"''
+          ) proxyServices
         );
 
         private-domain = [
           ''"${domain}."''
-          ''"pantheon.${domain}."''
-        ];
-
-        domain-insecure = ''"pantheon.${domain}."'';
-      };
-
-      settings.stub-zone = {
-        name = "consul.";
-        stub-addr = [
-          "${ipReservations.compute1.ip}@8600"
-          "${ipReservations.compute2.ip}@8600"
-          "${ipReservations.compute3.ip}@8600"
         ];
       };
 
@@ -248,5 +249,21 @@ in
           "1.0.0.1@853"
         ];
       };
+    };
+
+    services.nginx = {
+      enable = true;
+      recommendedProxySettings = true;
+      virtualHosts = mapAttrs' (
+        host: attr:
+          nameValuePair ("${host}.${domain}") (
+            {
+              locations."/" = {
+                proxyPass = "http://${attr.host}.${domain}:${toString attr.port}";
+                extraConfig = "proxy_pass_header Authorization;";
+              };
+            }
+          )
+      ) proxyServices;
     };
   }
