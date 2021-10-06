@@ -36,9 +36,8 @@
     My work MacBook. The same as macbook but with some work specific configuration layered on top.
 
 *** net1
-    A Raspberry Pi 4 that acts as a DHCP (ISC) server, DNS (unbound) server, and [[https://www.wireguard.com/][Wireguard]] gateway for my home network.
+    A Raspberry Pi 4 that acts as a DHCP (ISC) server, DNS (unbound) server, proxy (nginx) server for upstream media services, and [[https://www.wireguard.com/][Wireguard]] gateway for my home network.
 
 *** compute1, compute2, compute3
     3 Intel NUCs that occupy 1u in my cabinet. The workhorses of my home lab.
-    They're not doing much interesting stuff at the moment, as they're on a Kubernetes hiatus.
-    More to come soon...
+    They've been through many iterations of running Kubernetes & Nomad, but now they're just running various media management services.
