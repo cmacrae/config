@@ -25,7 +25,7 @@ For ease of deployment, this repo hosts a nightly pipeline that builds the =depl
 
 *** sops-nix
 For secret management, I use [[https://github.com/Mic92/sops-nix][Mic92/sops-nix]].
-For ease of deployment, this repo hosts a nightly pipeline that builds the =deploy= binary for the various system architectures.
+For ease of deployment, this repo hosts a nightly pipeline that builds the =sops-install-secrets= binary for the various system architectures.
 
 ** Machines
 There are several machines defined in =flake.nix=
