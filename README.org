@@ -21,11 +21,11 @@ Don't forget to turn off analytics!
    
 *** deploy-rs
 For management of remote systems, I use [[https://github.com/serokell/deploy-rs][serokell/deploy-rs]].
-For ease of deployment, this repo hosts a nighty pipeline that builds the =deploy= binary for the various system architectures.
+For ease of deployment, this repo hosts a nightly pipeline that builds the =deploy= binary for the various system architectures.
 
 *** sops-nix
 For secret management, I use [[https://github.com/Mic92/sops-nix][Mic92/sops-nix]].
-For ease of deployment, this repo hosts a nighty pipeline that builds the =deploy= binary for the various system architectures.
+For ease of deployment, this repo hosts a nightly pipeline that builds the =deploy= binary for the various system architectures.
 
 ** Machines
 There are several machines defined in =flake.nix=
