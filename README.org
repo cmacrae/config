@@ -1,43 +1,48 @@
 * About
-  [[https://builtwithnix.org][https://img.shields.io/badge/Built_With-Nix-5277C3.svg?logo=nixos&labelColor=73C3D5]]
+[[https://builtwithnix.org][https://img.shields.io/badge/Built_With-Nix-5277C3.svg?logo=nixos&labelColor=73C3D5]]
 
-  A collection of machine configurations, expressed in [[https://nixos.org/nix][Nix]]
+A collection of machine configurations, expressed in [[https://nixos.org/nix][Nix]]
 
 ** Usage
-   This repository is based on [[https://nixos.wiki/wiki/Flakes][Nix Flakes]], an experimental feature of Nix that solves some of the problems around hermeticism.
-   To learn more about Flakes, I highly recommend reading the "Nix Flakes" series by Eelco himself:
-   - [[https://www.tweag.io/blog/2020-05-25-flakes][Part 1]]
-   - [[https://www.tweag.io/blog/2020-06-25-eval-cache][Part 2]]
-   - [[https://www.tweag.io/blog/2020-07-31-nixos-flakes/][Part 3]]
+This repository is based on [[https://nixos.wiki/wiki/Flakes][Nix Flakes]], an experimental feature of Nix that solves some of the problems around hermeticism.
+To learn more about Flakes, I highly recommend reading the "Nix Flakes" series by Eelco himself:
+- [[https://www.tweag.io/blog/2020-05-25-flakes][Part 1]]
+- [[https://www.tweag.io/blog/2020-06-25-eval-cache][Part 2]]
+- [[https://www.tweag.io/blog/2020-07-31-nixos-flakes/][Part 3]]
 
 *** Homebrew
-    With the absence of some tooling in nixpkgs, the Darwin machines defined in this repository lean on nix-darwin's Homebrew module
-    to manage some packages, App Store apps, and macOS Applications. For this to work, Homebrew must be installed.
+With the absence of some tooling in nixpkgs, the Darwin machines defined in this repository lean on nix-darwin's Homebrew module
+to manage some packages, App Store apps, and macOS Applications. For this to work, Homebrew must be installed.
 
-    Don't forget to turn off analytics!
-    #+BEGIN_EXAMPLE
+Don't forget to turn off analytics!
+#+BEGIN_EXAMPLE
     brew analytics off
-    #+END_EXAMPLE
+#+END_EXAMPLE
    
 *** deploy-rs
-    For management of remote systems, I use [[https://github.com/serokell/deploy-rs][serokell/deploy-rs]]
+For management of remote systems, I use [[https://github.com/serokell/deploy-rs][serokell/deploy-rs]].
+For ease of deployment, this repo hosts a nighty pipeline that builds the =deploy= binary for the various system architectures.
+
+*** sops-nix
+For secret management, I use [[https://github.com/Mic92/sops-nix][Mic92/sops-nix]].
+For ease of deployment, this repo hosts a nighty pipeline that builds the =deploy= binary for the various system architectures.
 
 ** Machines
-   There are several machines defined in =flake.nix=
+There are several machines defined in =flake.nix=
  
 *** macbook
-    As you might've guessed from the name, this is my personal MacBook.
-    It provides a darwin environment of which every aspect is expressed, including: [[https://github.com/koekeishiya/yabai][yabai]], [[https://github.com/cmacrae/spacebar][spacebar]], [[https://github.com/koekeishiya/skhd][skhd]], [[https://cmacr.ae/post/2020-05-09-managing-firefox-on-macos-with-nix/][Firefox profiles]]
-    with [[conf.d/userChrome.css][a minimal theme (à la surf/xombrero)]], [[https://github.com/cmacrae/emacs][nightly Emacs (with native comp, WebKit support, libvterm)]],
-    [[conf.d/emacs.org][literate Emacs config]] with [[https://github.com/nix-community/emacs-overlay/#extra-library-functionality][declarative use-package statements]], [[modules/mbsync.nix][an mbsync module]] for mail retrieval for use with [[https://www.djcbsoftware.nl/code/mu/mu4e.html][mu4e]], 
-    declarative Homebrew packages/casks for macOS Application installation, and various other pieces.
+As you might've guessed from the name, this is my personal MacBook.
+It provides a darwin environment of which every aspect is expressed, including: [[https://github.com/koekeishiya/yabai][yabai]], [[https://github.com/cmacrae/spacebar][spacebar]], [[https://github.com/koekeishiya/skhd][skhd]], [[https://cmacr.ae/post/2020-05-09-managing-firefox-on-macos-with-nix/][Firefox profiles]]
+with [[conf.d/userChrome.css][a minimal theme (à la surf/xombrero)]], [[https://github.com/cmacrae/emacs][nightly Emacs (with native comp, WebKit support, libvterm)]],
+[[conf.d/emacs.org][literate Emacs config]] with [[https://github.com/nix-community/emacs-overlay/#extra-library-functionality][declarative use-package statements]], [[modules/mbsync.nix][an mbsync module]] for mail retrieval for use with [[https://www.djcbsoftware.nl/code/mu/mu4e.html][mu4e]], 
+declarative Homebrew packages/casks for macOS Application installation, and various other pieces.
     
 *** workbook
-    My work MacBook. The same as macbook but with some work specific configuration layered on top.
+My work MacBook. The same as macbook but with some work specific configuration layered on top.
 
 *** net1
-    A Raspberry Pi 4 that acts as a DHCP (ISC) server, DNS (unbound) server, proxy (nginx) server for upstream media services, and [[https://www.wireguard.com/][Wireguard]] gateway for my home network.
+A Raspberry Pi 4 that acts as a DHCP (ISC) server, DNS (unbound) server, proxy (nginx) server for upstream media services, and [[https://www.wireguard.com/][Wireguard]] gateway for my home network.
 
 *** compute1, compute2, compute3
-    3 Intel NUCs that occupy 1u in my cabinet. The workhorses of my home lab.
-    They've been through many iterations of running Kubernetes & Nomad, but now they're just running various media management services.
+3 Intel NUCs that occupy 1u in my cabinet. The workhorses of my home lab.
+They've been through many iterations of running Kubernetes & Nomad, but now they're just running various media management services.
