@@ -86,54 +86,10 @@ in
         hostName = "compute${builtins.toString cfg.id}";
         hostId = cfg.hostId;
         domain = cfg.domain;
-        dhcpcd.enable = false;
-        defaultGateway = "10.0.0.1";
         firewall.enable = false;
-        nameservers = [ "10.0.0.2" ];
-        interfaces.enp0s25.ipv4.addresses = [
-          {
-            address = "10.0.10.${builtins.toString cfg.id}";
-            prefixLength = 16;
-          }
-        ];
       };
 
       # System packages
-      environment.systemPackages = with pkgs; [ nfs-utils podman ];
-
-      # nix-serve
-      services.nix-serve.enable = true;
-      services.nix-serve.secretKeyFile =
-        config.sops.secrets."${config.networking.hostName}_store_privatekey".path;
-      systemd.services.nix-serve = {
-        serviceConfig.SupplementaryGroups = [ config.users.groups.keys.name ];
-      };
-
-      # Podman
-      virtualisation.podman.enable = true;
-
-      # Consul
-      services.consul.enable = true;
-      services.consul.webUi = true;
-      services.consul.interface.bind = "enp0s25";
-      services.consul.extraConfig = {
-        server = true;
-        datacenter = "pantheon";
-        client_addr = "127.0.0.1 10.0.10.${builtins.toString cfg.id}";
-      };
-
-      # Nomad
-      services.nomad.enable = true;
-      services.nomad.enableDocker = false;
-      services.nomad.dropPrivileges = false; # for use with podman
-      systemd.services.podman.path = mkAfter [ pkgs.zfs ];
-      services.nomad.settings = {
-        region = "lan";
-        datacenter = "pantheon";
-        server.enabled = true;
-        client.enabled = true;
-        plugin_dir = "${pkgs.nomad-driver-podman}/bin";
-        plugin.nomad-driver-podman.config.socket_path = "unix://run/podman/podman.sock";
-      };
+      environment.systemPackages = with pkgs; [ nfs-utils ];
     };
   }

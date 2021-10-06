@@ -24,19 +24,6 @@
     let
       domain = "cmacr.ae";
 
-      computeParticipants = 3;
-      commonComputeConfig = [
-        {
-          sops.defaultSopsFile = ./secrets.yaml;
-
-          services.consul.extraConfig.bootstrap_expect = computeParticipants;
-          services.nomad.settings.server.bootstrap_expect = computeParticipants;
-          services.consul.extraConfig.retry_join =
-            nixpkgs.lib.forEach (nixpkgs.lib.range 1 computeParticipants)
-              (n: "10.0.10.${toString n}");
-        }
-      ];
-
       commonDarwinConfig = [
         ./modules/macintosh.nix
         ./modules/mbsync.nix
@@ -70,6 +57,7 @@
     in
       {
         darwinConfigurations.macbook = darwin.lib.darwinSystem {
+          system = "x86_64-darwin";
           modules = commonDarwinConfig ++ [
             (
               { pkgs, config, ... }: {
@@ -79,7 +67,7 @@
 
                 nix.distributedBuilds = true;
                 nix.buildMachines =
-                  pkgs.lib.forEach (pkgs.lib.range 1 computeParticipants) (
+                  pkgs.lib.forEach (pkgs.lib.range 1 3) (
                     n:
                       {
                         hostName = "compute${builtins.toString n}";
@@ -107,6 +95,7 @@
         };
 
         darwinConfigurations.workbook = darwin.lib.darwinSystem {
+          system = "x86_64-darwin";
           modules = commonDarwinConfig ++ [
             (
               { pkgs, ... }: {
@@ -174,10 +163,9 @@
 
         nixosConfigurations.compute1 = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          modules = commonComputeConfig ++ [
+          modules = [
             ./modules/common.nix
             ./modules/compute.nix
-            sops.nixosModules.sops
 
             {
               compute.id = 1;
@@ -185,34 +173,10 @@
               compute.efiBlockId = "9B1E-7DE0";
               compute.domain = domain;
 
-              sops.secrets.compute1_store_privatekey.owner = "nix-serve";
-
-              virtualisation.oci-containers.containers = {
-                nzbget = baseContainer // {
-                  image = "ghcr.io/linuxserver/nzbget:version-v21.0";
-                };
-
-                hydra2 = baseContainer // {
-                  image = "ghcr.io/linuxserver/nzbhydra2:version-v3.13.1";
-                };
-              };
-
-              services.nginx = {
-                enable = true;
-
-                recommendedGzipSettings = true;
-                recommendedOptimisation = true;
-                recommendedProxySettings = true;
-
-                virtualHosts."compute1.cmacr.ae".locations = {
-                  "/nzbget".proxyPass = "http://compute1:6789";
-                  "/hydra2".proxyPass = "http://compute1:5076/hydra2";
-                  "/sonarr".proxyPass = "http://compute2:8989/sonarr";
-                  "/radarr".proxyPass = "http://compute3:7878/radarr";
-                  "/plex".proxyPass = "http://compute3:32400";
-                };
-              };
-
+              services.nzbget.enable = true;
+              services.nzbget.user = "admin";
+              services.nzbget.group = "admin";
+              services.nzbhydra2.enable = true;
             }
           ];
         };
@@ -220,10 +184,9 @@
         nixosConfigurations.compute2 = nixpkgs.lib.nixosSystem
           {
             system = "x86_64-linux";
-            modules = commonComputeConfig ++ [
+            modules = [
               ./modules/common.nix
               ./modules/compute.nix
-              sops.nixosModules.sops
 
               {
                 compute.id = 2;
@@ -231,18 +194,17 @@
                 compute.efiBlockId = "0DDD-4E07";
                 compute.domain = domain;
 
-                sops.secrets.compute2_store_privatekey.owner = "nix-serve";
+                services.radarr.enable = true;
+                services.radarr.user = "admin";
+                services.radarr.group = "admin";
 
-                virtualisation.oci-containers.containers = {
-                  sonarr = baseContainer // {
-                    image = "ghcr.io/linuxserver/sonarr";
-                    volumes = [
-                      "config:/config"
-                      "/media/downloads:/downloads"
-                      "/media/tv:/tv"
-                    ];
-                  };
-                };
+                services.sonarr.enable = true;
+                services.sonarr.user = "admin";
+                services.sonarr.group = "admin";
+
+                services.bazarr.enable = true;
+                services.bazarr.user = "admin";
+                services.bazarr.group = "admin";
               }
             ];
           };
@@ -250,10 +212,9 @@
         nixosConfigurations.compute3 = nixpkgs.lib.nixosSystem
           {
             system = "x86_64-linux";
-            modules = commonComputeConfig ++ [
+            modules = [
               ./modules/common.nix
               ./modules/compute.nix
-              sops.nixosModules.sops
 
               {
                 compute.id = 3;
@@ -261,34 +222,9 @@
                 compute.efiBlockId = "A181-EEC7";
                 compute.domain = domain;
 
-                sops.secrets.compute3_store_privatekey.owner = "nix-serve";
-
-                virtualisation.oci-containers.containers = {
-                  radarr = baseContainer // {
-                    image = "ghcr.io/linuxserver/radarr";
-                    volumes = [
-                      "config:/config"
-                      "/media/downloads:/downloads"
-                      "/media/movies:/movies"
-                    ];
-                  };
-
-                  plex = {
-                    image = "plexinc/pms-docker";
-                    volumes = [
-                      "config:/config"
-                      "/media/movies:/data/movies"
-                      "/media/tv:/data/tv"
-                    ];
-                    extraOptions = [ "--network=host" ];
-                    environment = {
-                      HOSTNAME = "plex.cmacr.ae";
-                      TZ = "Europe/London";
-                      PLEX_UID = "1001";
-                      PLEX_GID = "1001";
-                    };
-                  };
-                };
+                services.plex.enable = true;
+                services.plex.user = "admin";
+                services.plex.group = "admin";
               }
             ];
           };
