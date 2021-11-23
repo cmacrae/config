@@ -249,6 +249,7 @@ in
       open-policy-agent
       pass
       python3
+      pwgen
       ranger
       ripgrep
       rnix-lsp
