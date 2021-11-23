@@ -341,7 +341,7 @@ in
     programs.firefox.enable = true;
     # Handled by the Homebrew module
     # This populates a dummy package to satsify the requirement
-    programs.firefox.package = pkgs.runCommand "firefox-0.0.0" {} "mkdir $out";
+    programs.firefox.package = pkgs.runCommand "firefox-0.0.0" { } "mkdir $out";
     programs.firefox.extensions =
       with pkgs.nur.repos.rycee.firefox-addons; [
         ublock-origin
@@ -381,22 +381,22 @@ in
           "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
         };
       in
-        {
-          home = {
-            inherit settings;
-            inherit userChrome;
-            id = 0;
-          };
+      {
+        home = {
+          inherit settings;
+          inherit userChrome;
+          id = 0;
+        };
 
-          work = {
-            inherit userChrome;
-            id = 1;
-            settings = settings // {
-              "browser.startup.homepage" = "about:blank";
-              "browser.urlbar.placeholderName" = "Google";
-            };
+        work = {
+          inherit userChrome;
+          id = 1;
+          settings = settings // {
+            "browser.startup.homepage" = "about:blank";
+            "browser.urlbar.placeholderName" = "Google";
           };
         };
+      };
 
     #########
     # Emacs #
@@ -428,66 +428,36 @@ in
       let
         # TODO: derive 'name' from assignment
         elPackage = name: src:
-          pkgs.runCommand "${name}.el" {} ''
+          pkgs.runCommand "${name}.el" { } ''
             mkdir -p  $out/share/emacs/site-lisp
             cp -r ${src}/* $out/share/emacs/site-lisp/
           '';
       in
-        (
-          pkgs.emacsWithPackagesFromUsePackage {
-            alwaysEnsure = true;
-            alwaysTangle = true;
+      (
+        pkgs.emacsWithPackagesFromUsePackage {
+          alwaysEnsure = true;
+          alwaysTangle = true;
 
-            # Custom overlay derived from 'emacs' flake input
-            package = pkgs.emacs;
-            config = ../conf.d/emacs.org;
+          # Custom overlay derived from 'emacs' flake input
+          package = pkgs.emacs;
+          config = ../conf.d/emacs.org;
 
-            override = epkgs: epkgs // {
-              # nano-theme = elPackage "nano-theme" (
-              #   pkgs.fetchFromGitHub {
-              #     owner = "rougier";
-              #     repo = "nano-theme";
-              #     rev = "4a231787a32b3019f9f0abb3511a112fd54bf685";
-              #     sha256 = "1xr1yyhapmyp8dpxa5gpkdqkga1k3gml3ycn2jqgp14bq823vjkr";
-              #   }
-              # );
+          override = epkgs: epkgs // {
+            mu4e-dashboard = elPackage "mu4e-dashboard" (
+              pkgs.fetchFromGitHub {
+                owner = "rougier";
+                repo = "mu4e-dashboard";
+                rev = "40b2d48da55b7ac841d62737ea9cdf54e8442cf3";
+                sha256 = "1i94gdyk9f5c2vyr184znr54cbvg6apcq38l2389m3h8lxg1m5na";
+              }
+            );
+          };
 
-              # nano-modeline = elPackage "nano-modeline" (
-              #   pkgs.fetchFromGitHub {
-              #     owner = "rougier";
-              #     repo = "nano-modeline";
-              #     rev = "5036cd2f164311c10c39a87e6e4f2b7739b8e369";
-              #     sha256 = "171xnmn35dpcm20hv1993ryi3c3dmi8kvd7jlww9vdkljsm0gxc7";
-              #   }
-              # );
-
-              mu4e-dashboard = elPackage "mu4e-dashboard" (
-                pkgs.fetchFromGitHub {
-                  owner = "rougier";
-                  repo = "mu4e-dashboard";
-                  rev = "40b2d48da55b7ac841d62737ea9cdf54e8442cf3";
-                  sha256 = "1i94gdyk9f5c2vyr184znr54cbvg6apcq38l2389m3h8lxg1m5na";
-                }
-              );
-
-              mu4e-thread-folding = elPackage "mu4e-thread-folding" (
-                pkgs.fetchFromGitHub {
-                  owner = "rougier";
-                  repo = "mu4e-thread-folding";
-                  rev = "c6915585263a744b4da4a0e334393150603136dc";
-                  sha256 = "0fki9506q42fz6a86pnx2ll3kl25d6nh4b735c323abnwjirjd50";
-                }
-              );
-            };
-
-            extraEmacsPackages = epkgs: with epkgs; [
-              # nano-theme
-              # nano-modeline
-              mu4e-dashboard
-              mu4e-thread-folding
-            ];
-          }
-        );
+          extraEmacsPackages = epkgs: with epkgs; [
+            mu4e-dashboard
+          ];
+        }
+      );
 
     programs.fzf.enable = true;
     programs.fzf.enableZshIntegration = true;
@@ -666,65 +636,65 @@ in
 
 
       in
-        {
-          enable = true;
-          shortcut = "q";
-          keyMode = "vi";
-          clock24 = true;
-          terminal = "screen-256color";
-          customPaneNavigationAndResize = true;
-          secureSocket = false;
-          extraConfig = ''
-            unbind [
-            unbind ]
+      {
+        enable = true;
+        shortcut = "q";
+        keyMode = "vi";
+        clock24 = true;
+        terminal = "screen-256color";
+        customPaneNavigationAndResize = true;
+        secureSocket = false;
+        extraConfig = ''
+          unbind [
+          unbind ]
 
-            bind ] next-window
-            bind [ previous-window
+          bind ] next-window
+          bind [ previous-window
 
-            bind Escape copy-mode
-            bind P paste-buffer
-            bind-key -T copy-mode-vi v send-keys -X begin-selection
-            bind-key -T copy-mode-vi y send-keys -X copy-selection
-            bind-key -T copy-mode-vi r send-keys -X rectangle-toggle
-            set -g mouse on
+          bind Escape copy-mode
+          bind P paste-buffer
+          bind-key -T copy-mode-vi v send-keys -X begin-selection
+          bind-key -T copy-mode-vi y send-keys -X copy-selection
+          bind-key -T copy-mode-vi r send-keys -X rectangle-toggle
+          set -g mouse on
 
-            bind-key -r C-k resize-pane -U
-            bind-key -r C-j resize-pane -D
-            bind-key -r C-h resize-pane -L
-            bind-key -r C-l resize-pane -R
+          bind-key -r C-k resize-pane -U
+          bind-key -r C-j resize-pane -D
+          bind-key -r C-h resize-pane -L
+          bind-key -r C-l resize-pane -R
 
-            bind-key -r C-M-k resize-pane -U 5
-            bind-key -r C-M-j resize-pane -D 5
-            bind-key -r C-M-h resize-pane -L 5
-            bind-key -r C-M-l resize-pane -R 5
+          bind-key -r C-M-k resize-pane -U 5
+          bind-key -r C-M-j resize-pane -D 5
+          bind-key -r C-M-h resize-pane -L 5
+          bind-key -r C-M-l resize-pane -R 5
 
-            set -g display-panes-colour white
-            set -g display-panes-active-colour red
-            set -g display-panes-time 1000
-            set -g status-justify left
-            set -g set-titles on
-            set -g set-titles-string 'tmux: #T'
-            set -g repeat-time 100
-            set -g renumber-windows on
-            set -g renumber-windows on
+          set -g display-panes-colour white
+          set -g display-panes-active-colour red
+          set -g display-panes-time 1000
+          set -g status-justify left
+          set -g set-titles on
+          set -g set-titles-string 'tmux: #T'
+          set -g repeat-time 100
+          set -g renumber-windows on
+          set -g renumber-windows on
 
-            setw -g monitor-activity on
-            setw -g automatic-rename on
-            setw -g clock-mode-colour red
-            setw -g clock-mode-style 24
-            setw -g alternate-screen on
+          setw -g monitor-activity on
+          setw -g automatic-rename on
+          setw -g clock-mode-colour red
+          setw -g clock-mode-style 24
+          setw -g alternate-screen on
 
-            set -g status-left-length 100
-            set -g status-left "#(${pkgs.bash}/bin/bash ${kubeTmux}/kube.tmux 250 green colour3)  "
-            set -g status-right-length 100
-            set -g status-right "#[fg=red,bg=default] %b %d #[fg=blue,bg=default] %R "
-            set -g status-bg default
-            setw -g window-status-format "#[fg=blue,bg=black] #I #[fg=blue,bg=black] #W "
-            setw -g window-status-current-format "#[fg=blue,bg=default] #I #[fg=red,bg=default] #W "
+          set -g status-left-length 100
+          set -g status-left "#(${pkgs.bash}/bin/bash ${kubeTmux}/kube.tmux 250 green colour3)  "
+          set -g status-right-length 100
+          set -g status-right "#[fg=red,bg=default] %b %d #[fg=blue,bg=default] %R "
+          set -g status-bg default
+          setw -g window-status-format "#[fg=blue,bg=black] #I #[fg=blue,bg=black] #W "
+          setw -g window-status-current-format "#[fg=blue,bg=default] #I #[fg=red,bg=default] #W "
 
-            run-shell ${tmuxYank}/yank.tmux
-          '';
-        };
+          run-shell ${tmuxYank}/yank.tmux
+        '';
+      };
 
     # Global Emacs keybindings
     home.file."Library/KeyBindings/DefaultKeyBinding.dict".text = ''
