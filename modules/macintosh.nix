@@ -107,16 +107,20 @@ in
   homebrew.taps = [
     "homebrew/core"
     "homebrew/cask"
+    "homebrew/cask-drivers"
   ];
 
   homebrew.casks = [
     "firefox"
     "discord"
     "spotify"
+    "yubico-yubikey-manager"
+    "yubico-yubikey-personalization-gui"
   ];
 
   homebrew.masApps = {
     WireGuard = 1451685025;
+    YubicoAuthenticator = 1497506650;
   };
 
   services.skhd.enable = true;
@@ -157,6 +161,9 @@ in
     extraConfig = pkgs.lib.mkDefault ''
       # rules
       yabai -m rule --add app='System Preferences' manage=off
+      yabai -m rule --add app='Yubico Authenticator' manage=off
+      yabai -m rule --add app='YubiKey Manager' manage=off
+      yabai -m rule --add app='YubiKey Personalization Tool' manage=off
       yabai -m rule --add app='Live' manage=off
       yabai -m rule --add app='Xcode' manage=off
       yabai -m rule --add app='Emacs' title='.*Minibuf.*' manage=off border=off
