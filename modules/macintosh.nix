@@ -240,6 +240,7 @@ in
       gnused
       htop
       hugo
+      ipcalc
       jq
       mpv
       nix-prefetch-git
