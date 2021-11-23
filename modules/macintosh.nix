@@ -82,6 +82,7 @@ in
     etBook
     fira-code
     font-awesome
+    nerdfonts
     roboto
     roboto-mono
   ];
