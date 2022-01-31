@@ -199,9 +199,7 @@ in
     space_icon_color_tertiary = "0xfffff9b0";
     clock_icon = "";
     dnd_icon = "";
-    right_shell = "on";
-    right_shell_icon = "";
-    right_shell_icon_color = "0xffd8dee9";
+    right_shell = "off";
   };
 
   launchd.user.agents.spacebar.serviceConfig.EnvironmentVariables.PATH = pkgs.lib.mkForce
@@ -211,18 +209,6 @@ in
 
   # Recreate /run/current-system symlink after boot
   services.activate-system.enable = true;
-
-  services.mbsync.enable = true;
-  services.mbsync.postExec = ''
-    if pgrep -f 'mu server'; then
-        ${config.home-manager.users.cmacrae.programs.emacs.package}/bin/emacsclient \
-          -e '(mu4e-update-index)'
-    else
-        ${pkgs.mu}/bin/mu index --nocolor
-    fi
-  '';
-  launchd.user.agents.mbsync.serviceConfig.StandardErrorPath = "/tmp/mbsync.log";
-  launchd.user.agents.mbsync.serviceConfig.StandardOutPath = "/tmp/mbsync.log";
 
   home-manager.users.cmacrae = {
     home.stateVersion = "21.05";
@@ -301,38 +287,6 @@ in
       signing.key = "54A14F5D";
       signing.signByDefault = true;
       extraConfig.github.user = "cmacrae";
-    };
-
-    #########
-    # Email #
-    #########
-    programs.mu.enable = true;
-    programs.mbsync.enable = true;
-    programs.msmtp.enable = true;
-    accounts.email.maildirBasePath = "${config.users.users.cmacrae.home}/.mail";
-    accounts.email.accounts.fastmail = {
-      mu.enable = true;
-      msmtp.enable = true;
-      primary = pkgs.lib.mkDefault true;
-      address = primaryEmail;
-      aliases = [ secondaryEmail ];
-      userName = primaryEmail;
-      realName = fullName;
-
-      mbsync = {
-        enable = true;
-        create = "both";
-        expunge = "both";
-        remove = "both";
-      };
-
-      imap.host = "imap.fastmail.com";
-      smtp.host = "smtp.fastmail.com";
-      smtp.port = 465;
-
-      passwordCommand = "${pkgs.writeShellScript "fastmail-mbsyncPass" ''
-        ${pkgs.pass}/bin/pass Tech/fastmail.com | ${pkgs.gawk}/bin/awk -F: '/mbsync/{gsub(/ /,""); print$NF}'
-      ''}";
     };
 
     ###########
@@ -441,21 +395,6 @@ in
           # Custom overlay derived from 'emacs' flake input
           package = pkgs.emacs;
           config = ../conf.d/emacs.org;
-
-          override = epkgs: epkgs // {
-            mu4e-dashboard = elPackage "mu4e-dashboard" (
-              pkgs.fetchFromGitHub {
-                owner = "rougier";
-                repo = "mu4e-dashboard";
-                rev = "40b2d48da55b7ac841d62737ea9cdf54e8442cf3";
-                sha256 = "1i94gdyk9f5c2vyr184znr54cbvg6apcq38l2389m3h8lxg1m5na";
-              }
-            );
-          };
-
-          extraEmacsPackages = epkgs: with epkgs; [
-            mu4e-dashboard
-          ];
         }
       );
 
