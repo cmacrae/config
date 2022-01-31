@@ -26,7 +26,6 @@
 
       commonDarwinConfig = [
         ./modules/macintosh.nix
-        ./modules/mbsync.nix
         home.darwinModules.home-manager
 
         {
@@ -88,8 +87,6 @@
             { pkgs, ... }: {
               networking.hostName = "workbook";
 
-              services.spacebar.config.right_shell_command = mailIndicator "work";
-
               home-manager.users.cmacrae = {
                 home.packages = with pkgs; [
                   argocd
@@ -98,37 +95,6 @@
                   terraform-docs
                   vault
                 ];
-
-                accounts.email.accounts.fastmail.primary = false;
-                accounts.email.accounts.work =
-                  let
-                    mailAddr = name: domain: "${name}@${domain}";
-                  in
-                  rec {
-                    mu.enable = true;
-                    msmtp.enable = true;
-                    primary = true;
-                    address = mailAddr "calum.macrae" "nutmeg.com";
-                    userName = address;
-                    realName = "Calum MacRae";
-
-                    mbsync = {
-                      enable = true;
-                      create = "both";
-                      expunge = "both";
-                      remove = "both";
-                    };
-
-                    imap.host = "outlook.office365.com";
-                    smtp.host = "smtp.office365.com";
-                    smtp.port = 587;
-                    smtp.tls.useStartTls = true;
-                    # Office365 IMAP requires an App Password to be created
-                    # https://account.activedirectory.windowsazure.com/AppPasswords.aspx
-                    passwordCommand = "${pkgs.writeShellScript "work-mbsyncPass" ''
-                          ${pkgs.pass}/bin/pass Nutmeg/outlook.office365.com | head -n 1
-                        ''}";
-                  };
               };
             }
           )
