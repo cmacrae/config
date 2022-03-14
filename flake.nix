@@ -6,11 +6,9 @@
     darwin.url = github:lnl7/nix-darwin;
     home.url = github:nix-community/home-manager;
     nur.url = github:nix-community/NUR;
-    emacs.url = github:cmacrae/emacs;
     emacs-overlay.url = github:nix-community/emacs-overlay;
     rnix-lsp.url = github:nix-community/rnix-lsp;
-    deploy-rs.url = "github:serokell/deploy-rs";
-    spacebar.url = github:cmacrae/spacebar;
+    deploy-rs.url = github:serokell/deploy-rs;
     sops.url = github:Mic92/sops-nix;
 
     # Follows
@@ -31,14 +29,10 @@
         {
           nixpkgs.overlays = with inputs; [
             nur.overlay
-            emacs.overlay
             emacs-overlay.overlay
-            spacebar.overlay
           ];
         }
       ];
-
-      mailIndicator = mailbox: ''"mu find 'm:/${mailbox}/inbox' flag:unread | wc -l | tr -d \"[:blank:]\""'';
 
     in
     {
@@ -48,8 +42,6 @@
           (
             { pkgs, config, ... }: {
               networking.hostName = "macbook";
-
-              services.spacebar.config.right_shell_command = mailIndicator "fastmail";
 
               nix.distributedBuilds = true;
               nix.buildMachines =

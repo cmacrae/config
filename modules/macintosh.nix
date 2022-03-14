@@ -18,10 +18,6 @@ in
   nix.buildCores = 0;
   services.nix-daemon.enable = true;
 
-  nixpkgs.overlays = [
-    (import ../overlays)
-  ];
-
   nix.trustedUsers = [ "root" "cmacrae" ];
 
   nix.binaryCaches = [
@@ -72,8 +68,6 @@ in
       Clicking = true;
       TrackpadThreeFingerDrag = true;
     };
-
-    NSGlobalDomain._HIHideMenuBar = true;
   };
 
   fonts.enableFontDir = true;
@@ -124,88 +118,13 @@ in
   };
 
   services.skhd.enable = true;
-  services.skhd.skhdConfig = builtins.readFile ../conf.d/skhd.conf;
-
-  services.yabai = {
-    enable = true;
-    package = pkgs.yabai;
-    enableScriptingAddition = true;
-    config = {
-      window_border = "on";
-      window_border_width = 5;
-      active_window_border_color = "0xff81a1c1";
-      normal_window_border_color = "0xff3b4252";
-      focus_follows_mouse = "autoraise";
-      mouse_follows_focus = "off";
-      mouse_drop_action = "stack";
-      window_placement = "second_child";
-      window_opacity = "off";
-      window_topmost = "on";
-      window_shadow = "float";
-      active_window_opacity = "1.0";
-      normal_window_opacity = "1.0";
-      split_ratio = "0.50";
-      auto_balance = "on";
-      mouse_modifier = "alt";
-      mouse_action1 = "move";
-      mouse_action2 = "resize";
-      layout = "bsp";
-      top_padding = 10;
-      bottom_padding = 10;
-      left_padding = 10;
-      right_padding = 10;
-      window_gap = 10;
-      external_bar = "main:26:0";
-    };
-
-    extraConfig = pkgs.lib.mkDefault ''
-      # rules
-      yabai -m rule --add app='System Preferences' manage=off
-      yabai -m rule --add app='Yubico Authenticator' manage=off
-      yabai -m rule --add app='YubiKey Manager' manage=off
-      yabai -m rule --add app='YubiKey Personalization Tool' manage=off
-      yabai -m rule --add app='Live' manage=off
-      yabai -m rule --add app='Xcode' manage=off
-      yabai -m rule --add app='Emacs' title='.*Minibuf.*' manage=off border=off
-    '';
-  };
-
-  launchd.user.agents.yabai.serviceConfig.StandardErrorPath = "/tmp/yabai.log";
-  launchd.user.agents.yabai.serviceConfig.StandardOutPath = "/tmp/yabai.log";
-
-  services.spacebar.enable = true;
-  services.spacebar.package = pkgs.spacebar;
-  services.spacebar.config = {
-    debug_output = "on";
-    display = "main";
-    position = "top";
-    clock_format = "%R";
-    text_font = ''"Roboto Mono:Regular:12.0"'';
-    icon_font = ''"Font Awesome 5 Free:Solid:12.0"'';
-    background_color = "0xff222222";
-    foreground_color = "0xffd8dee9";
-    space_icon_color = "0xffffab91";
-    dnd_icon_color = "0xffd8dee9";
-    clock_icon_color = "0xffd8dee9";
-    power_icon_color = "0xffd8dee9";
-    battery_icon_color = "0xffd8dee9";
-    power_icon_strip = " ";
-    space_icon = "•";
-    space_icon_strip = "1 2 3 4 5 6 7 8 9 10";
-    spaces_for_all_displays = "on";
-    display_separator = "on";
-    display_separator_icon = "";
-    space_icon_color_secondary = "0xff78c4d4";
-    space_icon_color_tertiary = "0xfffff9b0";
-    clock_icon = "";
-    dnd_icon = "";
-    right_shell = "off";
-  };
-
-  launchd.user.agents.spacebar.serviceConfig.EnvironmentVariables.PATH = pkgs.lib.mkForce
-    (builtins.replaceStrings [ "$HOME" ] [ config.users.users.cmacrae.home ] config.environment.systemPath);
-  launchd.user.agents.spacebar.serviceConfig.StandardErrorPath = "/tmp/spacebar.err.log";
-  launchd.user.agents.spacebar.serviceConfig.StandardOutPath = "/tmp/spacebar.out.log";
+  services.skhd.skhdConfig = ''
+    cmd + ctrl - return : open -n -a ~/.nix-profile/Applications/Alacritty.app
+    cmd + ctrl - i : open -a ~/.nix-profile/Applications/Emacs.app
+    cmd + ctrl - o : open -a "Yubico Authenticator"
+    cmd + ctrl - f : open  -n -a /Applications/Firefox.app --args -P home
+    cmd + shift + ctrl - f : open -n -a /Applications/Firefox.app --args -P work
+  '';
 
   # Recreate /run/current-system symlink after boot
   services.activate-system.enable = true;
@@ -338,12 +257,10 @@ in
       {
         home = {
           inherit settings;
-          inherit userChrome;
           id = 0;
         };
 
         work = {
-          inherit userChrome;
           id = 1;
           settings = settings // {
             "browser.startup.homepage" = "about:blank";
@@ -392,8 +309,7 @@ in
           alwaysEnsure = true;
           alwaysTangle = true;
 
-          # Custom overlay derived from 'emacs' flake input
-          package = pkgs.emacs;
+          package = pkgs.emacsMacport;
           config = ../conf.d/emacs.org;
         }
       );
@@ -407,9 +323,9 @@ in
     programs.alacritty = {
       enable = true;
       settings = {
-        window.padding.x = 24;
-        window.padding.y = 24;
-        window.decorations = "buttonless";
+        window.padding.x = 15;
+        window.padding.y = 28;
+        window.decorations = "transparent";
         window.dynamic_title = true;
         scrolling.history = 100000;
         live_config_reload = true;
