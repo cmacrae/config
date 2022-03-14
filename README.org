@@ -32,8 +32,7 @@ There are several machines defined in =flake.nix=
  
 *** macbook
 As you might've guessed from the name, this is my personal MacBook.
-It provides a darwin environment of which every aspect is expressed, including: [[https://github.com/koekeishiya/yabai][yabai]], [[https://github.com/cmacrae/spacebar][spacebar]], [[https://github.com/koekeishiya/skhd][skhd]], [[https://cmacr.ae/post/2020-05-09-managing-firefox-on-macos-with-nix/][Firefox profiles]]
-with [[conf.d/userChrome.css][a minimal theme (à la surf/xombrero)]], [[https://github.com/cmacrae/emacs][nightly Emacs (with native comp, WebKit support, libvterm)]],
+It provides a darwin environment of which every aspect is expressed, including: [[https://cmacr.ae/post/2020-05-09-managing-firefox-on-macos-with-nix/][Firefox profiles]]
 [[conf.d/emacs.org][literate Emacs config]] with [[https://github.com/nix-community/emacs-overlay/#extra-library-functionality][declarative use-package statements]], declarative Homebrew packages/casks for macOS Application installation, and various other pieces.
     
 *** workbook
