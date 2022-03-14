@@ -217,11 +217,11 @@ in
         ublock-origin
         browserpass
         vimium
+        reddit-enhancement-suite
       ];
 
     programs.firefox.profiles =
       let
-        userChrome = builtins.readFile ../conf.d/userChrome.css;
         settings = {
           "app.update.auto" = false;
           "browser.startup.homepage" = "https://lobste.rs";
