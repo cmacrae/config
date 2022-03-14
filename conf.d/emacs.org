@@ -78,7 +78,6 @@ Also, when typing =M-3=, insert an octothorp - I use a British keyboard.
                '(min-width  . 1)
                '(width      . 81)
                '(vertical-scroll-bars . nil)
-               '(internal-border-width . 10)
                '(left-fringe    . 0)
                '(right-fringe   . 0)
                '(tool-bar-lines . 0)
@@ -314,6 +313,8 @@ This section outlines my preference for Emacs' completion system/interface.
 #+END_SRC
 
 *** doom-theme | doom-modeline
+Here's the following configuration I use for my themes.
+It includes switching between light/dark themes for use with mituharu's emacs-mac port.
 #+BEGIN_SRC emacs-lisp
 (use-package doom-themes
   :custom
@@ -323,7 +324,27 @@ This section outlines my preference for Emacs' completion system/interface.
   :config
   (load-theme 'doom-nord t)
   (doom-themes-neotree-config)
-  (doom-themes-org-config))
+  (doom-themes-org-config)
+  (defvar light-mode-theme 'doom-nord-light)
+  (defvar dark-mode-theme 'doom-nord)
+
+  (defun cm/switch-theme (theme)
+    "Disable active themes and load THEME."
+    (interactive (list (intern (completing-read "Theme: "
+                                 (->> (custom-available-themes)
+                                   (-map #'symbol-name))))))
+    (mapc #'disable-theme custom-enabled-themes)
+    (load-theme theme 'no-confirm))
+
+  (defun cm/appearance-change-hook ()
+    (let ((appearance (plist-get (mac-application-state) :appearance)))
+      (cond ((equal appearance "NSAppearanceNameAqua")
+             (cm/switch-theme light-mode-theme))
+            ((equal appearance "NSAppearanceNameDarkAqua")
+             (cm/switch-theme dark-mode-theme)))))
+
+  (add-hook 'after-init-hook 'cm/appearance-change-hook)
+  (add-hook 'mac-effective-appearance-change-hook 'cm/appearance-change-hook))
 
 (use-package doom-modeline
   :hook (after-init . doom-modeline-mode)
