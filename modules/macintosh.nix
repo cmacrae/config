@@ -136,9 +136,7 @@ in
       aspellDicts.en
       aspellDicts.en-computers
       bc
-      bind
       clang
-      ffmpeg-full
       gnumake
       gnupg
       gnused
@@ -149,7 +147,8 @@ in
       mpv
       nix-prefetch-git
       nmap
-      open-policy-agent
+      # FIXME: Broken on macOS right now
+      # open-policy-agent
       pass
       python3
       pwgen
