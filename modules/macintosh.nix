@@ -138,7 +138,6 @@ in
       bc
       bind
       clang
-      consul
       ffmpeg-full
       gnumake
       gnupg
@@ -150,7 +149,6 @@ in
       mpv
       nix-prefetch-git
       nmap
-      nomad
       open-policy-agent
       pass
       python3
@@ -165,11 +163,10 @@ in
       up
       vim
       wget
-      wireguard-tools
       youtube-dl
 
       # Go
-      go
+      go_1_17
       gocode
       godef
       gotools
