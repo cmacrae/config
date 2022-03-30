@@ -10,6 +10,7 @@
     rnix-lsp.url = github:nix-community/rnix-lsp;
     deploy-rs.url = github:serokell/deploy-rs;
     sops.url = github:Mic92/sops-nix;
+    mgc.url = "/Users/cmacrae/src/github.com/cmacrae/mgc";
 
     # Follows
     darwin.inputs.nixpkgs.follows = "nixpkgs";
@@ -18,7 +19,7 @@
     sops.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, darwin, home, deploy-rs, sops, ... }@inputs:
+  outputs = { self, nixpkgs, darwin, home, deploy-rs, sops, mgc, ... }@inputs:
     let
       domain = "cmacr.ae";
 
@@ -131,10 +132,17 @@
         {
           system = "x86_64-linux";
           modules = [
+            mgc.nixosModules.mgc
+            sops.nixosModules.sops
+
             ./modules/common.nix
             ./modules/compute.nix
 
             {
+              nixpkgs.overlays = [
+                inputs.mgc.overlay
+              ];
+
               compute.id = 2;
               compute.hostId = "7df67865";
               compute.efiBlockId = "0DDD-4E07";
@@ -148,9 +156,18 @@
               services.sonarr.user = "admin";
               services.sonarr.group = "admin";
 
-              services.bazarr.enable = true;
-              services.bazarr.user = "admin";
-              services.bazarr.group = "admin";
+              sops.defaultSopsFile = ./secrets.yaml;
+              sops.secrets.compute2_mgc_env_file = { };
+
+              services.mgc.enable = true;
+              services.mgc.user = "admin";
+              services.mgc.group = "admin";
+              # services.mgc.package = inputs.mgc.packages.x86_64-linux.mgc;
+              services.mgc.deleteFiles = true;
+              services.mgc.ignoreTag = "keep";
+              services.mgc.schedule = ''"0 3 * * *"'';
+              # TODO: Set to result
+              services.mgc.environmentFile = "/run/secrets/compute2_mgc_env_file";
             }
           ];
         };
@@ -177,24 +194,20 @@
 
       # Map each system in 'nixosConfigurations' to a common
       # deployment description
-      deploy.nodes = (
-        builtins.mapAttrs
-          (
-            hostname: attr: {
-              inherit hostname;
-              fastConnection = true;
-              profiles = {
-                system = {
-                  sshUser = "admin";
-                  user = "root";
-                  path = deploy-rs.lib."${attr.config.nixpkgs.system}".activate.nixos
-                    self.nixosConfigurations."${hostname}";
-                };
-              };
-            }
-          )
-          self.nixosConfigurations
-      );
+      deploy.nodes = builtins.mapAttrs
+        (
+          hostname: attr: {
+            inherit hostname;
+            fastConnection = true;
+            profiles.system = {
+              sshUser = "admin";
+              user = "root";
+              path = deploy-rs.lib."${attr.config.nixpkgs.system}".activate.nixos
+                self.nixosConfigurations."${hostname}";
+            };
+          }
+        )
+        self.nixosConfigurations;
 
       checks = builtins.mapAttrs
         (system: deployLib: deployLib.deployChecks self.deploy)

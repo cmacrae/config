@@ -47,10 +47,10 @@ let
     sonarr.host = "compute2";
     radarr.port = 7878;
     radarr.host = "compute2";
-    bazarr.port = 6767;
-    bazarr.host = "compute2";
     plex.port = 32400;
     plex.host = "compute3";
+    mgc.port = 9797;
+    mgc.host = "compute2";
   };
 
 in
