@@ -91,6 +91,20 @@
         "type": "github"
       }
     },
+    "mgc": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_3"
+      },
+      "locked": {
+        "narHash": "sha256-U5hMk7vtBmngkq0tuG4lhneD75QvzYJuxJ3jyS4II/w=",
+        "path": "/Users/cmacrae/src/github.com/cmacrae/mgc",
+        "type": "path"
+      },
+      "original": {
+        "path": "/Users/cmacrae/src/github.com/cmacrae/mgc",
+        "type": "path"
+      }
+    },
     "naersk": {
       "inputs": {
         "nixpkgs": [
@@ -154,6 +168,54 @@
         "type": "github"
       },
       "original": {
+        "owner": "NixOS",
+        "ref": "release-21.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_4": {
+      "locked": {
+        "lastModified": 1633329294,
+        "narHash": "sha256-0LpQLS4KMgxslMgmDHmxG/5twFlXDBW9z4Or1iOrCvU=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "ee084c02040e864eeeb4cf4f8538d92f7c675671",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixpkgs-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_5": {
+      "locked": {
+        "lastModified": 1616847335,
+        "narHash": "sha256-AQrNtJZRl9P78u+otHNXVxcQzu84vuTJLqynupp335g=",
+        "owner": "cmacrae",
+        "repo": "nixpkgs",
+        "rev": "7745d5338ad3c6cef295f40a732c6a739b1fcc7b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "cmacrae",
+        "ref": "fix_spacebar",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nur": {
+      "locked": {
+        "lastModified": 1634066207,
+        "narHash": "sha256-B4Y7gD58Xbbm/AZMMXfSJgV2TJMX8p9ZsiVUTMpvMfY=",
+        "owner": "nix-community",
+        "repo": "NUR",
+        "rev": "8892c66f5b0edf31c6541405bbd15a3f424877fe",
+        "type": "github"
+      },
+      "original": {
         "owner": "nix-community",
         "repo": "NUR",
         "type": "github"
@@ -187,10 +249,12 @@
         "deploy-rs": "deploy-rs",
         "emacs-overlay": "emacs-overlay",
         "home": "home",
-        "nixpkgs": "nixpkgs_2",
+        "mgc": "mgc",
+        "nixpkgs": "nixpkgs_4",
         "nur": "nur",
         "rnix-lsp": "rnix-lsp",
-        "sops": "sops"
+        "sops": "sops",
+        "spacebar": "spacebar"
       }
     },
     "sops": {
