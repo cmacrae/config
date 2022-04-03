@@ -139,10 +139,6 @@
             ./modules/compute.nix
 
             {
-              nixpkgs.overlays = [
-                inputs.mgc.overlay
-              ];
-
               compute.id = 2;
               compute.hostId = "7df67865";
               compute.efiBlockId = "0DDD-4E07";
@@ -162,7 +158,7 @@
               services.mgc.enable = true;
               services.mgc.user = "admin";
               services.mgc.group = "admin";
-              # services.mgc.package = inputs.mgc.packages.x86_64-linux.mgc;
+              services.mgc.package = mgc.packages.x86_64-linux.mgc;
               services.mgc.deleteFiles = true;
               services.mgc.ignoreTag = "keep";
               services.mgc.schedule = ''"0 3 * * *"'';
