@@ -54,207 +54,213 @@ let
   };
 
 in
-  with pkgs.lib; {
-    boot.tmpOnTmpfs = true;
-    boot.kernelPackages = pkgs.linuxPackages_rpi4;
-    boot.loader.raspberryPi.enable = true;
-    boot.loader.raspberryPi.version = 4;
-    boot.loader.grub.enable = false;
-    boot.loader.generic-extlinux-compatible.enable = true;
-    boot.initrd.checkJournalingFS = false;
-    boot.initrd.availableKernelModules = [ "usbhid" "usb_storage" ];
-    hardware.enableRedistributableFirmware = true;
-    powerManagement.cpuFreqGovernor = "ondemand";
+with pkgs.lib; {
+  boot.tmpOnTmpfs = true;
+  boot.kernelPackages = pkgs.linuxPackages_rpi4;
+  boot.loader.raspberryPi.enable = true;
+  boot.loader.raspberryPi.version = 4;
+  boot.loader.grub.enable = false;
+  boot.initrd.checkJournalingFS = false;
+  boot.initrd.availableKernelModules = [ "usbhid" "usb_storage" ];
+  hardware.enableRedistributableFirmware = true;
+  powerManagement.cpuFreqGovernor = "ondemand";
 
-    boot.kernelParams = [
-      "cma=64M"
-      "8250.nr_uarts=1"
-      "console=tty1"
-      "console=ttyAMA0,115200"
+  boot.kernelParams = [
+    "cma=64M"
+    "8250.nr_uarts=1"
+    "console=tty1"
+    "console=ttyAMA0,115200"
+  ];
+
+  fileSystems."/" = {
+    device = "/dev/disk/by-label/NIXOS_SD";
+    fsType = "ext4";
+    options = [ "noatime" ];
+  };
+
+  networking = {
+    hostName = "net1";
+    domain = "cmacr.ae";
+    dhcpcd.enable = false;
+    defaultGateway = "10.0.0.1";
+    useDHCP = false;
+    wireless.enable = false;
+
+    interfaces.eth0.ipv4.addresses = [
+      {
+        address = ipReservations.net1.ip;
+        prefixLength = 16;
+      }
     ];
 
-    fileSystems."/" = {
-      device = "/dev/disk/by-label/NIXOS_SD";
-      fsType = "ext4";
-      options = [ "noatime" ];
-    };
-
-    networking = {
-      hostName = "net1";
-      domain = "cmacr.ae";
-      dhcpcd.enable = false;
-      defaultGateway = "10.0.0.1";
-      useDHCP = false;
-      wireless.enable = false;
-
-      interfaces.eth0.ipv4.addresses = [
-        {
-          address = ipReservations.net1.ip;
-          prefixLength = 16;
-        }
-      ];
-
-      nat.enable = true;
-      nat.externalInterface = "eth0";
-      # nat.internalInterfaces = [ "wg0" ];
-      firewall = {
-        enable = true;
-        allowedTCPPorts = [ 22 80 ];
-        allowedUDPPorts = [ 53 51820 ];
-
-        extraCommands = ''
-          ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -s ${vpnAddressSpace} -o eth0 -j MASQUERADE
-        '';
-      };
-
-      wireguard.interfaces = {
-        wg0 = {
-          listenPort = 51820;
-          ips = [ "10.100.0.1/24" ];
-
-          privateKeyFile = config.sops.secrets.net1_wireguard_privatekey.path;
-
-          peers = [
-            {
-              # iPhone
-              publicKey = "p01WeSnCip/0WawSYcQAnFq+0xlnfLwoRrBc0Un1Pmg=";
-              allowedIPs = [ "10.100.0.2/32" ];
-            }
-            {
-              # iPad
-              publicKey = "pi78Qv0OdKHt/KUc9+VaZ5nOU64HB1Tf7KBIX4yJIGw=";
-              allowedIPs = [ "10.100.0.3/32" ];
-            }
-            {
-              # MacBook
-              publicKey = "FUCNqeSNgMdpSEatYd/RL9MG3rF7mR006lwU8JQTE0k=";
-              allowedIPs = [ "10.100.0.4/32" ];
-            }
-          ];
-        };
-      };
-    };
-
-    services.timesyncd.enable = true;
-
-    services.dhcpd4 = {
+    nat.enable = true;
+    nat.externalInterface = "eth0";
+    # nat.internalInterfaces = [ "wg0" ];
+    firewall = {
       enable = true;
-      extraConfig = ''
-        ddns-update-style none;
-        shared-network local {
-            option routers ${ipReservations.erl.ip};
-            option domain-name "${domain}";
-            option domain-name-servers ${ipReservations.net1.ip};
-            option domain-search "${domain}";
-            option time-servers ${concatStringsSep ", " config.networking.timeServers};
-            subnet 10.0.0.0 netmask 255.255.0.0 {
-                range 10.0.20.1 10.0.20.254;
-            }
-        }
-      '';
+      allowedTCPPorts = [ 22 80 ];
+      allowedUDPPorts = [ 53 51820 ];
 
-      machines = mapAttrsToList (
+      extraCommands = ''
+        ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -s ${vpnAddressSpace} -o eth0 -j MASQUERADE
+      '';
+    };
+
+    wireguard.interfaces = {
+      wg0 = {
+        listenPort = 51820;
+        ips = [ "10.100.0.1/24" ];
+
+        privateKeyFile = config.sops.secrets.net1_wireguard_privatekey.path;
+
+        peers = [
+          {
+            # iPhone
+            publicKey = "p01WeSnCip/0WawSYcQAnFq+0xlnfLwoRrBc0Un1Pmg=";
+            allowedIPs = [ "10.100.0.2/32" ];
+          }
+          {
+            # iPad
+            publicKey = "pi78Qv0OdKHt/KUc9+VaZ5nOU64HB1Tf7KBIX4yJIGw=";
+            allowedIPs = [ "10.100.0.3/32" ];
+          }
+          {
+            # MacBook
+            publicKey = "FUCNqeSNgMdpSEatYd/RL9MG3rF7mR006lwU8JQTE0k=";
+            allowedIPs = [ "10.100.0.4/32" ];
+          }
+        ];
+      };
+    };
+  };
+
+  services.timesyncd.enable = true;
+
+  services.dhcpd4 = {
+    enable = true;
+    extraConfig = ''
+      ddns-update-style none;
+      shared-network local {
+          option routers ${ipReservations.erl.ip};
+          option domain-name "${domain}";
+          option domain-name-servers ${ipReservations.net1.ip};
+          option domain-search "${domain}";
+          option time-servers ${concatStringsSep ", " config.networking.timeServers};
+          subnet 10.0.0.0 netmask 255.255.0.0 {
+              range 10.0.20.1 10.0.20.254;
+          }
+      }
+    '';
+
+    machines = mapAttrsToList
+      (
         machine: attributes:
           {
             hostName = "${machine}.${domain}";
             ethernetAddress = builtins.toString (catAttrs "mac" (singleton attributes));
             ipAddress = builtins.toString (catAttrs "ip" (singleton attributes));
           }
-      ) ipReservations;
-    };
+      )
+      ipReservations;
+  };
 
-    services.unbound = {
-      enable = true;
-      settings.server = {
-        interface = [ "0.0.0.0" ];
+  services.unbound = {
+    enable = true;
+    settings.server = {
+      interface = [ "0.0.0.0" ];
 
-        prefetch = "yes";
-        prefetch-key = "yes";
-        harden-glue = "yes";
-        hide-version = "yes";
-        hide-identity = "yes";
-        use-caps-for-id = "yes";
-        val-clean-additional = "yes";
-        harden-dnssec-stripped = "yes";
-        cache-min-ttl = "3600";
-        cache-max-ttl = "86400";
-        unwanted-reply-threshold = "10000";
+      prefetch = "yes";
+      prefetch-key = "yes";
+      harden-glue = "yes";
+      hide-version = "yes";
+      hide-identity = "yes";
+      use-caps-for-id = "yes";
+      val-clean-additional = "yes";
+      harden-dnssec-stripped = "yes";
+      cache-min-ttl = "3600";
+      cache-max-ttl = "86400";
+      unwanted-reply-threshold = "10000";
 
-        verbosity = "2";
-        log-queries = "yes";
+      verbosity = "2";
+      log-queries = "yes";
 
-        tls-cert-bundle = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+      tls-cert-bundle = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
 
-        num-threads = "4";
-        infra-cache-slabs = "4";
-        key-cache-slabs = "4";
-        msg-cache-size = "131721898";
-        msg-cache-slabs = "4";
-        num-queries-per-thread = "4096";
-        outgoing-range = "8192";
-        rrset-cache-size = "263443797";
-        rrset-cache-slabs = "4";
-        minimal-responses = "yes";
-        serve-expired = "yes";
-        so-reuseport = "yes";
+      num-threads = "4";
+      infra-cache-slabs = "4";
+      key-cache-slabs = "4";
+      msg-cache-size = "131721898";
+      msg-cache-slabs = "4";
+      num-queries-per-thread = "4096";
+      outgoing-range = "8192";
+      rrset-cache-size = "263443797";
+      rrset-cache-slabs = "4";
+      minimal-responses = "yes";
+      serve-expired = "yes";
+      so-reuseport = "yes";
 
-        private-address = [
-          "10.0.0.0/8"
-          "172.16.0.0/12"
-          "192.168.0.0/16"
-        ];
+      private-address = [
+        "10.0.0.0/8"
+        "172.16.0.0/12"
+        "192.168.0.0/16"
+      ];
 
-        access-control = [
-          "127.0.0.0/8 allow"
-          "10.0.0.0/8 allow"
-        ];
+      access-control = [
+        "127.0.0.0/8 allow"
+        "10.0.0.0/8 allow"
+      ];
 
-        local-zone = [
-          ''"localhost." static''
-          ''"127.in-addr.arpa." static''
+      local-zone = [
+        ''"localhost." static''
+        ''"127.in-addr.arpa." static''
 
-          ''"${domain}" transparent''
-        ];
+        ''"${domain}" transparent''
+      ];
 
-        local-data = [
-          ''"localhost. 10800 IN NS localhost."''
-          ''"localhost. 10800 IN SOA localhost. nobody.invalid. 1 3600 1200 604800 10800"''
+      local-data = [
+        ''"localhost. 10800 IN NS localhost."''
+        ''"localhost. 10800 IN SOA localhost. nobody.invalid. 1 3600 1200 604800 10800"''
 
-          ''"localhost. 10800 IN A 127.0.0.1"''
-          ''"127.in-addr.arpa. 10800 IN NS localhost."''
-          ''"127.in-addr.arpa. 10800 IN SOA localhost. nobody.invalid. 2 3600 1200 604800 10800"''
-          ''"1.0.0.127.in-addr.arpa. 10800 IN PTR localhost."''
-        ] ++ (
-          mapAttrsToList (
+        ''"localhost. 10800 IN A 127.0.0.1"''
+        ''"127.in-addr.arpa. 10800 IN NS localhost."''
+        ''"127.in-addr.arpa. 10800 IN SOA localhost. nobody.invalid. 2 3600 1200 604800 10800"''
+        ''"1.0.0.127.in-addr.arpa. 10800 IN PTR localhost."''
+      ] ++ (
+        mapAttrsToList
+          (
             name: attributes:
               ''"${name}.${domain}. IN A ${builtins.toString (catAttrs "ip" (singleton attributes))}"''
-          ) ipReservations
-        ) ++ (
-          mapAttrsToList (
+          )
+          ipReservations
+      ) ++ (
+        mapAttrsToList
+          (
             name: _:
               ''"${name}.${domain} CNAME net1.${domain}"''
-          ) proxyServices
-        );
+          )
+          proxyServices
+      );
 
-        private-domain = [
-          ''"${domain}."''
-        ];
-      };
-
-      settings.forward-zone = {
-        name = ".";
-        forward-tls-upstream = "yes";
-        forward-addr = [
-          "1.1.1.1@853"
-          "1.0.0.1@853"
-        ];
-      };
+      private-domain = [
+        ''"${domain}."''
+      ];
     };
 
-    services.nginx = {
-      enable = true;
-      recommendedProxySettings = true;
-      virtualHosts = mapAttrs' (
+    settings.forward-zone = {
+      name = ".";
+      forward-tls-upstream = "yes";
+      forward-addr = [
+        "1.1.1.1@853"
+        "1.0.0.1@853"
+      ];
+    };
+  };
+
+  services.nginx = {
+    enable = true;
+    recommendedProxySettings = true;
+    virtualHosts = mapAttrs'
+      (
         host: attr:
           nameValuePair ("${host}.${domain}") (
             {
@@ -264,6 +270,7 @@ in
               };
             }
           )
-      ) proxyServices;
-    };
-  }
+      )
+      proxyServices;
+  };
+}
