@@ -6,6 +6,7 @@
     darwin.url = github:lnl7/nix-darwin;
     home.url = github:nix-community/home-manager;
     nur.url = github:nix-community/NUR;
+    emacs.url = github:cmacrae/emacs;
     emacs-overlay.url = github:nix-community/emacs-overlay;
     rnix-lsp.url = github:nix-community/rnix-lsp;
     deploy-rs.url = github:serokell/deploy-rs;
@@ -30,6 +31,7 @@
         {
           nixpkgs.overlays = with inputs; [
             nur.overlay
+            emacs.overlay
             emacs-overlay.overlay
           ];
         }

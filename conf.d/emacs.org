@@ -43,9 +43,7 @@ Also, when typing =M-3=, insert an octothorp - I use a British keyboard.
 #+BEGIN_SRC emacs-lisp
 (cond
  ((string-equal system-type "darwin")
-  (setq frame-resize-pixelwise  t
-        mac-option-modifier     'meta)
-
+  (setq frame-resize-pixelwise  t)
   (define-key key-translation-map (kbd "M-3") (kbd "#"))
   (menu-bar-mode t)))
 #+END_SRC
@@ -283,8 +281,6 @@ This section outlines my preference for Emacs' completion system/interface.
 - Embark: act on targets, sort of like a right-click menu
 #+BEGIN_SRC emacs-lisp
 (use-package vertico
-  :ensure nil
-  :load-path "~/src/github.com/aaronjensen/vertico"
   :hook (after-init . vertico-mode)
   :custom
   (vertico-resize t))
@@ -314,7 +310,6 @@ This section outlines my preference for Emacs' completion system/interface.
 
 *** doom-theme | doom-modeline
 Here's the following configuration I use for my themes.
-It includes switching between light/dark themes for use with mituharu's emacs-mac port.
 #+BEGIN_SRC emacs-lisp
 (use-package doom-themes
   :custom
@@ -334,17 +329,7 @@ It includes switching between light/dark themes for use with mituharu's emacs-ma
                                  (->> (custom-available-themes)
                                    (-map #'symbol-name))))))
     (mapc #'disable-theme custom-enabled-themes)
-    (load-theme theme 'no-confirm))
-
-  (defun cm/appearance-change-hook ()
-    (let ((appearance (plist-get (mac-application-state) :appearance)))
-      (cond ((equal appearance "NSAppearanceNameAqua")
-             (cm/switch-theme light-mode-theme))
-            ((equal appearance "NSAppearanceNameDarkAqua")
-             (cm/switch-theme dark-mode-theme)))))
-
-  (add-hook 'after-init-hook 'cm/appearance-change-hook)
-  (add-hook 'mac-effective-appearance-change-hook 'cm/appearance-change-hook))
+    (load-theme theme 'no-confirm)))
 
 (use-package doom-modeline
   :hook (after-init . doom-modeline-mode)
@@ -551,7 +536,9 @@ Here, I’ve defined a cm/persp-neo function for use with persp-switch-hook. Thi
 #+BEGIN_SRC emacs-lisp
 (use-package perspective
   :hook (after-init . persp-mode)
-  :custom (persp-show-modestring nil)
+  :custom
+  (persp-show-modestring nil)
+  (persp-suppress-no-prefix-key-warning t)
   :config
 
   (use-package persp-projectile
@@ -936,13 +923,6 @@ Configuration for working with various languages
   :mode "\\.html"
   :custom
   (web-mode-engines-alist '(("go" . "\\.gotmpl\\'"))))
-
-(use-package swift-mode
-  :mode "\\.swift"
-  :hook (swift-mode . (lambda () (lsp)))
-  :config
-  (use-package swift-helpful
-    :ensure t))
 #+END_SRC
 
 Language Server Protocol integration
@@ -979,11 +959,6 @@ Language Server Protocol integration
 
   (use-package lsp-ui
     :commands lsp-ui-mode)
-
-  (use-package lsp-sourcekit
-    :after lsp-mode
-    :custom
-    (lsp-sourcekit-executable "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp"))
 #+END_SRC
 
 **** mini-frame
