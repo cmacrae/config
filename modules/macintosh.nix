@@ -70,7 +70,7 @@ in
     };
   };
 
-  fonts.enableFontDir = true;
+  fonts.fontDir.enable = true;
   fonts.fonts = with pkgs; [
     emacs-all-the-icons-fonts
     etBook
@@ -141,13 +141,14 @@ in
       gnupg
       gnused
       htop
-      hugo
+      # FIXME: Broken on macOS amd64 right now
+      # hugo
       ipcalc
       jq
       mpv
       nix-prefetch-git
       nmap
-      # FIXME: Broken on macOS right now
+      # FIXME: Broken on macOS amd64 right now
       # open-policy-agent
       pass
       python3
@@ -156,6 +157,7 @@ in
       ripgrep
       rnix-lsp
       rsync
+      sops
       terraform
       terraform-ls
       unzip
@@ -169,7 +171,8 @@ in
       gocode
       godef
       gotools
-      golangci-lint
+      # FIXME: Broken on macOS amd64 right now
+      # golangci-lint
       golint
       go2nix
       errcheck
@@ -305,7 +308,6 @@ in
           alwaysEnsure = true;
           alwaysTangle = true;
 
-          package = pkgs.emacsMacport;
           config = ../conf.d/emacs.org;
         }
       );
@@ -471,13 +473,6 @@ in
 
     programs.tmux =
       let
-        kubeTmux = pkgs.fetchFromGitHub {
-          owner = "jonmosco";
-          repo = "kube-tmux";
-          rev = "7f196eeda5f42b6061673825a66e845f78d2449c";
-          sha256 = "1dvyb03q2g250m0bc8d2621xfnbl18ifvgmvf95nybbwyj2g09cm";
-        };
-
         tmuxYank = pkgs.fetchFromGitHub {
           owner = "tmux-plugins";
           repo = "tmux-yank";
@@ -536,7 +531,7 @@ in
           setw -g alternate-screen on
 
           set -g status-left-length 100
-          set -g status-left "#(${pkgs.bash}/bin/bash ${kubeTmux}/kube.tmux 250 green colour3)  "
+          # set -g status-left "#  "
           set -g status-right-length 100
           set -g status-right "#[fg=red,bg=default] %b %d #[fg=blue,bg=default] %R "
           set -g status-bg default
