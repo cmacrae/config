@@ -14,40 +14,38 @@ in
   '';
 
   system.stateVersion = 4;
-  nix.maxJobs = "auto";
-  nix.buildCores = 0;
+  nix.settings.max-jobs = "auto";
+  nix.settings.cores = 0;
+  nix.configureBuildUsers = true;
   services.nix-daemon.enable = true;
 
-  nix.trustedUsers = [ "root" "cmacrae" ];
+  nix.settings.trusted-users = [ "root" "cmacrae" ];
 
-  nix.binaryCaches = [
+  nix.settings.substituters = [
     # Personal cache
     "https://cachix.org/api/v1/cache/cmacrae"
     # Nightly Emacs build cache for github.com/cmacrae/emacs
-    "https://cachix.org/api/v1/cache/emacs"
+    # "https://cachix.org/api/v1/cache/emacs"
 
     "https://cachix.org/api/v1/cache/nix-community"
   ];
 
-  nix.binaryCachePublicKeys = [
+  nix.settings.trusted-public-keys = [
     "cmacrae.cachix.org-1:5Mp1lhT/6baI3eAqnEvruhLrrXE9CKe27SbnXqjwXfg="
-    "emacs.cachix.org-1:b1SMJNLY/mZF6GxQE+eDBeps7WnkT0Po55TAyzwOxTY="
+    # "emacs.cachix.org-1:b1SMJNLY/mZF6GxQE+eDBeps7WnkT0Po55TAyzwOxTY="
     "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
   ];
 
-  nix.trustedBinaryCaches = config.nix.binaryCaches;
 
-  nixpkgs.config.allowUnfree = true;
 
   environment.shells = [ pkgs.zsh ];
-  environment.systemPackages = [ pkgs.zsh pkgs.gcc ];
+  environment.systemPackages = [ pkgs.zsh pkgs.gcc pkgs.libgccjit ];
   programs.bash.enable = false;
   programs.zsh.enable = true;
 
   time.timeZone = "Europe/London";
   users.users.cmacrae.shell = pkgs.zsh;
   users.users.cmacrae.home = "/Users/cmacrae";
-  users.nix.configureBuildUsers = true;
 
   system.defaults = {
     dock = {
@@ -71,15 +69,15 @@ in
   };
 
   fonts.fontDir.enable = true;
-  fonts.fonts = with pkgs; [
-    emacs-all-the-icons-fonts
-    etBook
-    fira-code
-    font-awesome
-    nerdfonts
-    roboto
-    roboto-mono
-  ];
+  # fonts.fonts = with pkgs; [
+  #   emacs-all-the-icons-fonts
+  #   etBook
+  #   fira-code
+  #   font-awesome
+  #   nerdfonts
+  #   roboto
+  #   roboto-mono
+  # ];
 
   system.keyboard = {
     enableKeyMapping = true;
@@ -90,10 +88,9 @@ in
   # Homebrew #
   ############
   homebrew.enable = true;
-  homebrew.autoUpdate = true;
-  homebrew.cleanup = "zap";
+  homebrew.onActivation.autoUpdate = true;
+  homebrew.onActivation.cleanup = "zap";
   homebrew.global.brewfile = true;
-  homebrew.global.noLock = true;
   homebrew.extraConfig = ''
     cask "firefox", args: { language: "en-GB" }
   '';
@@ -107,7 +104,7 @@ in
   homebrew.casks = [
     "firefox"
     "discord"
-    "spotify"
+    "keepingyouawake"
     "yubico-yubikey-manager"
     "yubico-yubikey-personalization-gui"
   ];
@@ -120,7 +117,7 @@ in
   services.skhd.enable = true;
   services.skhd.skhdConfig = ''
     cmd + ctrl - return : open -n -a ~/.nix-profile/Applications/Alacritty.app
-    cmd + ctrl - i : open -a ~/.nix-profile/Applications/Emacs.app
+    cmd + ctrl - i : open -a ~/.nix-profile/Applications/Visual\ Studio\ Code.app
     cmd + ctrl - o : open -a "Yubico Authenticator"
     cmd + ctrl - f : open  -n -a /Applications/Firefox.app --args -P home
     cmd + shift + ctrl - f : open -n -a /Applications/Firefox.app --args -P work
@@ -130,6 +127,9 @@ in
   services.activate-system.enable = true;
 
   home-manager.users.cmacrae = {
+
+    nixpkgs.config.allowUnfree = true;
+
     home.stateVersion = "21.05";
     home.packages = with pkgs; [
       aspell
@@ -151,6 +151,7 @@ in
       # FIXME: Broken on macOS amd64 right now
       # open-policy-agent
       pass
+      podman
       python3
       pwgen
       ranger
@@ -167,7 +168,7 @@ in
       youtube-dl
 
       # Go
-      go_1_17
+      go
       gocode
       godef
       gotools
@@ -176,19 +177,14 @@ in
       golint
       go2nix
       errcheck
-      gotags
       gopls
 
-      # Docker
-      docker
-
       # k8s
-      argocd
       kind
       kubectl
-      kubectx
-      kubeval
-      kube-prompt
+      # kubectx
+      # kubeval
+      # kube-prompt
       kubernetes-helm
       kustomize
     ];
@@ -242,7 +238,7 @@ in
           "privacy.trackingprotection.enabled" = true;
           "privacy.trackingprotection.socialtracking.enabled" = true;
           "privacy.trackingprotection.socialtracking.annotate.enabled" = true;
-          "reader.color_scheme" = "sepia";
+          "reader.color_scheme" = "auto";
           "services.sync.declinedEngines" = "addons,passwords,prefs";
           "services.sync.engine.addons" = false;
           "services.sync.engineStatusChanged.addons" = true;
@@ -271,46 +267,79 @@ in
     #########
     # Emacs #
     #########
-    programs.emacs.enable = true;
-    home.file.".emacs.d/init.el".text = ''
-      ;;; init.el --- Where all the magic begins
-      ;;
-      ;;; Commentary:
-      ;; This file loads Org-mode and then loads the rest of the Emacs initialization from Emacs Lisp
-      ;; embedded in the literate Org-mode file: emacs.org
-      ;;
-      ;;; Code:
+    # programs.emacs.enable = true;
+    # home.file.".emacs.d/init.el".text = ''
+    #   ;;; init.el --- Where all the magic begins
+    #   ;;
+    #   ;;; Commentary:
+    #   ;; This file loads Org-mode and then loads the rest of the Emacs initialization from Emacs Lisp
+    #   ;; embedded in the literate Org-mode file: emacs.org
+    #   ;;
+    #   ;;; Code:
 
-      (setq emacs-dir (file-name-directory (or (buffer-file-name) load-file-name)))
+    #   (setq emacs-dir (file-name-directory (or (buffer-file-name) load-file-name)))
 
-      ;; load up Org-mode and Org-babel
-      (require 'org-install)
-      (require 'ob-tangle)
+    #   ;; load up Org-mode and Org-babel
+    #   (require 'org-install)
+    #   (require 'ob-tangle)
 
-      ;; load up all literate org-mode files in this directory
-      (mapc #'org-babel-load-file (directory-files emacs-dir t "\\.org$"))
+    #   ;; load up all literate org-mode files in this directory
+    #   (mapc #'org-babel-load-file (directory-files emacs-dir t "\\.org$"))
 
-      ;;; init.el ends here
-    '';
-    home.file.".emacs.d/emacs.org".source = ../conf.d/emacs.org;
+    #   ;;; init.el ends here
+    # '';
+    # home.file.".emacs.d/emacs.org".source = ../conf.d/emacs.org;
 
-    programs.emacs.package =
-      let
-        # TODO: derive 'name' from assignment
-        elPackage = name: src:
-          pkgs.runCommand "${name}.el" { } ''
-            mkdir -p  $out/share/emacs/site-lisp
-            cp -r ${src}/* $out/share/emacs/site-lisp/
-          '';
-      in
-      (
-        pkgs.emacsWithPackagesFromUsePackage {
-          alwaysEnsure = true;
-          alwaysTangle = true;
+    # programs.emacs.package =
+    #   let
+    #     # TODO: derive 'name' from assignment
+    #     elPackage = name: src:
+    #       pkgs.runCommand "${name}.el" { } ''
+    #         mkdir -p  $out/share/emacs/site-lisp
+    #         cp -r ${src}/* $out/share/emacs/site-lisp/
+    #       '';
+    #   in
+    #   (
+    #     pkgs.emacsWithPackagesFromUsePackage {
+    #       alwaysEnsure = true;
+    #       alwaysTangle = true;
+    #       package = pkgs.emacs;
 
-          config = ../conf.d/emacs.org;
-        }
-      );
+    #       config = ../conf.d/emacs.org;
+    #     }
+    #   );
+
+    programs.vscode.enable = true;
+    programs.vscode.enableUpdateCheck = false;
+    programs.vscode.enableExtensionUpdateCheck = false;
+    programs.vscode.extensions = with pkgs.vscode-extensions; [
+      # Nix
+      bbenoist.nix
+      jnoortheen.nix-ide
+      # pinage404.nix-extension-pack
+
+      # Core
+      vscodevim.vim
+      kahole.magit
+      alefragnani.project-manager
+      christian-kohler.path-intellisense
+
+      # Appearance
+      catppuccin.catppuccin-vsc
+    ];
+
+    programs.vscode.userSettings = {
+      "editor.minimap.enabled" = false;
+      "workbench.colorTheme" = "Catppuccin Frappé";
+      "workbench.activityBar.visible" = false;
+      "workbench.statusBar.feedback.visible" = false;
+      "nix.enableLanguageServer" = true;
+      "nix.serverPath" = "${config.users.users.cmacrae.home}/.nix-profile/bin/rnix-lsp";
+
+      # Disabled for path-intellisense`
+      "javascript.suggest.paths" = false;
+      "typescript.suggest.paths" = false;
+    };
 
     programs.fzf.enable = true;
     programs.fzf.enableZshIntegration = true;

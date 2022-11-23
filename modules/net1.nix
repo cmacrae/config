@@ -49,8 +49,6 @@ let
     radarr.host = "compute2";
     plex.port = 32400;
     plex.host = "compute3";
-    mgc.port = 9797;
-    mgc.host = "compute2";
   };
 
 in

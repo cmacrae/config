@@ -6,12 +6,11 @@
     darwin.url = github:lnl7/nix-darwin;
     home.url = github:nix-community/home-manager;
     nur.url = github:nix-community/NUR;
-    emacs.url = github:cmacrae/emacs;
-    emacs-overlay.url = github:nix-community/emacs-overlay;
+    # emacs.url = github:cmacrae/emacs;
+    # emacs-overlay.url = github:nix-community/emacs-overlay;
     rnix-lsp.url = github:nix-community/rnix-lsp;
     deploy-rs.url = github:serokell/deploy-rs;
     sops.url = github:Mic92/sops-nix;
-    mgc.url = "/Users/cmacrae/src/github.com/cmacrae/mgc";
 
     # Follows
     darwin.inputs.nixpkgs.follows = "nixpkgs";
@@ -20,7 +19,7 @@
     sops.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, darwin, home, deploy-rs, sops, mgc, ... }@inputs:
+  outputs = { self, nixpkgs, darwin, home, deploy-rs, sops, ... }@inputs:
     let
       domain = "cmacr.ae";
 
@@ -29,11 +28,13 @@
         home.darwinModules.home-manager
 
         {
-          nixpkgs.overlays = with inputs; [
-            nur.overlay
-            emacs.overlay
-            emacs-overlay.overlay
-          ];
+          nix.nixPath = with inputs; [{ inherit darwin; }];
+          nixpkgs.overlays = with inputs;
+            [
+              nur.overlay
+              # emacs.overlay
+              # emacs-overlay.overlay
+            ];
         }
       ];
 
@@ -76,7 +77,7 @@
       };
 
       darwinConfigurations.workbook = darwin.lib.darwinSystem {
-        system = "x86_64-darwin";
+        system = "aarch64-darwin";
         modules = commonDarwinConfig ++ [
           (
             { pkgs, ... }: {
@@ -84,13 +85,18 @@
 
               home-manager.users.cmacrae = {
                 home.packages = with pkgs; [
-                  argocd
                   awscli
                   aws-iam-authenticator
+                  aws-vault
                   terraform-docs
                   vault
                 ];
               };
+
+              homebrew.casks = [
+                "docker"
+                "jiggler"
+              ];
             }
           )
         ];
@@ -134,7 +140,6 @@
         {
           system = "x86_64-linux";
           modules = [
-            mgc.nixosModules.mgc
             sops.nixosModules.sops
 
             ./modules/common.nix
@@ -155,17 +160,6 @@
               services.sonarr.group = "admin";
 
               sops.defaultSopsFile = ./secrets.yaml;
-              sops.secrets.compute2_mgc_env_file = { };
-
-              services.mgc.enable = true;
-              services.mgc.user = "admin";
-              services.mgc.group = "admin";
-              services.mgc.package = mgc.packages.x86_64-linux.mgc;
-              services.mgc.deleteFiles = true;
-              services.mgc.ignoreTag = "keep";
-              services.mgc.schedule = ''"0 3 * * *"'';
-              # TODO: Set to result
-              services.mgc.environmentFile = "/run/secrets/compute2_mgc_env_file";
             }
           ];
         };

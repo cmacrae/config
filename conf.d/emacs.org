@@ -272,13 +272,14 @@ control it from within this file. Whilst this statement may seem recursive, it e
 (use-package use-package)
 #+END_SRC
 
-*** Vertico | savehist | orderless | marginalia | Embark
+*** Vertico | savehist | orderless | marginalia | Embark | Consult
 This section outlines my preference for Emacs' completion system/interface.
 - Vertico: consistent, minimalistic completion UI
 - savehist: persists completion history
 - orderless: intuitive completion style for candidates based on space separated patterns
 - marginalia: annotations for minibuffer candidates
 - Embark: act on targets, sort of like a right-click menu
+- Consult: practical completion
 #+BEGIN_SRC emacs-lisp
 (use-package vertico
   :hook (after-init . vertico-mode)
@@ -304,8 +305,108 @@ This section outlines my preference for Emacs' completion system/interface.
   :bind
   (("C-," . embark-act))
 
+  :config
+  (embark-define-keymap embark-password-store-actions
+    "Keymap for actions for password-store."
+    ("c" password-store-copy)
+    ("f" password-store-copy-field)
+    ("i" password-store-insert)
+    ("I" password-store-generate)
+    ("r" password-store-rename)
+    ("e" password-store-edit)
+    ("k" password-store-remove)
+    ("U" password-store-url))
+
+  (add-to-list 'embark-keymap-alist '(password-store . embark-password-store-actions))
+  (add-to-list 'marginalia-prompt-categories '("Password entry" . password-store))
+
   :init
   (setq prefix-help-command #'embark-prefix-help-command))
+
+(use-package consult
+  :bind (("C-s"   . consult-line)
+         ("C-c h" . consult-history)
+         ("C-c m" . consult-mode-command)
+         ("C-c k" . consult-kmacro)
+
+         ("C-x M-:" . consult-complex-command)
+         ("C-x b"   . consult-buffer)
+         ("C-x 4 b" . consult-buffer-other-window)
+         ("C-x 5 b" . consult-buffer-other-frame)
+         ("C-x r b" . consult-bookmark)
+         ("C-x p b" . consult-project-buffer)
+
+         ("M-#" . consult-register-load)
+         ("M-'" . consult-register-store)
+         ("C-M-#" . consult-register)
+
+         ("M-y" . consult-yank-pop)
+         ("<help> a" . consult-apropos)
+
+         ("M-g e" . consult-compile-error)
+         ("M-g f" . consult-flycheck)
+         ("M-g g" . consult-goto-line)
+         ("M-g M-g" . consult-goto-line)
+         ("M-g o" . consult-outline)
+         ("M-g m" . consult-mark)
+         ("M-g k" . consult-global-mark)
+         ("M-g i" . consult-imenu)
+         ("M-g I" . consult-imenu-multi)
+
+         ("M-s d" . consult-find)
+         ("M-s D" . consult-locate)
+         ("M-s g" . consult-grep)
+         ("M-s G" . consult-git-grep)
+         ("M-s r" . consult-ripgrep)
+         ("M-s L" . consult-line-multi)
+         ("M-s m" . consult-multi-occur)
+         ("M-s k" . consult-keep-lines)
+         ("M-s u" . consult-focus-lines)
+
+         ("M-s e" . consult-isearch-history)
+         :map isearch-mode-map
+         ("M-e" . consult-isearch-history)
+         ("M-s e" . consult-isearch-history)
+         ("M-s l" . consult-line)
+         ("M-s L" . consult-line-multi)
+
+         :map minibuffer-local-map
+         ("M-s" . consult-history)
+         ("M-r" . consult-history))
+
+  ;; Enable automatic preview at point in the *Completions* buffer.
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+
+  :init
+
+  ;; Optionally configure the register formatting. This improves the register
+  ;; preview for `consult-register', `consult-register-load',
+  ;; `consult-register-store' and the Emacs built-ins.
+  (setq register-preview-delay 0.5
+        register-preview-function #'consult-register-format)
+
+  ;; Add thin lines, sorting and hide the mode line of the register preview window.
+  (advice-add #'register-preview :override #'consult-register-window)
+
+  ;; Use Consult to select xref locations with preview
+  (setq xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref)
+
+  :config
+
+  (consult-customize
+   consult-theme
+   :preview-key '(:debounce 0.2 any)
+   consult-ripgrep consult-git-grep consult-grep
+   consult-bookmark consult-recent-file consult-xref
+   consult--source-bookmark consult--source-recent-file
+   consult--source-project-recent-file
+   :preview-key (kbd "M-."))
+
+  (setq consult-narrow-key "<") ;; (kbd "C-+")
+
+  (autoload 'projectile-project-root "projectile")
+  (setq consult-project-function (lambda (_) (projectile-project-root))))
 #+END_SRC
 
 *** doom-theme | doom-modeline
@@ -379,24 +480,24 @@ Fancy buffer tabs
   :config
   (centaur-tabs-headline-match)
   (centaur-tabs-group-by-projectile-project)
-  (define-key evil-normal-state-map (kbd "N") 'centaur-tabs-backward)
-  (define-key evil-normal-state-map (kbd "N") 'centaur-tabs-backward)
-  (define-key evil-colemak-basics-map (kbd "N") 'centaur-tabs-backward)
-  (define-key evil-colemak-basics-map (kbd "N") 'centaur-tabs-backward)
+  ;; (define-key evil-normal-state-map (kbd "N") 'centaur-tabs-backward)
+  ;; (define-key evil-normal-state-map (kbd "N") 'centaur-tabs-backward)
+  ;; (define-key evil-colemak-basics-map (kbd "N") 'centaur-tabs-backward)
+  ;; (define-key evil-colemak-basics-map (kbd "N") 'centaur-tabs-backward)
   :custom
   (centaur-tabs-style "bar")
   (centaur-tabs-set-bar 'left)
   (centaur-tabs-set-close-button nil)
   (centaur-tabs-show-new-tab-button nil)
   (centaur-tabs-set-icons t)
-  (centaur-tabs-cycle-scope 'tabs)
-  :bind
-  (:map evil-colemak-basics-keymap
-     ("N" . centaur-tabs-backward)
-     ("E" . centaur-tabs-forward)
-   :map evil-normal-state-map
-     ("N" . centaur-tabs-backward)
-     ("E" . centaur-tabs-forward)))
+  (centaur-tabs-cycle-scope 'tabs))
+  ;; :bind
+  ;; (:map evil-colemak-basics-keymap
+  ;;    ("N" . centaur-tabs-backward)
+  ;;    ("E" . centaur-tabs-forward)
+  ;;  :map evil-normal-state-map
+  ;;    ("N" . centaur-tabs-backward)
+  ;;    ("E" . centaur-tabs-forward)))
 #+END_SRC
 
 
@@ -610,6 +711,7 @@ Anyone using Git and Emacs *needs* Magit in their life!
 Here I'm extending Magit's functionality to work with  popular "git forges". Specific configuration for this is to:
 - Only show open topics (issues/PRs)
 - Only show authored PRs
+- Upon PR creation, yank the title & URL
 
 I'm also using a handy package to layer on TODO notes in the Magit status buffer.
 #+BEGIN_SRC emacs-lisp
@@ -621,7 +723,15 @@ I'm also using a handy package to layer on TODO notes in the Magit status buffer
   :custom
   (forge-topic-list-limit '(30 . -1))
   :config
-  (magit-add-section-hook 'magit-status-sections-hook 'forge-insert-authored-pullreqs 'forge-insert-pullreqs 'replace))
+  (defun cm/forge-post-submit-callback-kill-info (value _headers _status _req)
+    (when t
+      (when-let ((url (alist-get 'html_url value))
+                 (title (alist-get 'title value)))
+        (kill-new (format "%s\n%s" title url)))))
+
+  (magit-add-section-hook 'magit-status-sections-hook 'forge-insert-authored-pullreqs 'forge-insert-pullreqs 'replace)
+  (add-hook 'forge-post-submit-callback-hook 'cm/forge-post-submit-callback-kill-info))
+
 
 (use-package magit-todos
   :after magit)

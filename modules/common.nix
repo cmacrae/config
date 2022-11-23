@@ -5,8 +5,8 @@
   nix.gc.automatic = true;
   nix.gc.dates = "weekly";
   nix.gc.options = "--delete-older-than 14d";
-  nix.trustedUsers = [ "root" "@wheel" ];
-  nix.maxJobs = "auto";
+  nix.settings.trusted-users = [ "root" "@wheel" ];
+  nix.settings.maxJobs = "auto";
 
   # Free up to 1GiB whenever there is less than 100MiB left.
   nix.extraOptions = ''
