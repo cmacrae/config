@@ -9,13 +9,108 @@ The combination of literacy and functionality is achieved using the amazing [[ht
 Throughout this document, you'll notice heavy use of the brilliant [[https://github.com/jwiegley/use-package][use-package]].
 For anyone who hasn't tried out =use-package=; I emplore you to do so - it truly makes managing your configuration an absolute joy.
 
+* Early initialization
+** Startup
+#+BEGIN_SRC emacs-lisp
+(eval-when-compile
+  (require 'use-package))
+#+END_SRC
+
+Time the startup and display the startup time after completed.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (message "Loaded Emacs in %.03fs"
+                     (float-time (time-subtract after-init-time before-init-time)))))
+#+END_SRC
+
+Temporarily reduce garbage collection to gain some performance boost during startup.
+#+BEGIN_SRC emacs-lisp
+(let ((normal-gc-cons-threshold gc-cons-threshold)
+      (normal-gc-cons-percentage gc-cons-percentage)
+      (normal-file-name-handler-alist file-name-handler-alist)
+      (init-gc-cons-threshold most-positive-fixnum)
+      (init-gc-cons-percentage 0.6))
+  (setq gc-cons-threshold init-gc-cons-threshold
+        gc-cons-percentage init-gc-cons-percentage
+        file-name-handler-alist nil)
+  (add-hook 'after-init-hook
+            `(lambda ()
+               (setq gc-cons-threshold ,normal-gc-cons-threshold
+                     gc-cons-percentage ,normal-gc-cons-percentage
+                     file-name-handler-alist ',normal-file-name-handler-alist))))
+#+END_SRC
+
+Inhibit startup screen and messages. If you are new to Emacs it is recommended to not
+disable the startup screen as it has great content to get you going.
+#+BEGIN_SRC emacs-lisp
+(setq inhibit-startup-echo-area-message t)
+(setq inhibit-startup-screen t)
+(setq initial-scratch-message nil)
+#+END_SRC
+
+Performance tweaks.  Don't load default library and use =fundamental-mode= to reduce amount
+of hooks.
+#+BEGIN_SRC emacs-lisp
+(setq inhibit-default-init t)
+(setq initial-major-mode 'fundamental-mode)
+#+END_SRC
+
+Disable =package.el= support. Packages are managed via Nix and disabling this gives a slight
+performance boost.
+#+BEGIN_SRC emacs-lisp
+(setq package-enable-at-startup nil)
+#+END_SRC
+
+** UI
+Disable GUI components.
+#+BEGIN_SRC emacs-lisp
+(setq use-dialog-box nil)
+(push '(menu-bar-lines . 0)   default-frame-alist)
+(push '(tool-bar-lines . 0)   default-frame-alist)
+(push '(vertical-scroll-bars) default-frame-alist)
+#+END_SRC
+
+Don't implicitly resize frames when changing various settings.
+#+BEGIN_SRC emacs-lisp
+(setq frame-inhibit-implied-resize t)
+#+END_SRC
+
+Ignore X resources.
+#+BEGIN_SRC emacs-lisp
+(advice-add #'x-apply-session-resources :override #'ignore)
+#+END_SRC
+
 * Configuration
 ** General
+
 *** About me
 Tell Emacs who's driving
 #+BEGIN_SRC emacs-lisp
 (setq user-full-name    "Calum MacRae"
       user-mail-address "hi@cmacr.ae")
+#+END_SRC
+
+*** Caching
+Provide a location where Emacs can store data and cache.
+#+BEGIN_SRC emacs-lisp
+(eval-and-compile
+  (defvar data-dir
+    (if (getenv "XDG_DATA_HOME")
+        (concat (getenv "XDG_DATA_HOME") "/emacs/")
+      (expand-file-name "~/.local/share/emacs/"))
+    "Directory for data.")
+
+  (defvar cache-dir
+    (if (getenv "XDG_CACHE_HOME")
+        (concat (getenv "XDG_CACHE_HOME") "/emacs/")
+      (expand-file-name "~/.cache/emacs/"))
+    "Directory for cache.")
+
+  (defvar pictures-dir
+    (or (getenv "XDG_PICTURES_DIR")
+        (expand-file-name "~/Pictures/"))
+    "Directory for pictures."))
 #+END_SRC
 
 *** Global =:ensure= for use-package statements
@@ -71,6 +166,7 @@ Also, when typing =M-3=, insert an octothorp - I use a British keyboard.
 #+BEGIN_SRC emacs-lisp
 (setq default-frame-alist
       (append (list
+               '(undecorated . t)
                '(min-height . 1)
                '(height     . 45)
                '(min-width  . 1)
@@ -272,13 +368,14 @@ control it from within this file. Whilst this statement may seem recursive, it e
 (use-package use-package)
 #+END_SRC
 
-*** Vertico | savehist | orderless | marginalia | Embark
+*** Vertico | savehist | orderless | marginalia | Embark | Consult
 This section outlines my preference for Emacs' completion system/interface.
 - Vertico: consistent, minimalistic completion UI
 - savehist: persists completion history
 - orderless: intuitive completion style for candidates based on space separated patterns
 - marginalia: annotations for minibuffer candidates
 - Embark: act on targets, sort of like a right-click menu
+- Consult: practical completion
 #+BEGIN_SRC emacs-lisp
 (use-package vertico
   :hook (after-init . vertico-mode)
@@ -304,40 +401,180 @@ This section outlines my preference for Emacs' completion system/interface.
   :bind
   (("C-," . embark-act))
 
+  :config
+  (embark-define-keymap embark-password-store-actions
+    "Keymap for actions for password-store."
+    ("c" password-store-copy)
+    ("f" password-store-copy-field)
+    ("i" password-store-insert)
+    ("I" password-store-generate)
+    ("r" password-store-rename)
+    ("e" password-store-edit)
+    ("k" password-store-remove)
+    ("U" password-store-url))
+
+  (add-to-list 'embark-keymap-alist '(password-store . embark-password-store-actions))
+  (add-to-list 'marginalia-prompt-categories '("Password entry" . password-store))
+
   :init
   (setq prefix-help-command #'embark-prefix-help-command))
+
+(use-package consult
+  :bind (("C-s"   . consult-line)
+         ("C-c h" . consult-history)
+         ("C-c m" . consult-mode-command)
+         ("C-c k" . consult-kmacro)
+
+         ("C-x M-:" . consult-complex-command)
+         ("C-x b"   . consult-buffer)
+         ("C-x 4 b" . consult-buffer-other-window)
+         ("C-x 5 b" . consult-buffer-other-frame)
+         ("C-x r b" . consult-bookmark)
+         ("C-x p b" . consult-project-buffer)
+
+         ("M-#" . consult-register-load)
+         ("M-'" . consult-register-store)
+         ("C-M-#" . consult-register)
+
+         ("M-y" . consult-yank-pop)
+         ("<help> a" . consult-apropos)
+
+         ("M-g e" . consult-compile-error)
+         ("M-g f" . consult-flycheck)
+         ("M-g g" . consult-goto-line)
+         ("M-g M-g" . consult-goto-line)
+         ("M-g o" . consult-outline)
+         ("M-g m" . consult-mark)
+         ("M-g k" . consult-global-mark)
+         ("M-g i" . consult-imenu)
+         ("M-g I" . consult-imenu-multi)
+
+         ("M-s d" . consult-find)
+         ("M-s D" . consult-locate)
+         ("M-s g" . consult-grep)
+         ("M-s G" . consult-git-grep)
+         ("M-s r" . consult-ripgrep)
+         ("M-s L" . consult-line-multi)
+         ("M-s m" . consult-multi-occur)
+         ("M-s k" . consult-keep-lines)
+         ("M-s u" . consult-focus-lines)
+
+         ("M-s e" . consult-isearch-history)
+         :map isearch-mode-map
+         ("M-e" . consult-isearch-history)
+         ("M-s e" . consult-isearch-history)
+         ("M-s l" . consult-line)
+         ("M-s L" . consult-line-multi)
+
+         :map minibuffer-local-map
+         ("M-s" . consult-history)
+         ("M-r" . consult-history))
+
+  ;; Enable automatic preview at point in the *Completions* buffer.
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+
+  :init
+
+  ;; Optionally configure the register formatting. This improves the register
+  ;; preview for `consult-register', `consult-register-load',
+  ;; `consult-register-store' and the Emacs built-ins.
+  (setq register-preview-delay 0.5
+        register-preview-function #'consult-register-format)
+
+  ;; Add thin lines, sorting and hide the mode line of the register preview window.
+  (advice-add #'register-preview :override #'consult-register-window)
+
+  ;; Use Consult to select xref locations with preview
+  (setq xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref)
+
+  :config
+
+  (consult-customize
+   consult-theme
+   :preview-key '(:debounce 0.2 any)
+   consult-ripgrep consult-git-grep consult-grep
+   consult-bookmark consult-recent-file consult-xref
+   consult--source-bookmark consult--source-recent-file
+   consult--source-project-recent-file
+   :preview-key (kbd "M-."))
+
+  (setq consult-narrow-key "<") ;; (kbd "C-+")
+
+  (autoload 'projectile-project-root "projectile")
+  (setq consult-project-function (lambda (_) (projectile-project-root))))
+#+END_SRC
+
+*** nano-theme|nano-modeline
+Modular parts of rougier/nano-emacs. Currently I’m making some changes locally that I intend to send for review upstream, so I’m loading from local paths.
+
+#+BEGIN_SRC emacs-lisp
+;; (use-package ts)
+;; (use-package nano-theme
+;;   :config
+;;   (load-theme 'nano t)
+;;   (defun cm/switch-theme (theme)
+;;     "Disable active themes and load THEME."
+;;     (interactive (list (intern (completing-read "Theme: "
+;;                                  (->> (custom-available-themes)
+;;                                    (-map #'symbol-name))))))
+;;     (mapc #'disable-theme custom-enabled-themes)
+;;     (load-theme theme 'no-confirm)))
+ 
+;; (use-package nano-modeline
+;;   :hook (after-init . nano-modeline))
+
+;; (use-package nano-emacs
+;;   :config
+;;   (require 'nano-defaults)
+;;   (require 'nano-splash)
+;;   (require 'nano-modeline))
+;; (use-package ts)
+(use-package nano-theme
+  :ensure nil
+  :demand t
+  :load-path "~/src/github.com/cmacrae/nano-theme"
+  :config
+  (load-theme 'nano t))
+
+(use-package nano-modeline
+  :ensure nil
+  :load-path "~/src/github.com/cmacrae/nano-modeline"
+  :custom
+  (nano-modeline-prefix 'icon)
+  :hook (after-init . nano-modeline-mode))
 #+END_SRC
 
 *** doom-theme | doom-modeline
 Here's the following configuration I use for my themes.
 #+BEGIN_SRC emacs-lisp
-(use-package doom-themes
-  :custom
-  (doom-themes-enable-bold   t)
-  (doom-themes-enable-italic t)
+;; (use-package doom-themes
+;;   :custom
+;;   (doom-themes-enable-bold   t)
+;;   (doom-themes-enable-italic t)
 
-  :config
-  (load-theme 'doom-nord t)
-  (doom-themes-neotree-config)
-  (doom-themes-org-config)
-  (defvar light-mode-theme 'doom-nord-light)
-  (defvar dark-mode-theme 'doom-nord)
+;;   :config
+;;   (load-theme 'doom-nord t)
+;;   (doom-themes-neotree-config)
+;;   (doom-themes-org-config)
+;;   (defvar light-mode-theme 'doom-nord-light)
+;;   (defvar dark-mode-theme 'doom-nord)
 
-  (defun cm/switch-theme (theme)
-    "Disable active themes and load THEME."
-    (interactive (list (intern (completing-read "Theme: "
-                                 (->> (custom-available-themes)
-                                   (-map #'symbol-name))))))
-    (mapc #'disable-theme custom-enabled-themes)
-    (load-theme theme 'no-confirm)))
+;;   (defun cm/switch-theme (theme)
+;;     "Disable active themes and load THEME."
+;;     (interactive (list (intern (completing-read "Theme: "
+;;                                  (->> (custom-available-themes)
+;;                                    (-map #'symbol-name))))))
+;;     (mapc #'disable-theme custom-enabled-themes)
+;;     (load-theme theme 'no-confirm)))
 
-(use-package doom-modeline
-  :hook (after-init . doom-modeline-mode)
-  :custom
-  (doom-modeline-persp-name              nil)
-  (doom-modeline-buffer-encoding         nil)
-  (doom-modeline-icon                    t)
-  (doom-modeline-buffer-file-name-style  'truncate-with-project))
+;; (use-package doom-modeline
+;;   :hook (after-init . doom-modeline-mode)
+;;   :custom
+;;   (doom-modeline-persp-name              nil)
+;;   (doom-modeline-buffer-encoding         nil)
+;;   (doom-modeline-icon                    t)
+;;   (doom-modeline-buffer-file-name-style  'truncate-with-project))
 
 #+END_SRC
 
@@ -368,35 +605,35 @@ Fancy buffer tabs
 - Set the cycle scope to current project tabs
 - Bind "N"/"E" in normal Evil state to move forward/backward
 #+BEGIN_SRC emacs-lisp
-(use-package centaur-tabs
-  :after evil-colemak-basics
-  :hook
-  (evil-colemak-basics-mode . centaur-tabs-mode)
-  (vterm-mode               . centaur-tabs-local-mode)
-  (calendar-mode            . centaur-tabs-local-mode)
-  (org-agenda-mode          . centaur-tabs-local-mode)
-  (helpful                  . centaur-tabs-local-mode)
-  :config
-  (centaur-tabs-headline-match)
-  (centaur-tabs-group-by-projectile-project)
-  (define-key evil-normal-state-map (kbd "N") 'centaur-tabs-backward)
-  (define-key evil-normal-state-map (kbd "N") 'centaur-tabs-backward)
-  (define-key evil-colemak-basics-map (kbd "N") 'centaur-tabs-backward)
-  (define-key evil-colemak-basics-map (kbd "N") 'centaur-tabs-backward)
-  :custom
-  (centaur-tabs-style "bar")
-  (centaur-tabs-set-bar 'left)
-  (centaur-tabs-set-close-button nil)
-  (centaur-tabs-show-new-tab-button nil)
-  (centaur-tabs-set-icons t)
-  (centaur-tabs-cycle-scope 'tabs)
-  :bind
-  (:map evil-colemak-basics-keymap
-     ("N" . centaur-tabs-backward)
-     ("E" . centaur-tabs-forward)
-   :map evil-normal-state-map
-     ("N" . centaur-tabs-backward)
-     ("E" . centaur-tabs-forward)))
+;; (use-package centaur-tabs
+;;   :after evil-colemak-basics
+;;   :hook
+;;   (evil-colemak-basics-mode . centaur-tabs-mode)
+;;   (vterm-mode               . centaur-tabs-local-mode)
+;;   (calendar-mode            . centaur-tabs-local-mode)
+;;   (org-agenda-mode          . centaur-tabs-local-mode)
+;;   (helpful                  . centaur-tabs-local-mode)
+;;   :config
+;;   (centaur-tabs-headline-match)
+;;   (centaur-tabs-group-by-projectile-project)
+;;   ;; (define-key evil-normal-state-map (kbd "N") 'centaur-tabs-backward)
+;;   ;; (define-key evil-normal-state-map (kbd "N") 'centaur-tabs-backward)
+;;   ;; (define-key evil-colemak-basics-map (kbd "N") 'centaur-tabs-backward)
+;;   ;; (define-key evil-colemak-basics-map (kbd "N") 'centaur-tabs-backward)
+;;   :custom
+;;   (centaur-tabs-style "bar")
+;;   (centaur-tabs-set-bar 'left)
+;;   (centaur-tabs-set-close-button nil)
+;;   (centaur-tabs-show-new-tab-button nil)
+;;   (centaur-tabs-set-icons t)
+;;   (centaur-tabs-cycle-scope 'tabs))
+;;   ;; :bind
+;;   ;; (:map evil-colemak-basics-keymap
+;;   ;;    ("N" . centaur-tabs-backward)
+;;   ;;    ("E" . centaur-tabs-forward)
+;;   ;;  :map evil-normal-state-map
+;;   ;;    ("N" . centaur-tabs-backward)
+;;   ;;    ("E" . centaur-tabs-forward)))
 #+END_SRC
 
 
@@ -610,6 +847,7 @@ Anyone using Git and Emacs *needs* Magit in their life!
 Here I'm extending Magit's functionality to work with  popular "git forges". Specific configuration for this is to:
 - Only show open topics (issues/PRs)
 - Only show authored PRs
+- Upon PR creation, yank the title & URL
 
 I'm also using a handy package to layer on TODO notes in the Magit status buffer.
 #+BEGIN_SRC emacs-lisp
@@ -621,7 +859,15 @@ I'm also using a handy package to layer on TODO notes in the Magit status buffer
   :custom
   (forge-topic-list-limit '(30 . -1))
   :config
-  (magit-add-section-hook 'magit-status-sections-hook 'forge-insert-authored-pullreqs 'forge-insert-pullreqs 'replace))
+  (defun cm/forge-post-submit-callback-kill-info (value _headers _status _req)
+    (when t
+      (when-let ((url (alist-get 'html_url value))
+                 (title (alist-get 'title value)))
+        (kill-new (format "%s\n%s" title url)))))
+
+  (magit-add-section-hook 'magit-status-sections-hook 'forge-insert-authored-pullreqs 'forge-insert-pullreqs 'replace)
+  (add-hook 'forge-post-submit-callback-hook 'cm/forge-post-submit-callback-kill-info))
+
 
 (use-package magit-todos
   :after magit)
@@ -970,8 +1216,8 @@ Place a minibuffer on top of the current frame
   (mini-frame-resize t)
   (mini-frame-show-parameters '((top . 10)
                                 (width . 0.7)
-                                (left . 0.5))))
-  ;; (mini-frame-internal-border-color (face-attribute 'nano-faded :foreground nil t)))
+                                (left . 0.5)))
+  (mini-frame-internal-border-color (face-attribute 'nano-faded :foreground nil t)))
 #+END_SRC
 
 ** Custom functions

@@ -1,12 +1,12 @@
 { config, pkgs, ... }: {
-  system.stateVersion = "21.11";
+  system.stateVersion = "23.05";
 
-  nix.autoOptimiseStore = true;
+  nix.settings.auto-optimise-store = true;
   nix.gc.automatic = true;
   nix.gc.dates = "weekly";
   nix.gc.options = "--delete-older-than 14d";
-  nix.trustedUsers = [ "root" "@wheel" ];
-  nix.maxJobs = "auto";
+  nix.settings.trusted-users = [ "root" "@wheel" ];
+  nix.settings.max-jobs = "auto";
 
   # Free up to 1GiB whenever there is less than 100MiB left.
   nix.extraOptions = ''
@@ -16,9 +16,37 @@
 
   nixpkgs.config.allowUnfree = true;
   time.timeZone = "Europe/London";
-  environment.systemPackages = with pkgs; [ file vim ];
+  environment.systemPackages = with pkgs; [ file rsync vim ];
 
   services.openssh.enable = true;
+
+  # services.prometheus.exporters.node = {
+  #   enable = true;
+  #   enabledCollectors = [ "systemd" ];
+  # };
+
+  # services.promtail = {
+  #   enable = true;
+  #   configuration = {
+  #     server.http_listen_port = 28183;
+  #     positions.filename = "/tmp/positions.yaml";
+  #     clients = [{
+  #       url = "http://compute1.cmacr.ae:3100/loki/api/v1/push";
+  #     }];
+  #     scrape_configs = [{
+  #       job_name = "journal";
+  #       journal = {
+  #         max_age = "12h";
+  #         labels.job = "systemd-journal";
+  #         labels.host = config.networking.hostName;
+  #       };
+  #       relabel_configs = [{
+  #         source_labels = [ "__journal__systemd_unit" ];
+  #         target_label = "unit";
+  #       }];
+  #     }];
+  #   };
+  # };
 
   security.sudo.enable = true;
   security.sudo.wheelNeedsPassword = false;

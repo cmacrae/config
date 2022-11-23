@@ -14,40 +14,34 @@ in
   '';
 
   system.stateVersion = 4;
-  nix.maxJobs = "auto";
-  nix.buildCores = 0;
+  nix.settings.max-jobs = "auto";
+  nix.settings.cores = 0;
+  nix.configureBuildUsers = true;
   services.nix-daemon.enable = true;
 
-  nix.trustedUsers = [ "root" "cmacrae" ];
+  nix.settings.trusted-users = [ "root" "cmacrae" ];
 
-  nix.binaryCaches = [
+  nix.settings.substituters = [
     # Personal cache
     "https://cachix.org/api/v1/cache/cmacrae"
-    # Nightly Emacs build cache for github.com/cmacrae/emacs
-    "https://cachix.org/api/v1/cache/emacs"
-
     "https://cachix.org/api/v1/cache/nix-community"
   ];
 
-  nix.binaryCachePublicKeys = [
+  nix.settings.trusted-public-keys = [
     "cmacrae.cachix.org-1:5Mp1lhT/6baI3eAqnEvruhLrrXE9CKe27SbnXqjwXfg="
-    "emacs.cachix.org-1:b1SMJNLY/mZF6GxQE+eDBeps7WnkT0Po55TAyzwOxTY="
     "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
   ];
 
-  nix.trustedBinaryCaches = config.nix.binaryCaches;
 
-  nixpkgs.config.allowUnfree = true;
 
   environment.shells = [ pkgs.zsh ];
-  environment.systemPackages = [ pkgs.zsh pkgs.gcc ];
+  environment.systemPackages = [ pkgs.zsh pkgs.gcc pkgs.libgccjit ];
   programs.bash.enable = false;
   programs.zsh.enable = true;
 
   time.timeZone = "Europe/London";
   users.users.cmacrae.shell = pkgs.zsh;
   users.users.cmacrae.home = "/Users/cmacrae";
-  users.nix.configureBuildUsers = true;
 
   system.defaults = {
     dock = {
@@ -56,6 +50,7 @@ in
       minimize-to-application = true;
     };
 
+    spaces.spans-displays = false;
     screencapture.location = "/tmp";
 
     finder = {
@@ -68,13 +63,15 @@ in
       Clicking = true;
       TrackpadThreeFingerDrag = true;
     };
+
+    NSGlobalDomain._HIHideMenuBar = true;
   };
 
   fonts.fontDir.enable = true;
   fonts.fonts = with pkgs; [
-    emacs-all-the-icons-fonts
+    # emacs-all-the-icons-fonts
     etBook
-    fira-code
+    # fira-code
     font-awesome
     nerdfonts
     roboto
@@ -90,24 +87,31 @@ in
   # Homebrew #
   ############
   homebrew.enable = true;
-  homebrew.autoUpdate = true;
-  homebrew.cleanup = "zap";
+  homebrew.onActivation.autoUpdate = true;
+  homebrew.onActivation.cleanup = "zap";
   homebrew.global.brewfile = true;
-  homebrew.global.noLock = true;
   homebrew.extraConfig = ''
     cask "firefox", args: { language: "en-GB" }
   '';
 
   homebrew.taps = [
+    "FelixKratz/formulae"
     "homebrew/core"
     "homebrew/cask"
     "homebrew/cask-drivers"
   ];
 
+  homebrew.brews = [
+    "ical-buddy"
+    "sketchybar"
+  ];
+
   homebrew.casks = [
-    "firefox"
     "discord"
-    "spotify"
+    "firefox"
+    "keepingyouawake"
+    "notion"
+    "sf-symbols"
     "yubico-yubikey-manager"
     "yubico-yubikey-personalization-gui"
   ];
@@ -118,19 +122,64 @@ in
   };
 
   services.skhd.enable = true;
-  services.skhd.skhdConfig = ''
-    cmd + ctrl - return : open -n -a ~/.nix-profile/Applications/Alacritty.app
-    cmd + ctrl - i : open -a ~/.nix-profile/Applications/Emacs.app
-    cmd + ctrl - o : open -a "Yubico Authenticator"
-    cmd + ctrl - f : open  -n -a /Applications/Firefox.app --args -P home
-    cmd + shift + ctrl - f : open -n -a /Applications/Firefox.app --args -P work
-  '';
+  services.skhd.skhdConfig = builtins.readFile ../conf.d/skhd.conf;
+
+  services.yabai = {
+    enable = true;
+    package = pkgs.yabai-5_0_1;
+    enableScriptingAddition = true;
+    config = {
+      window_border = "on";
+      window_border_width = 3;
+      active_window_border_color = "0xff81a1c1";
+      normal_window_border_color = "0xff3b4252";
+      window_border_hidpi = "on";
+      focus_follows_mouse = "autoraise";
+      mouse_follows_focus = "off";
+      mouse_drop_action = "stack";
+      window_placement = "second_child";
+      window_opacity = "off";
+      window_topmost = "on";
+      window_shadow = "float";
+      window_origin_display = "focused";
+      active_window_opacity = "1.0";
+      normal_window_opacity = "1.0";
+      split_ratio = "0.50";
+      auto_balance = "on";
+      mouse_modifier = "alt";
+      mouse_action1 = "move";
+      mouse_action2 = "resize";
+      layout = "bsp";
+      top_padding = 10;
+      bottom_padding = 10;
+      left_padding = 10;
+      right_padding = 10;
+      window_gap = 10;
+      external_bar = "main:49:0";
+    };
+
+    extraConfig = ''
+      # rules
+      yabai -m rule --add app='System Preferences' manage=off
+      yabai -m rule --add app='Yubico Authenticator' manage=off
+      yabai -m rule --add app='YubiKey Manager' manage=off
+      yabai -m rule --add app='YubiKey Personalization Tool' manage=off
+
+      # signals
+      yabai -m signal --add event=window_focused action="sketchybar --trigger window_focus"
+      yabai -m signal --add event=window_created action="sketchybar --trigger windows_on_spaces"
+      yabai -m signal --add event=window_destroyed action="sketchybar --trigger windows_on_spaces"
+    '';
+  };
 
   # Recreate /run/current-system symlink after boot
   services.activate-system.enable = true;
 
   home-manager.users.cmacrae = {
-    home.stateVersion = "21.05";
+
+    nixpkgs.config.allowUnfree = true;
+
+    home.stateVersion = "23.05";
     home.packages = with pkgs; [
       aspell
       aspellDicts.en
@@ -141,8 +190,7 @@ in
       gnupg
       gnused
       htop
-      # FIXME: Broken on macOS amd64 right now
-      # hugo
+      hugo
       ipcalc
       jq
       mpv
@@ -151,6 +199,7 @@ in
       # FIXME: Broken on macOS amd64 right now
       # open-policy-agent
       pass
+      podman
       python3
       pwgen
       ranger
@@ -167,7 +216,7 @@ in
       youtube-dl
 
       # Go
-      go_1_17
+      go
       gocode
       godef
       gotools
@@ -176,19 +225,15 @@ in
       golint
       go2nix
       errcheck
-      gotags
       gopls
-
-      # Docker
-      docker
+      go-tools
 
       # k8s
-      argocd
       kind
       kubectl
-      kubectx
-      kubeval
-      kube-prompt
+      # kubectx
+      # kubeval
+      # kube-prompt
       kubernetes-helm
       kustomize
     ];
@@ -242,7 +287,7 @@ in
           "privacy.trackingprotection.enabled" = true;
           "privacy.trackingprotection.socialtracking.enabled" = true;
           "privacy.trackingprotection.socialtracking.annotate.enabled" = true;
-          "reader.color_scheme" = "sepia";
+          "reader.color_scheme" = "auto";
           "services.sync.declinedEngines" = "addons,passwords,prefs";
           "services.sync.engine.addons" = false;
           "services.sync.engineStatusChanged.addons" = true;
@@ -268,32 +313,7 @@ in
         };
       };
 
-    #########
-    # Emacs #
-    #########
     programs.emacs.enable = true;
-    home.file.".emacs.d/init.el".text = ''
-      ;;; init.el --- Where all the magic begins
-      ;;
-      ;;; Commentary:
-      ;; This file loads Org-mode and then loads the rest of the Emacs initialization from Emacs Lisp
-      ;; embedded in the literate Org-mode file: emacs.org
-      ;;
-      ;;; Code:
-
-      (setq emacs-dir (file-name-directory (or (buffer-file-name) load-file-name)))
-
-      ;; load up Org-mode and Org-babel
-      (require 'org-install)
-      (require 'ob-tangle)
-
-      ;; load up all literate org-mode files in this directory
-      (mapc #'org-babel-load-file (directory-files emacs-dir t "\\.org$"))
-
-      ;;; init.el ends here
-    '';
-    home.file.".emacs.d/emacs.org".source = ../conf.d/emacs.org;
-
     programs.emacs.package =
       let
         # TODO: derive 'name' from assignment
@@ -307,8 +327,14 @@ in
         pkgs.emacsWithPackagesFromUsePackage {
           alwaysEnsure = true;
           alwaysTangle = true;
+          package = pkgs.emacsGit.overrideAttrs (o: {
+            patches = o.patches ++ [
+              ../pkgs/emacs-config/fix-window-role.patch
+            ];
+          });
 
-          config = ../conf.d/emacs.org;
+          defaultInitFile = pkgs.callPackage ../pkgs/emacs-config { };
+          config = ../pkgs/emacs-config/readme.org;
         }
       );
 
@@ -322,8 +348,8 @@ in
       enable = true;
       settings = {
         window.padding.x = 15;
-        window.padding.y = 28;
-        window.decorations = "transparent";
+        window.padding.y = 15;
+        window.decorations = "buttonless";
         window.dynamic_title = true;
         scrolling.history = 100000;
         live_config_reload = true;
@@ -541,6 +567,9 @@ in
           run-shell ${tmuxYank}/yank.tmux
         '';
       };
+
+    # Silence the 'last login' shell message
+    home.file.".hushlogin".text = "";
 
     # Global Emacs keybindings
     home.file."Library/KeyBindings/DefaultKeyBinding.dict".text = ''
