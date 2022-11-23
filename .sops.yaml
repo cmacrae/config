@@ -1,11 +1,15 @@
 keys:
   - &cmacrae d8ae011501ee106d4548df0253922d7e54a14f5d
   - &net1 5967408259ef4322d8d9e5613b3678872cf51cab
+  - &compute1 aa2d1bcd997190f84daf1af89e85c16a899870fd
   - &compute2 090ef77a80a01a19724a636880b5d6fc79532d4c
+  - &compute3 ecd807993a193fca886afd1b5107a797e0fd8c64
 creation_rules:
   - path_regex: secrets\.yaml$
     key_groups:
     - pgp:
       - *cmacrae
       - *net1
+      - *compute1
       - *compute2
+      - *compute3

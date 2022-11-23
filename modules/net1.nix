@@ -38,19 +38,36 @@ let
     xbox.mac = "98:5f:d3:f6:87:b1";
   };
 
+  # TODO: Restructure this so it's like:
+  # proxyServices = {
+  #   compute1 = {
+  #     nzbget = 6789;
+  #     sonarr = 8989; 
+  #   };
+  #   compute2 = {
+  #     radarr = 6789;
+  #     blahhh = 8989; 
+  #   }; 
+  # }
   proxyServices = {
-    hydra2.port = 5076;
-    hydra2.host = "compute1";
     nzbget.port = 6789;
     nzbget.host = "compute1";
     sonarr.port = 8989;
     sonarr.host = "compute2";
     radarr.port = 7878;
     radarr.host = "compute2";
+    prowlarr.host = "compute2";
+    prowlarr.port = 9696;
     plex.port = 32400;
     plex.host = "compute3";
-    mgc.port = 9797;
-    mgc.host = "compute2";
+    prometheus.host = "compute1";
+    prometheus.port = 9090;
+    alertmanager.host = "compute1";
+    alertmanager.port = 9093;
+    grafana.host = "compute1";
+    grafana.port = 3000;
+    loki.host = "compute1";
+    loki.port = 3100;
   };
 
 in
@@ -98,7 +115,7 @@ with pkgs.lib; {
     # nat.internalInterfaces = [ "wg0" ];
     firewall = {
       enable = true;
-      allowedTCPPorts = [ 22 80 ];
+      allowedTCPPorts = [ 22 80 443 9100 ];
       allowedUDPPorts = [ 53 51820 ];
 
       extraCommands = ''
@@ -256,21 +273,41 @@ with pkgs.lib; {
     };
   };
 
+  security.acme.acceptTerms = true;
+  security.acme.defaults.email = "account@${domain}";
+  security.acme.defaults.credentialsFile = config.sops.secrets.net1_acme_dnsimple_envfile.path;
+  security.acme.certs = mapAttrs'
+    (host: _:
+      let fullName = "${host}.${domain}";
+      in
+      nameValuePair (fullName) ({
+        domain = fullName;
+        dnsProvider = "dnsimple";
+        dnsPropagationCheck = false;
+        reloadServices = [ "nginx" ];
+      }))
+    proxyServices;
+
+  # TODO: Figure out how to stop nginx from checking upstream DNS.
+  #       This causes it to fail when we're adding a new service and the
+  #       record doesn't exist yet.
+  users.users.nginx.extraGroups = [ "acme" ];
   services.nginx = {
     enable = true;
     recommendedProxySettings = true;
     virtualHosts = mapAttrs'
-      (
-        host: attr:
-          nameValuePair ("${host}.${domain}") (
-            {
-              locations."/" = {
-                proxyPass = "http://${attr.host}.${domain}:${toString attr.port}";
-                extraConfig = "proxy_pass_header Authorization;";
-              };
-            }
-          )
-      )
+      (host: attr:
+        let fullName = "${host}.${domain}";
+        in
+        nameValuePair (fullName) ({
+          forceSSL = true;
+          sslCertificate = "/var/lib/acme/${fullName}/cert.pem";
+          sslCertificateKey = "/var/lib/acme/${fullName}/key.pem";
+          locations."/" = {
+            proxyPass = "http://${attr.host}.${domain}:${toString attr.port}";
+            extraConfig = "proxy_pass_header Authorization;";
+          };
+        }))
       proxyServices;
   };
 }
