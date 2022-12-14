@@ -6,20 +6,23 @@
     darwin.url = github:lnl7/nix-darwin;
     home.url = github:nix-community/home-manager;
     nur.url = github:nix-community/NUR;
-    # emacs.url = github:cmacrae/emacs;
-    # emacs-overlay.url = github:nix-community/emacs-overlay;
     rnix-lsp.url = github:nix-community/rnix-lsp;
     deploy-rs.url = github:serokell/deploy-rs;
     sops.url = github:Mic92/sops-nix;
+    emacs.url = github:nix-community/emacs-overlay;
+
+    # https://github.com/NixOS/nixpkgs/pull/203504
+    ivar-nixpkgs-yabai-5_0_1.url = "github:IvarWithoutBones/nixpkgs?rev=161530fa3434ea801419a8ca33dcd97ffb8e6fee";
 
     # Follows
     darwin.inputs.nixpkgs.follows = "nixpkgs";
     home.inputs.nixpkgs.follows = "nixpkgs";
     rnix-lsp.inputs.nixpkgs.follows = "nixpkgs";
     sops.inputs.nixpkgs.follows = "nixpkgs";
+    emacs.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, darwin, home, deploy-rs, sops, ... }@inputs:
+  outputs = { self, nixpkgs, darwin, home, deploy-rs, sops, ivar-nixpkgs-yabai-5_0_1, ... }@inputs:
     let
       domain = "cmacr.ae";
 
@@ -32,8 +35,11 @@
           nixpkgs.overlays = with inputs;
             [
               nur.overlay
-              # emacs.overlay
-              # emacs-overlay.overlay
+              emacs.overlays.emacs
+              emacs.overlays.package
+              (self: super: {
+                yabai-5_0_1 = (import ivar-nixpkgs-yabai-5_0_1 { system = "aarch64-darwin"; }).yabai;
+              })
             ];
         }
       ];
@@ -93,10 +99,70 @@
                 ];
               };
 
+              homebrew.taps = [ "FelixKratz/formulae" ];
+              homebrew.brews = [
+                "ical-buddy"
+                "sketchybar"
+              ];
+
               homebrew.casks = [
                 "docker"
                 "jiggler"
+                "sf-symbols"
               ];
+
+              services.skhd.skhdConfig = builtins.readFile "${self}/conf.d/skhd.conf";
+
+              services.yabai = {
+                enable = true;
+                package = pkgs.yabai-5_0_1;
+                enableScriptingAddition = true;
+                config = {
+                  window_border = "on";
+                  window_border_width = 3;
+                  active_window_border_color = "0xff81a1c1";
+                  normal_window_border_color = "0xff3b4252";
+                  window_border_hidpi = "on";
+                  focus_follows_mouse = "autoraise";
+                  mouse_follows_focus = "off";
+                  mouse_drop_action = "stack";
+                  window_placement = "second_child";
+                  window_opacity = "off";
+                  window_topmost = "on";
+                  window_shadow = "float";
+                  window_origin_display = "focused";
+                  active_window_opacity = "1.0";
+                  normal_window_opacity = "1.0";
+                  split_ratio = "0.50";
+                  auto_balance = "on";
+                  mouse_modifier = "alt";
+                  mouse_action1 = "move";
+                  mouse_action2 = "resize";
+                  layout = "bsp";
+                  top_padding = 10;
+                  bottom_padding = 10;
+                  left_padding = 10;
+                  right_padding = 10;
+                  window_gap = 10;
+                  external_bar = "main:49:0";
+                };
+
+                extraConfig = ''
+                  # rules
+                  yabai -m rule --add app='System Preferences' manage=off
+                  yabai -m rule --add app='Yubico Authenticator' manage=off
+                  yabai -m rule --add app='YubiKey Manager' manage=off
+                  yabai -m rule --add app='YubiKey Personalization Tool' manage=off
+
+                  # signals
+                  yabai -m signal --add event=window_focused action="sketchybar --trigger window_focus"
+                  yabai -m signal --add event=window_created action="sketchybar --trigger windows_on_spaces"
+                  yabai -m signal --add event=window_destroyed action="sketchybar --trigger windows_on_spaces"
+                '';
+              };
+
+              launchd.user.agents.yabai.serviceConfig.StandardErrorPath = "/tmp/yabai.log";
+              launchd.user.agents.yabai.serviceConfig.StandardOutPath = "/tmp/yabai.log";
             }
           )
         ];

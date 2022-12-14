@@ -24,15 +24,11 @@ in
   nix.settings.substituters = [
     # Personal cache
     "https://cachix.org/api/v1/cache/cmacrae"
-    # Nightly Emacs build cache for github.com/cmacrae/emacs
-    # "https://cachix.org/api/v1/cache/emacs"
-
     "https://cachix.org/api/v1/cache/nix-community"
   ];
 
   nix.settings.trusted-public-keys = [
     "cmacrae.cachix.org-1:5Mp1lhT/6baI3eAqnEvruhLrrXE9CKe27SbnXqjwXfg="
-    # "emacs.cachix.org-1:b1SMJNLY/mZF6GxQE+eDBeps7WnkT0Po55TAyzwOxTY="
     "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
   ];
 
@@ -54,6 +50,7 @@ in
       minimize-to-application = true;
     };
 
+    spaces.spans-displays = false;
     screencapture.location = "/tmp";
 
     finder = {
@@ -66,18 +63,20 @@ in
       Clicking = true;
       TrackpadThreeFingerDrag = true;
     };
+
+    NSGlobalDomain._HIHideMenuBar = true;
   };
 
   fonts.fontDir.enable = true;
-  # fonts.fonts = with pkgs; [
-  #   emacs-all-the-icons-fonts
-  #   etBook
-  #   fira-code
-  #   font-awesome
-  #   nerdfonts
-  #   roboto
-  #   roboto-mono
-  # ];
+  fonts.fonts = with pkgs; [
+    emacs-all-the-icons-fonts
+    etBook
+    fira-code
+    font-awesome
+    nerdfonts
+    roboto
+    roboto-mono
+  ];
 
   system.keyboard = {
     enableKeyMapping = true;
@@ -115,7 +114,7 @@ in
   };
 
   services.skhd.enable = true;
-  services.skhd.skhdConfig = ''
+  services.skhd.skhdConfig = pkgs.lib.mkDefault ''
     cmd + ctrl - return : open -n -a ~/.nix-profile/Applications/Alacritty.app
     cmd + ctrl - i : open -a ~/.nix-profile/Applications/Visual\ Studio\ Code.app
     cmd + ctrl - o : open -a "Yubico Authenticator"
@@ -142,7 +141,7 @@ in
       gnused
       htop
       # FIXME: Broken on macOS amd64 right now
-      # hugo
+      hugo
       ipcalc
       jq
       mpv
@@ -178,6 +177,7 @@ in
       go2nix
       errcheck
       gopls
+      go-tools
 
       # k8s
       kind
@@ -264,82 +264,30 @@ in
         };
       };
 
-    #########
-    # Emacs #
-    #########
-    # programs.emacs.enable = true;
-    # home.file.".emacs.d/init.el".text = ''
-    #   ;;; init.el --- Where all the magic begins
-    #   ;;
-    #   ;;; Commentary:
-    #   ;; This file loads Org-mode and then loads the rest of the Emacs initialization from Emacs Lisp
-    #   ;; embedded in the literate Org-mode file: emacs.org
-    #   ;;
-    #   ;;; Code:
+    programs.emacs.enable = true;
+    programs.emacs.package =
+      let
+        # TODO: derive 'name' from assignment
+        elPackage = name: src:
+          pkgs.runCommand "${name}.el" { } ''
+            mkdir -p  $out/share/emacs/site-lisp
+            cp -r ${src}/* $out/share/emacs/site-lisp/
+          '';
+      in
+      (
+        pkgs.emacsWithPackagesFromUsePackage {
+          alwaysEnsure = true;
+          alwaysTangle = true;
+          package = pkgs.emacsGit.overrideAttrs (o: {
+            patches = o.patches ++ [
+              ../pkgs/emacs-config/fix-window-role.patch
+            ];
+          });
 
-    #   (setq emacs-dir (file-name-directory (or (buffer-file-name) load-file-name)))
-
-    #   ;; load up Org-mode and Org-babel
-    #   (require 'org-install)
-    #   (require 'ob-tangle)
-
-    #   ;; load up all literate org-mode files in this directory
-    #   (mapc #'org-babel-load-file (directory-files emacs-dir t "\\.org$"))
-
-    #   ;;; init.el ends here
-    # '';
-    # home.file.".emacs.d/emacs.org".source = ../conf.d/emacs.org;
-
-    # programs.emacs.package =
-    #   let
-    #     # TODO: derive 'name' from assignment
-    #     elPackage = name: src:
-    #       pkgs.runCommand "${name}.el" { } ''
-    #         mkdir -p  $out/share/emacs/site-lisp
-    #         cp -r ${src}/* $out/share/emacs/site-lisp/
-    #       '';
-    #   in
-    #   (
-    #     pkgs.emacsWithPackagesFromUsePackage {
-    #       alwaysEnsure = true;
-    #       alwaysTangle = true;
-    #       package = pkgs.emacs;
-
-    #       config = ../conf.d/emacs.org;
-    #     }
-    #   );
-
-    programs.vscode.enable = true;
-    programs.vscode.enableUpdateCheck = false;
-    programs.vscode.enableExtensionUpdateCheck = false;
-    programs.vscode.extensions = with pkgs.vscode-extensions; [
-      # Nix
-      bbenoist.nix
-      jnoortheen.nix-ide
-      # pinage404.nix-extension-pack
-
-      # Core
-      vscodevim.vim
-      kahole.magit
-      alefragnani.project-manager
-      christian-kohler.path-intellisense
-
-      # Appearance
-      catppuccin.catppuccin-vsc
-    ];
-
-    programs.vscode.userSettings = {
-      "editor.minimap.enabled" = false;
-      "workbench.colorTheme" = "Catppuccin Frappé";
-      "workbench.activityBar.visible" = false;
-      "workbench.statusBar.feedback.visible" = false;
-      "nix.enableLanguageServer" = true;
-      "nix.serverPath" = "${config.users.users.cmacrae.home}/.nix-profile/bin/rnix-lsp";
-
-      # Disabled for path-intellisense`
-      "javascript.suggest.paths" = false;
-      "typescript.suggest.paths" = false;
-    };
+          defaultInitFile = pkgs.callPackage ../pkgs/emacs-config { };
+          config = ../pkgs/emacs-config/readme.org;
+        }
+      );
 
     programs.fzf.enable = true;
     programs.fzf.enableZshIntegration = true;
@@ -351,8 +299,8 @@ in
       enable = true;
       settings = {
         window.padding.x = 15;
-        window.padding.y = 28;
-        window.decorations = "transparent";
+        window.padding.y = 15;
+        window.decorations = "buttonless";
         window.dynamic_title = true;
         scrolling.history = 100000;
         live_config_reload = true;
@@ -570,6 +518,9 @@ in
           run-shell ${tmuxYank}/yank.tmux
         '';
       };
+
+    # Silence the 'last login' shell message
+    home.file.".hushlogin".text = "";
 
     # Global Emacs keybindings
     home.file."Library/KeyBindings/DefaultKeyBinding.dict".text = ''

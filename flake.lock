@@ -40,6 +40,27 @@
         "type": "github"
       }
     },
+    "emacs": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1670382699,
+        "narHash": "sha256-N/o1fM4+Fw+JpnPxSoGyRVPlOdoDY+biVY1u0uQduWc=",
+        "owner": "nix-community",
+        "repo": "emacs-overlay",
+        "rev": "f45b18820505d7b3549c6cf886a90cdd39ca33b4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "emacs-overlay",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -53,6 +74,21 @@
       "original": {
         "owner": "edolstra",
         "repo": "flake-compat",
+        "type": "github"
+      }
+    },
+    "flake-utils": {
+      "locked": {
+        "lastModified": 1667395993,
+        "narHash": "sha256-nuEHfE/LcWyuSWnS8t12N1wc105Qtau+/OdUAjtQ0rA=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "5aed5285a952e0b949eb3ba02c12fa4fcfef535f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
         "type": "github"
       }
     },
@@ -74,6 +110,22 @@
       "original": {
         "owner": "nix-community",
         "repo": "home-manager",
+        "type": "github"
+      }
+    },
+    "ivar-nixpkgs-yabai-5_0_1": {
+      "locked": {
+        "lastModified": 1669665241,
+        "narHash": "sha256-2CXHhPBObwNKbbpLdETxnquinOyZf3YBs+Qak4WFCJI=",
+        "owner": "IvarWithoutBones",
+        "repo": "nixpkgs",
+        "rev": "161530fa3434ea801419a8ca33dcd97ffb8e6fee",
+        "type": "github"
+      },
+      "original": {
+        "owner": "IvarWithoutBones",
+        "repo": "nixpkgs",
+        "rev": "161530fa3434ea801419a8ca33dcd97ffb8e6fee",
         "type": "github"
       }
     },
@@ -187,7 +239,9 @@
       "inputs": {
         "darwin": "darwin",
         "deploy-rs": "deploy-rs",
+        "emacs": "emacs",
         "home": "home",
+        "ivar-nixpkgs-yabai-5_0_1": "ivar-nixpkgs-yabai-5_0_1",
         "nixpkgs": "nixpkgs_2",
         "nur": "nur",
         "rnix-lsp": "rnix-lsp",
