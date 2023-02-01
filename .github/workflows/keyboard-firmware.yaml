@@ -1,0 +1,12 @@
+name: 'Build Miryoku ZMK for the Corneish Zen'
+on:
+  - workflow_dispatch
+jobs:
+  call-main:
+    uses: manna-harbour/miryoku_zmk/.github/workflows/build-example-corne-ish_zen-custom.yml@master
+    with:
+      board: '["corne-ish_zen_v2_left","corne-ish_zen_v2_right"]'
+      nav: vi
+      custom_config: '["#define MIRYOKU_KLUDGE_MOUSEKEYSPR"]'
+      kconfig: '["CONFIG_ZMK_MOUSE=y\nCONFIG_ZMK_DISPLAY_HIDE_MOMENTARY_LAYERS=y\nCONFIG_CUSTOM_WIDGET_LOGO_IMAGE_MIRYOKU=y\n"]'
+      branches: '["manna-harbour/zmk/zen zmkfirmware/zmk/main ftc/zmk/mouse-ftc"]'
