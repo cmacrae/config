@@ -699,7 +699,6 @@ Some configuration I use:
 
 *** perspective
 Workspaces! Indespensible if you work on a lot of projects. Perspective is like workspaces (virtual desktops) for Emacs. It’s a means of namespacing a group of tangible buffers. When combined with Projectile, this becomes a really nice combination as projects then seemlessly translate to workspaces.
-# Here, I’ve defined a cm/persp-neo function for use with persp-switch-hook. This makes NeoTree follow the perspective when switching. I’ve also added a hydra for various Perspective actions.
 
 #+BEGIN_SRC emacs-lisp
 (use-package perspective
@@ -712,26 +711,11 @@ Workspaces! Indespensible if you work on a lot of projects. Perspective is like 
   (use-package persp-projectile
     :ensure t
     :after perspective
-    ;; :hook (persp-switch . cm/persp-neo)
     :bind ("C-c x" . hydra-persp/body)))
-
-    ;; :config
-    ;; (defun cm/persp-neo ()
-    ;;   "Make NeoTree follow the perspective"
-    ;;   (interactive)
-    ;;   (let ((cw (selected-window))
-    ;;         (path (buffer-file-name))) ;; save current window and buffer
-    ;;     (progn
-    ;;       (when (and (fboundp 'projectile-project-p)
-    ;;                  (projectile-project-p)
-    ;;                  (fboundp 'projectile-project-root))
-    ;;         (neotree-dir (projectile-project-root)))
-    ;;       (neotree-find path))
-    ;;     (select-window cw)))))
 #+END_SRC
 
 *** Treemacs
-Sidebar filebrowser, very handy. People seem to have accepted Treemacs as the new norm, but I like NeoTree :) Here, I’ve defined some key mappings that make it a little nicer to interact with - they should be quite self-explanatory.
+Sidebar filebrowser, very handy.
 
 #+BEGIN_SRC emacs-lisp
 (use-package treemacs
