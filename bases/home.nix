@@ -1,6 +1,7 @@
 { config, pkgs, ... }:
 
 let
+  inherit (pkgs.stdenv) isDarwin;
   mailAddr = name: domain: "${name}@${domain}";
   primaryEmail = mailAddr "hi" "cmacr.ae";
   secondaryEmail = mailAddr "account" "cmacr.ae";
@@ -8,176 +9,45 @@ let
 
 in
 {
-  nix.package = pkgs.nixFlakes;
-  nix.extraOptions = ''
-    experimental-features = nix-command flakes
-  '';
-
-  system.stateVersion = 4;
-  nix.settings.max-jobs = "auto";
-  nix.settings.cores = 0;
-  nix.configureBuildUsers = true;
-  services.nix-daemon.enable = true;
-
-  nix.settings.trusted-users = [ "root" "cmacrae" ];
-
-  nix.settings.substituters = [
-    # Personal cache
-    "https://cachix.org/api/v1/cache/cmacrae"
-    "https://cachix.org/api/v1/cache/nix-community"
-  ];
-
-  nix.settings.trusted-public-keys = [
-    "cmacrae.cachix.org-1:5Mp1lhT/6baI3eAqnEvruhLrrXE9CKe27SbnXqjwXfg="
-    "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-  ];
-
-
-
-  environment.shells = [ pkgs.zsh ];
-  environment.systemPackages = [ pkgs.zsh pkgs.gcc pkgs.libgccjit ];
-  programs.bash.enable = false;
-  programs.zsh.enable = true;
-
-  time.timeZone = "Europe/London";
   users.users.cmacrae.shell = pkgs.zsh;
-  users.users.cmacrae.home = "/Users/cmacrae";
+  users.users.cmacrae.home =
+    if isDarwin then
+      "/Users/cmacrae"
+    else
+      "/home/cmacrae";
 
-  system.defaults = {
-    dock = {
-      autohide = true;
-      mru-spaces = false;
-      minimize-to-application = true;
-    };
-
-    spaces.spans-displays = false;
-    screencapture.location = "/tmp";
-
-    finder = {
-      AppleShowAllExtensions = true;
-      _FXShowPosixPathInTitle = true;
-      FXEnableExtensionChangeWarning = false;
-    };
-
-    trackpad = {
-      Clicking = true;
-      TrackpadThreeFingerDrag = true;
-    };
-
-    NSGlobalDomain._HIHideMenuBar = true;
-  };
+  # for nix-direnv
+  nix.settings.keep-outputs = true;
+  nix.settings.keep-derivations = true;
+  environment.pathsToLink = [ "/share/nix-direnv" ];
 
   fonts.fontDir.enable = true;
   fonts.fonts = with pkgs; [
-    # emacs-all-the-icons-fonts
+    eb-garamond
+    emacs-all-the-icons-fonts
     etBook
-    # fira-code
+    fira-code
     font-awesome
     nerdfonts
     roboto
     roboto-mono
   ];
 
-  system.keyboard = {
-    enableKeyMapping = true;
-    remapCapsLockToControl = true;
-  };
-
-  ############
-  # Homebrew #
-  ############
-  homebrew.enable = true;
-  homebrew.onActivation.autoUpdate = true;
-  homebrew.onActivation.cleanup = "zap";
-  homebrew.global.brewfile = true;
-  homebrew.extraConfig = ''
-    cask "firefox", args: { language: "en-GB" }
-  '';
-
-  homebrew.taps = [
-    "FelixKratz/formulae"
-    "homebrew/core"
-    "homebrew/cask"
-    "homebrew/cask-drivers"
-  ];
-
-  homebrew.brews = [
-    "ical-buddy"
-    "sketchybar"
-  ];
-
-  homebrew.casks = [
-    "discord"
-    "firefox"
-    "keepingyouawake"
-    "notion"
-    "sf-symbols"
-    "yubico-yubikey-manager"
-    "yubico-yubikey-personalization-gui"
-  ];
-
-  homebrew.masApps = {
-    WireGuard = 1451685025;
-    YubicoAuthenticator = 1497506650;
-  };
-
-  services.skhd.enable = true;
-  services.skhd.skhdConfig = builtins.readFile ../conf.d/skhd.conf;
-
-  services.yabai = {
-    enable = true;
-    package = pkgs.yabai-5_0_1;
-    enableScriptingAddition = true;
-    config = {
-      window_border = "on";
-      window_border_width = 3;
-      active_window_border_color = "0xff81a1c1";
-      normal_window_border_color = "0xff3b4252";
-      window_border_hidpi = "on";
-      focus_follows_mouse = "autoraise";
-      mouse_follows_focus = "off";
-      mouse_drop_action = "stack";
-      window_placement = "second_child";
-      window_opacity = "off";
-      window_topmost = "on";
-      window_shadow = "float";
-      window_origin_display = "focused";
-      active_window_opacity = "1.0";
-      normal_window_opacity = "1.0";
-      split_ratio = "0.50";
-      auto_balance = "on";
-      mouse_modifier = "alt";
-      mouse_action1 = "move";
-      mouse_action2 = "resize";
-      layout = "bsp";
-      top_padding = 10;
-      bottom_padding = 10;
-      left_padding = 10;
-      right_padding = 10;
-      window_gap = 10;
-      external_bar = "main:49:0";
-    };
-
-    extraConfig = ''
-      # rules
-      yabai -m rule --add app='System Preferences' manage=off
-      yabai -m rule --add app='Yubico Authenticator' manage=off
-      yabai -m rule --add app='YubiKey Manager' manage=off
-      yabai -m rule --add app='YubiKey Personalization Tool' manage=off
-
-      # signals
-      yabai -m signal --add event=window_focused action="sketchybar --trigger window_focus"
-      yabai -m signal --add event=window_created action="sketchybar --trigger windows_on_spaces"
-      yabai -m signal --add event=window_destroyed action="sketchybar --trigger windows_on_spaces"
-    '';
-  };
-
-  # Recreate /run/current-system symlink after boot
-  services.activate-system.enable = true;
-
   home-manager.users.cmacrae = {
 
+    imports = [ ../modules/gpg-agent.nix ];
+
     nixpkgs.config.allowUnfree = true;
+
+    # FIXME: autoPatchelfHook is not supported on aarch64-darwin
+    # TODO: submit PR to upstream
+    # nixpkgs.overlays = [
+    #   (final: prev: {
+    #     browserpass = prev.browserpass.overrideAttrs (_: {
+    #       nativeBuildInputs = [ prev.makeWrapper ];
+    #     });
+    #   })
+    # ];
 
     home.stateVersion = "23.05";
     home.packages = with pkgs; [
@@ -196,6 +66,7 @@ in
       mpv
       nix-prefetch-git
       nmap
+      nodejs # for copilot
       # FIXME: Broken on macOS amd64 right now
       # open-policy-agent
       pass
@@ -227,15 +98,6 @@ in
       errcheck
       gopls
       go-tools
-
-      # k8s
-      kind
-      kubectl
-      # kubectx
-      # kubeval
-      # kube-prompt
-      kubernetes-helm
-      kustomize
     ];
 
     home.sessionVariables = {
@@ -247,28 +109,82 @@ in
       enable = true;
       userName = fullName;
       userEmail = primaryEmail;
-      signing.key = "54A14F5D";
+      signing.key = "CED5DD2923023B37!";
       signing.signByDefault = true;
       extraConfig.github.user = "cmacrae";
     };
+
+    programs.gpg = {
+      enable = true;
+      mutableKeys = false;
+      mutableTrust = false;
+      publicKeys = [{
+        trust = 5;
+        source = builtins.fetchurl {
+          url = "https://github.com/cmacrae.gpg";
+          sha256 = "sha256-Y+r7YOdUu/DSwnexV/b890g3N94mmOjx6vfsdqdfuBA=";
+        };
+      }];
+      settings = {
+        personal-cipher-preferences = "AES256 AES192 AES";
+        personal-compress-preferences = "ZLIB BZIP2 ZIP Uncompressed";
+        default-preference-list = "SHA512 SHA384 SHA256 AES256 AES192 AES ZLIB BZIP2 ZIP Uncompressed";
+        cert-digest-algo = "SHA512";
+        s2k-digest-algo = "SHA512";
+        s2k-cipher-algo = "AES256";
+        charset = "utf-8";
+        fixed-list-mode = "";
+        no-comments = "";
+        no-emit-version = "";
+        no-greeting = "";
+        keyid-format = "0xlong";
+        list-options = "show-uid-validity";
+        verify-options = "show-uid-validity";
+        with-fingerprint = "";
+        require-cross-certification = "";
+        no-symkey-cache = "";
+        use-agent = "";
+        throw-keyids = "";
+      };
+    };
+
+    services.my-gpg-agent = {
+      enable = true;
+      enableZshIntegration = true;
+      enableSshSupport = true;
+      sshKeys = [ "4F39E235299187ED7B9A8049A85F3EE3488CF521" ];
+      extraConfig = ''
+        allow-emacs-pinentry
+        allow-loopback-pinentry
+      '';
+    };
+
+    programs.direnv.enable = true;
+    programs.direnv.nix-direnv.enable = true;
+    programs.direnv.enableZshIntegration = true;
 
     ###########
     # Firefox #
     ###########
     programs.firefox.enable = true;
-    # Handled by the Homebrew module
-    # This populates a dummy package to satsify the requirement
-    programs.firefox.package = pkgs.runCommand "firefox-0.0.0" { } "mkdir $out";
-    programs.firefox.extensions =
-      with pkgs.nur.repos.rycee.firefox-addons; [
-        ublock-origin
-        browserpass
-        vimium
-        reddit-enhancement-suite
-      ];
+    programs.firefox.package =
+      if isDarwin then
+      # Handled by the Homebrew module
+      # This populates a dummy package to satsify the requirement
+        pkgs.runCommand "firefox-0.0.0" { } "mkdir $out"
+      else
+        pkgs.firefox;
 
     programs.firefox.profiles =
       let
+        extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+          browserpass
+          betterttv
+          reddit-enhancement-suite
+          ublock-origin
+          vimium
+        ];
+
         settings = {
           "app.update.auto" = false;
           "browser.startup.homepage" = "https://lobste.rs";
@@ -300,12 +216,15 @@ in
       in
       {
         home = {
-          inherit settings;
+          inherit settings extensions;
           id = 0;
+          userChrome = builtins.readFile ../conf.d/userChrome.css;
         };
 
+        # TODO: make this conditional
         work = {
           id = 1;
+          inherit extensions;
           settings = settings // {
             "browser.startup.homepage" = "about:blank";
             "browser.urlbar.placeholderName" = "Google";
@@ -327,22 +246,45 @@ in
         pkgs.emacsWithPackagesFromUsePackage {
           alwaysEnsure = true;
           alwaysTangle = true;
-          package = pkgs.emacsGit.overrideAttrs (o: {
-            patches = o.patches ++ [
-              ../pkgs/emacs-config/fix-window-role.patch
-            ];
-          });
+          package =
+            if isDarwin then
+              pkgs.emacs-git.overrideAttrs
+                (o: {
+                  patches = o.patches ++ [
+                    ../pkgs/emacs-config/fix-window-role.patch
+                    ../pkgs/emacs-config/round-undecorated-frame.patch
+                    ../pkgs/emacs-config/system-appearance.patch
+                  ];
+                })
+            else pkgs.emacs-git;
 
           defaultInitFile = pkgs.callPackage ../pkgs/emacs-config { };
           config = ../pkgs/emacs-config/readme.org;
+
+          override = epkgs: epkgs // {
+            copilot = elPackage "copilot" (pkgs.fetchFromGitHub {
+              owner = "zerolfx";
+              repo = "copilot.el";
+              rev = "85999e64845a746c78c6e578d1517ccf7b1a6765";
+              sha256 = "1j2ng15x4c8i5zgqx73899jlq6vxal3r1fzx1wjv3fsrc8ryhrzk";
+            });
+
+            nano-dialog = elPackage "nano-dialog" (pkgs.fetchFromGitHub {
+              owner = "rougier";
+              repo = "nano-dialog";
+              rev = "4127d8feceeed4ceabbe16190dae3f4609f2fdb4";
+              sha256 = "sha256-R5+6Zwe8CMFEVg1RUSJT64lTDeHSsQ0FrDZRVA9tPIA=";
+            });
+          };
         }
       );
 
     programs.fzf.enable = true;
     programs.fzf.enableZshIntegration = true;
 
-    programs.browserpass.enable = true;
-    programs.browserpass.browsers = [ "firefox" ];
+    # TODO: pkg currently broken on aarch64-darwin due to autoPatchelfHook
+    # programs.browserpass.enable = true;
+    # programs.browserpass.browsers = [ "firefox" ];
 
     programs.alacritty = {
       enable = true;
@@ -418,7 +360,9 @@ in
       enableAutosuggestions = true;
       enableCompletion = true;
       defaultKeymap = "emacs";
-      sessionVariables = { RPROMPT = ""; };
+      sessionVariables = {
+        DIRENV_LOG_FORMAT = null;
+      };
 
       shellAliases = {
         k = "kubectl";
@@ -464,35 +408,36 @@ in
       ];
 
       initExtra = ''
-          PROMPT='%{$fg_bold[blue]%}$(get_pwd)%{$reset_color%} ''${prompt_suffix}'
-          local prompt_suffix="%(?:%{$fg_bold[green]%}❯ :%{$fg_bold[red]%}❯%{$reset_color%} "
+        PROMPT='%{$fg_bold[blue]%}$(get_pwd)%{$reset_color%} ''${prompt_suffix}'
+        local prompt_suffix="%(?:%{$fg_bold[green]%}❯ :%{$fg_bold[red]%}❯%{$reset_color%} "
+        RPROMPT=
 
-          function get_pwd(){
-              git_root=$PWD
-              while [[ $git_root != / && ! -e $git_root/.git ]]; do
-                  git_root=$git_root:h
-              done
-              if [[ $git_root = / ]]; then
-                  unset git_root
-                  prompt_short_dir=%~
-              else
-                  parent=''${git_root%\/*}
-                  prompt_short_dir=''${PWD#$parent/}
-              fi
-              echo $prompt_short_dir
-                                      }
+        function get_pwd(){
+            git_root=$PWD
+            while [[ $git_root != / && ! -e $git_root/.git ]]; do
+                git_root=$git_root:h
+            done
+            if [[ $git_root = / ]]; then
+                unset git_root
+                prompt_short_dir=%~
+            else
+                parent=''${git_root%\/*}
+                prompt_short_dir=''${PWD#$parent/}
+            fi
+            echo $prompt_short_dir
+        }
 
-          vterm_printf(){
-              if [ -n "$TMUX" ]; then
-                  # Tell tmux to pass the escape sequences through
-                  # (Source: http://permalink.gmane.org/gmane.comp.terminal-emulators.tmux.user/1324)
-                  printf "\ePtmux;\e\e]%s\007\e\\" "$1"
-              elif [ "''${TERM%%-*}" = "screen" ]; then
-                  # GNU screen (screen, screen-256color, screen-256color-bce)
-                  printf "\eP\e]%s\007\e\\" "$1"
-              else
-                  printf "\e]%s\e\\" "$1"
-              fi
+        vterm_printf(){
+            if [ -n "$TMUX" ]; then
+                # Tell tmux to pass the escape sequences through
+                # (Source: http://permalink.gmane.org/gmane.comp.terminal-emulators.tmux.user/1324)
+                printf "\ePtmux;\e\e]%s\007\e\\" "$1"
+            elif [ "''${TERM%%-*}" = "screen" ]; then
+                # GNU screen (screen, screen-256color, screen-256color-bce)
+                printf "\eP\e]%s\007\e\\" "$1"
+            else
+                printf "\e]%s\e\\" "$1"
+            fi
         }
       '';
     };
@@ -505,7 +450,6 @@ in
           rev = "ce21dafd9a016ef3ed4ba3988112bcf33497fc83";
           sha256 = "04ldklkmc75azs6lzxfivl7qs34041d63fan6yindj936r4kqcsp";
         };
-
 
       in
       {
@@ -567,59 +511,5 @@ in
           run-shell ${tmuxYank}/yank.tmux
         '';
       };
-
-    # Silence the 'last login' shell message
-    home.file.".hushlogin".text = "";
-
-    # Global Emacs keybindings
-    home.file."Library/KeyBindings/DefaultKeyBinding.dict".text = ''
-      {
-          /* Ctrl shortcuts */
-          "^l"        = "centerSelectionInVisibleArea:";  /* C-l          Recenter */
-          "^/"        = "undo:";                          /* C-/          Undo */
-          "^_"        = "undo:";                          /* C-_          Undo */
-          "^ "        = "setMark:";                       /* C-Spc        Set mark */
-          "^\@"       = "setMark:";                       /* C-@          Set mark */
-          "^w"        = "deleteToMark:";                  /* C-w          Delete to mark */
-
-          /* Meta shortcuts */
-          "~f"        = "moveWordForward:";               /* M-f          Move forward word */
-          "~b"        = "moveWordBackward:";              /* M-b          Move backward word */
-          "~<"        = "moveToBeginningOfDocument:";     /* M-<          Move to beginning of document */
-          "~>"        = "moveToEndOfDocument:";           /* M->          Move to end of document */
-          "~v"        = "pageUp:";                        /* M-v          Page Up */
-          "~/"        = "complete:";                      /* M-/          Complete */
-          "~c"        = ( "capitalizeWord:",              /* M-c          Capitalize */
-                          "moveForward:",
-                          "moveForward:");
-          "~u"        = ( "uppercaseWord:",               /* M-u          Uppercase */
-                          "moveForward:",
-                          "moveForward:");
-          "~l"        = ( "lowercaseWord:",               /* M-l          Lowercase */
-                          "moveForward:",
-                          "moveForward:");
-          "~d"        = "deleteWordForward:";             /* M-d          Delete word forward */
-          "^~h"       = "deleteWordBackward:";            /* M-C-h        Delete word backward */
-          "~\U007F"   = "deleteWordBackward:";            /* M-Bksp       Delete word backward */
-          "~t"        = "transposeWords:";                /* M-t          Transpose words */
-          "~\@"       = ( "setMark:",                     /* M-@          Mark word */
-                          "moveWordForward:",
-                          "swapWithMark");
-          "~h"        = ( "setMark:",                     /* M-h          Mark paragraph */
-                          "moveToEndOfParagraph:",
-                          "swapWithMark");
-
-          /* C-x shortcuts */
-          "^x" = {
-              "u"     = "undo:";                          /* C-x u        Undo */
-              "k"     = "performClose:";                  /* C-x k        Close */
-              "^f"    = "openDocument:";                  /* C-x C-f      Open (find file) */
-              "^x"    = "swapWithMark:";                  /* C-x C-x      Swap with mark */
-              "^m"    = "selectToMark:";                  /* C-x C-m      Select to mark*/
-              "^s"    = "saveDocument:";                  /* C-x C-s      Save */
-              "^w"    = "saveDocumentAs:";                /* C-x C-w      Save as */
-          };
-      }
-    '';
   };
 }

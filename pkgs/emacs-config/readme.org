@@ -1,4 +1,6 @@
+#+title: cmacrae's Emacs configuration
 #+PROPERTY: header-args:emacs-lisp :tangle yes
+#+STARTUP: overview
 * About
 This is my literate configuration for [[https://www.gnu.org/software/emacs/][Emacs]].
 This document includes a collection of configuration snippets to express how I personally like to use Emacs, each accompanied by some reasoning.
@@ -63,14 +65,6 @@ performance boost.
 #+END_SRC
 
 ** UI
-Disable GUI components.
-#+BEGIN_SRC emacs-lisp
-(setq use-dialog-box nil)
-(push '(menu-bar-lines . 0)   default-frame-alist)
-(push '(tool-bar-lines . 0)   default-frame-alist)
-(push '(vertical-scroll-bars) default-frame-alist)
-#+END_SRC
-
 Don't implicitly resize frames when changing various settings.
 #+BEGIN_SRC emacs-lisp
 (setq frame-inhibit-implied-resize t)
@@ -83,7 +77,6 @@ Ignore X resources.
 
 * Configuration
 ** General
-
 *** About me
 Tell Emacs who's driving
 #+BEGIN_SRC emacs-lisp
@@ -166,16 +159,23 @@ Also, when typing =M-3=, insert an octothorp - I use a British keyboard.
 #+BEGIN_SRC emacs-lisp
 (setq default-frame-alist
       (append (list
-               '(undecorated . t)
-               '(min-height . 1)
-               '(height     . 45)
-               '(min-width  . 1)
-               '(width      . 81)
-               '(vertical-scroll-bars . nil)
-               '(left-fringe    . 0)
-               '(right-fringe   . 0)
-               '(tool-bar-lines . 0)
-               '(menu-bar-lines . 0))))
+               '(undecorated-round     . t)
+               '(min-height            . 1)
+               '(height                . 45)
+               '(min-width             . 1)
+               '(width                 . 81)
+               '(vertical-scroll-bars  . nil)
+               '(left-fringe           . 1)
+               '(right-fringe          . 1)
+               '(tool-bar-lines        . 0)
+               '(menu-bar-lines        . 0))))
+
+(modify-all-frames-parameters
+ '((right-divider-width . 10)
+   (internal-border-width . 20)))
+
+(setq window-divider-default-places 'right-only)
+(window-divider-mode 1)
 #+END_SRC
 
 *** Set =fill-column=
@@ -225,10 +225,11 @@ Not really all that useful, but cleaner than the default comment, and I like hav
 *** FlySpell settings
 I use =aspell=, so this simply sets [[https://www.emacswiki.org/emacs/FlySpell][Flyspell]] to use it and passes a couple extra arguments
 - Configure FlySpell to use aspell
-- Set =C-;= to a =nil= binding so it doesn't clash with NeoTree
+- Set =C-;= to a =nil= binding so it doesn't clash with Treemacs
 #+BEGIN_SRC emacs-lisp
 (use-package flyspell
   :ensure nil
+  :after use-package
   :bind
   (:map flyspell-mode-map ("C-;" . nil))
   :init
@@ -269,87 +270,32 @@ For convenience, I've also defined a =erc-conn= function for my usual connection
 *** org-mode
 Various pieces of configuration for the mighty org-mode.
 #+BEGIN_SRC emacs-lisp
-(use-package org-mode
-  :ensure nil
+(use-package org-modern
   :hook
-  (org-mode . org-indent-mode)
-  (org-mode . variable-pitch-mode)
-  (org-mode . visual-line-mode)
-  :custom-face
-  (avy-lead             ((t (:inherit fixed-pitch))))
-  (avy-lead-face-0      ((t (:inherit fixed-pitch))))
-  (avy-lead-face-1      ((t (:inherit fixed-pitch))))
-  (avy-lead-face-2      ((t (:inherit fixed-pitch))))
-  (company-tooltip      ((t (:inherit fixed-pitch))))
-  (org-table            ((t (:inherit fixed-pitch))))
-  (org-formula          ((t (:inherit fixed-pitch))))
-  (org-checkbox         ((t (:inherit fixed-pitch))))
-  (org-code             ((t (:inherit fixed-pitch))))
-  (org-verbatim         ((t (:inherit fixed-pitch))))
-  (org-special-keyword  ((t (:inherit fixed-pitch))))
-  (org-meta-line        ((t (:inherit fixed-pitch))))
-  (org-block            ((t (:foreground nil :inherit fixed-pitch))))
-  (org-indent           ((t (:inherit (org-hide fixed-pitch)))))
-  (fixed-pitch          ((t (:family "Menlo" :height 120))))
-  (variable-pitch       ((t (:family "ETBembo" :height 160))))
+  (org-mode . org-modern-mode)
+  (org-agenda-finalize org-modern-agenda)
 
-  :init
-  (setq org-ellipsis " ▾"
-        org-hide-emphasis-markers t
-        org-src-fontify-natively t
-        org-fontify-quote-and-verse-blocks t
-        org-src-tab-acts-natively t
-        org-edit-src-content-indentation 0
-        org-src-preserve-indentation t
-        org-cycle-separator-lines 2
-        org-clock-persist 'history)
-
-  (font-lock-add-keywords 'org-mode
-                          '(("^ *\\([-]\\) "
-                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-
-  :config
-  (org-clock-persistence-insinuate)
-
-  (evil-define-key '(normal insert visual) org-mode-map (kbd "M-k") 'org-metaup)
-  (evil-define-key '(normal insert visual) org-mode-map (kbd "M-j") 'org-metadown)
-  (evil-define-key '(normal insert visual) org-mode-map (kbd "C-j") 'org-next-visible-heading)
-  (evil-define-key '(normal insert visual) org-mode-map (kbd "C-k") 'org-previous-visible-heading)
-
-  (dolist (face '((org-level-1 . 1.2)
-                  (org-level-2 . 1.1)
-                  (org-level-3 . 1.05)
-                  (org-level-4 . 1.0)
-                  (org-level-5 . 1.1)
-                  (org-level-6 . 1.1)
-                  (org-level-7 . 1.1)
-                  (org-level-8 . 1.1)))))
-
-(use-package org-superstar
-  :hook (org-mode . org-superstar-mode)
   :custom
-  (org-superstar-remove-leading-stars t)
-  (org-superstar-headline-bullets-list '("◉" "○" "●" "○" "●" "○" "●")))
+  (org-auto-align-tags                 nil)
+  (org-tags-column                     0)
+  (org-catch-invisible-edits           'show-and-error)
+  (org-special-ctrl-a/e                t)
+  (org-insert-heading-respect-content  t)
+  (org-hide-emphasis-markers           t)
+  (org-pretty-entities                 t)
+  (org-ellipsis                        "…")
 
-(use-package org-appear
-  :hook (org-mode . org-appear-mode))
+  (org-agenda-tags-column 0)
+  ;; (org-agenda-block-separator ?─)
+  (org-agenda-time-grid
+  '((daily today require-timed)
+    (800 1000 1200 1400 1600 1800 2000)
+    " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄"))
+  (org-agenda-current-time-string
+    "⭠ now ─────────────────────────────────────────────────"))
 
-(use-package org-jira
-  :if (string= system-name "workbook")
-  :magic ("EE.org" . org-jira-mode)
-  :init
-  (setq jiralib-url "https://hungryfinance.jira.com")
-  :custom
-  (org-jira-use-status-as-todo t)
-  (org-jira-progress-issue-flow '(("To Do"          . "In development")
-                                  ("In development" . "On Hold")
-                                  ("In development" . "In Review")
-                                  ("On Hold"        . "In Review")
-                                  ("In Review"      . "Done")))
-  :config
-  (let ((dir "~/.org-jira"))
-    (unless (file-exists-p dir)
-      (make-directory dir t))))
+  (use-package org-appear
+    :hook (org-mode . org-appear-mode))
 #+END_SRC
 
 *** Native compilation
@@ -398,26 +344,30 @@ This section outlines my preference for Emacs' completion system/interface.
   (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil)))
 
 (use-package embark
+  :after marginalia
   :bind
   (("C-," . embark-act))
 
   :config
-  (embark-define-keymap embark-password-store-actions
-    "Keymap for actions for password-store."
-    ("c" password-store-copy)
-    ("f" password-store-copy-field)
-    ("i" password-store-insert)
-    ("I" password-store-generate)
-    ("r" password-store-rename)
-    ("e" password-store-edit)
-    ("k" password-store-remove)
-    ("U" password-store-url))
+  (defvar-keymap embark-password-store-actions
+    :doc "Keymap for actions for password-store."
+    :parent embark-general-map
+    "c" #'password-store-copy
+    "f" #'password-store-copy-field
+    "i" #'password-store-insert
+    "I" #'password-store-generate
+    "r" #'password-store-rename
+    "e" #'password-store-edit
+    "k" #'password-store-remove
+    "U" #'password-store-url)
 
   (add-to-list 'embark-keymap-alist '(password-store . embark-password-store-actions))
   (add-to-list 'marginalia-prompt-categories '("Password entry" . password-store))
 
   :init
   (setq prefix-help-command #'embark-prefix-help-command))
+
+(use-package embark-consult)
 
 (use-package consult
   :bind (("C-s"   . consult-line)
@@ -492,12 +442,11 @@ This section outlines my preference for Emacs' completion system/interface.
 
   (consult-customize
    consult-theme
-   :preview-key '(:debounce 0.2 any)
    consult-ripgrep consult-git-grep consult-grep
    consult-bookmark consult-recent-file consult-xref
    consult--source-bookmark consult--source-recent-file
    consult--source-project-recent-file
-   :preview-key (kbd "M-."))
+   :preview-key '(:debounce 0.2 any))
 
   (setq consult-narrow-key "<") ;; (kbd "C-+")
 
@@ -505,77 +454,57 @@ This section outlines my preference for Emacs' completion system/interface.
   (setq consult-project-function (lambda (_) (projectile-project-root))))
 #+END_SRC
 
-*** nano-theme|nano-modeline
-Modular parts of rougier/nano-emacs. Currently I’m making some changes locally that I intend to send for review upstream, so I’m loading from local paths.
-
+*** Theme | Modeline
+**** theme
 #+BEGIN_SRC emacs-lisp
-;; (use-package ts)
-;; (use-package nano-theme
-;;   :config
-;;   (load-theme 'nano t)
-;;   (defun cm/switch-theme (theme)
-;;     "Disable active themes and load THEME."
-;;     (interactive (list (intern (completing-read "Theme: "
-;;                                  (->> (custom-available-themes)
-;;                                    (-map #'symbol-name))))))
-;;     (mapc #'disable-theme custom-enabled-themes)
-;;     (load-theme theme 'no-confirm)))
- 
-;; (use-package nano-modeline
-;;   :hook (after-init . nano-modeline))
-
-;; (use-package nano-emacs
-;;   :config
-;;   (require 'nano-defaults)
-;;   (require 'nano-splash)
-;;   (require 'nano-modeline))
-;; (use-package ts)
-(use-package nano-theme
-  :ensure nil
-  :demand t
-  :load-path "~/src/github.com/cmacrae/nano-theme"
-  :config
-  (load-theme 'nano t))
-
-(use-package nano-modeline
-  :ensure nil
-  :load-path "~/src/github.com/cmacrae/nano-modeline"
+(use-package timu-rouge-theme
   :custom
-  (nano-modeline-prefix 'icon)
-  :hook (after-init . nano-modeline-mode))
+  (timu-rouge-scale-org-level-1        t)
+  (timu-rouge-scale-org-level-2        t)
+  (timu-rouge-scale-org-level-3        t)
+  (timu-rouge-scale-org-document-title t)
+  (timu-rouge-scale-org-document-info  t)
+  :config
+  (load-theme 'timu-rouge t)
+
+(dolist (face '(window-divider
+                window-divider-first-pixel
+                window-divider-last-pixel))
+  (face-spec-reset-face face)
+  (set-face-foreground face (face-attribute 'default :background)))
+(set-face-background 'fringe (face-attribute 'default :background)))
 #+END_SRC
 
-*** doom-theme | doom-modeline
-Here's the following configuration I use for my themes.
+**** mood-line
 #+BEGIN_SRC emacs-lisp
-;; (use-package doom-themes
-;;   :custom
-;;   (doom-themes-enable-bold   t)
-;;   (doom-themes-enable-italic t)
+(use-package doom-modeline
+  :hook (after-init . doom-modeline-mode)
+  :custom
+  (doom-modeline-buffer-encoding nil)
+  (doom-modeline-buffer-file-name-style 'relative-to-project))
+#+END_SRC
 
+*** tectum
+#+BEGIN_SRC emacs-lisp
+;; (use-package tectum
+;;   :ensure nil
+;;   :load-path "~/src/github.com/cmacrae/tectum"
+;;   :hook
+;;   (org-mode . tectum-mode)
+;;   :custom
+;;   (tectum-header-prefix-display-function 'tectum-element-just-mode-icon)
 ;;   :config
-;;   (load-theme 'doom-nord t)
-;;   (doom-themes-neotree-config)
-;;   (doom-themes-org-config)
-;;   (defvar light-mode-theme 'doom-nord-light)
-;;   (defvar dark-mode-theme 'doom-nord)
+;;   (defun tectum-element-just-mode-icon ()
+;;     "Just the mode icon."
+    
+;;     (concat
+;;      "   "
+;;      (tectum-element-mode-icon))))
 
-;;   (defun cm/switch-theme (theme)
-;;     "Disable active themes and load THEME."
-;;     (interactive (list (intern (completing-read "Theme: "
-;;                                  (->> (custom-available-themes)
-;;                                    (-map #'symbol-name))))))
-;;     (mapc #'disable-theme custom-enabled-themes)
-;;     (load-theme theme 'no-confirm)))
-
-;; (use-package doom-modeline
-;;   :hook (after-init . doom-modeline-mode)
-;;   :custom
-;;   (doom-modeline-persp-name              nil)
-;;   (doom-modeline-buffer-encoding         nil)
-;;   (doom-modeline-icon                    t)
-;;   (doom-modeline-buffer-file-name-style  'truncate-with-project))
-
+;; (use-package svg-lib)
+;; (use-package nano-dialog)
+;; (use-package define-word)
+;; (use-package olivetti)
 #+END_SRC
 
 *** solaire-mode | dimmer
@@ -636,15 +565,14 @@ Fancy buffer tabs
 ;;   ;;    ("E" . centaur-tabs-forward)))
 #+END_SRC
 
-
-**** which-key
+*** which-key
 Helpful reminders for which keybindings are available
 #+BEGIN_SRC emacs-lisp
 (use-package which-key
   :hook (after-init . which-key-mode))
 #+END_SRC
 
-**** Evil
+*** Evil
 Vim emulation in Emacs. Because: yes, you can have the best of both worlds!
 Below you'll find various extensions to my Evil layer that generally improve the quality of life.
 #+BEGIN_SRC emacs-lisp
@@ -656,7 +584,7 @@ Below you'll find various extensions to my Evil layer that generally improve the
   :custom (evil-respect-visual-line-mode t))
 #+END_SRC
 
-***** Evil Collection
+**** Evil Collection
 A collection of Evil bindings, for the parts of Emacs that Evil does not cover properly by default
 #+BEGIN_SRC emacs-lisp
 (use-package evil-collection
@@ -666,7 +594,7 @@ A collection of Evil bindings, for the parts of Emacs that Evil does not cover p
   :hook (evil-mode . evil-collection-init))
 #+END_SRC
 
-***** Evil Colemak Basics
+**** Evil Colemak Basics
 For using the Colemak layout with Evil bindings.
 #+BEGIN_SRC emacs-lisp
 (use-package evil-colemak-basics
@@ -678,7 +606,7 @@ For using the Colemak layout with Evil bindings.
   (global-evil-colemak-basics-mode))
 #+END_SRC
 
-***** EasyMotion
+**** EasyMotion
 Buffer traversal made easy! Emulates easymotion.vim
 #+BEGIN_SRC emacs-lisp
 (use-package evil-easymotion
@@ -687,7 +615,7 @@ Buffer traversal made easy! Emulates easymotion.vim
   (evilem-default-keybindings "SPC"))
 #+END_SRC
 
-***** Goggles
+**** Goggles
 Visual hints when performing Evil operations (dd, yy, cw, p, etc.)
 #+BEGIN_SRC emacs-lisp
 (use-package evil-goggles
@@ -696,7 +624,7 @@ Visual hints when performing Evil operations (dd, yy, cw, p, etc.)
   :config (evil-goggles-use-diff-faces))
 #+END_SRC
 
-***** Lion
+**** Lion
 Align operators (gl & gL), emulating lion.vim
 #+BEGIN_SRC emacs-lisp
 (use-package evil-lion
@@ -704,7 +632,7 @@ Align operators (gl & gL), emulating lion.vim
   :hook (evil-mode . evil-lion-mode))
 #+END_SRC
 
-***** Commentary
+**** Commentary
 Easily comment lines/blocks. Emulates commentary.vim
 #+BEGIN_SRC emacs-lisp
 (use-package evil-commentary
@@ -712,7 +640,7 @@ Easily comment lines/blocks. Emulates commentary.vim
   :hook (evil-mode . evil-commentary-mode))
 #+END_SRC
 
-***** Snipe
+**** Snipe
 2-char searching with f, F, t, T operators. Like seek.vim/sneak.vim
 #+BEGIN_SRC emacs-lisp
 (use-package evil-snipe
@@ -722,7 +650,7 @@ Easily comment lines/blocks. Emulates commentary.vim
   (evil-snipe-mode . evil-snipe-override-mode))
 #+END_SRC
 
-***** multiedit
+**** multiedit
 #+BEGIN_SRC emacs-lisp
 (use-package evil-multiedit
   :after evil
@@ -731,14 +659,14 @@ Easily comment lines/blocks. Emulates commentary.vim
   (evil-ex-define-cmd "ie[dit]" 'evil-multiedit-ex-match))
 #+END_SRC
 
-***** surround
+**** surround
 #+BEGIN_SRC emacs-lisp
 (use-package evil-surround
   :after evil
   :hook (evil-mode . global-evil-surround-mode))
 #+END_SRC
 
-**** Projectile
+*** Projectile
 Project management based on version control repositories.
 Absolutely essential package for me. This makes hopping around and between various projects really easy.
 Not only that, but it allows project-wide actions. Like killing all buffers for a project, performing a project-wide find-and-replace, or a grep, etc.
@@ -751,24 +679,27 @@ Some configuration I use:
   :hook
   (after-init . projectile-global-mode)
   :custom
-  ;; (projectile-completion-system 'ivy)
-  (projectile-switch-project-action 'neotree-projectile-action)
-  :config
-  (use-package counsel-projectile
-    :ensure t
-    :after projectile
-    :hook
-    (projectile-global-mode . counsel-projectile-mode)
-    :bind
-    ("C-c p s r" . counsel-projectile-rg)
-    (:map projectile-mode-map
-          ("C-c p p" . projectile-persp-switch-project)
-          ("C-c p f" . counsel-projectile-find-file))))
+  (projectile-completion-system 'auto)
+  (projectile-switch-project-action 'treemacs)
+  :bind
+  (:map projectile-mode-map
+          ("C-c p p" . projectile-persp-switch-project)))
+  ;; :config
+  ;; (use-package counsel-projectile
+  ;;   :ensure t
+  ;;   :after projectile
+  ;;   :hook
+  ;;   (projectile-global-mode . counsel-projectile-mode)
+  ;;   :bind
+  ;;   ("C-c p s r" . counsel-projectile-rg)
+  ;;   (:map projectile-mode-map
+  ;;         ("C-c p p" . projectile-persp-switch-project)
+  ;;         ("C-c p f" . counsel-projectile-find-file))))
 #+END_SRC
 
-**** perspective
+*** perspective
 Workspaces! Indespensible if you work on a lot of projects. Perspective is like workspaces (virtual desktops) for Emacs. It’s a means of namespacing a group of tangible buffers. When combined with Projectile, this becomes a really nice combination as projects then seemlessly translate to workspaces.
-Here, I’ve defined a cm/persp-neo function for use with persp-switch-hook. This makes NeoTree follow the perspective when switching. I’ve also added a hydra for various Perspective actions.
+# Here, I’ve defined a cm/persp-neo function for use with persp-switch-hook. This makes NeoTree follow the perspective when switching. I’ve also added a hydra for various Perspective actions.
 
 #+BEGIN_SRC emacs-lisp
 (use-package perspective
@@ -781,65 +712,145 @@ Here, I’ve defined a cm/persp-neo function for use with persp-switch-hook. Thi
   (use-package persp-projectile
     :ensure t
     :after perspective
-    :hook (persp-switch . cm/persp-neo)
-    :bind ("C-c x" . hydra-persp/body)
+    ;; :hook (persp-switch . cm/persp-neo)
+    :bind ("C-c x" . hydra-persp/body)))
 
-    :config
-    (defun cm/persp-neo ()
-      "Make NeoTree follow the perspective"
-      (interactive)
-      (let ((cw (selected-window))
-            (path (buffer-file-name))) ;; save current window and buffer
-        (progn
-          (when (and (fboundp 'projectile-project-p)
-                     (projectile-project-p)
-                     (fboundp 'projectile-project-root))
-            (neotree-dir (projectile-project-root)))
-          (neotree-find path))
-        (select-window cw)))
-
-    (defhydra hydra-persp (:columns 4
-                                    :color blue)
-      "Perspective"
-      ("a" persp-add-buffer "Add Buffer")
-      ("i" persp-import "Import")
-      ("c" persp-kill "Close")
-      ("n" persp-next "Next")
-      ("p" persp-prev "Prev")
-      ("k" persp-remove-buffer "Kill Buffer")
-      ("r" persp-rename "Rename")
-      ("A" persp-set-buffer "Set Buffer")
-      ("s" persp-switch "Switch")
-      ("C-x" persp-switch-last "Switch Last")
-      ("b" persp-switch-to-buffer "Switch to Buffer")
-      ("P" projectile-persp-switch-project "Switch Project")
-      ("q" nil "Quit"))))
+    ;; :config
+    ;; (defun cm/persp-neo ()
+    ;;   "Make NeoTree follow the perspective"
+    ;;   (interactive)
+    ;;   (let ((cw (selected-window))
+    ;;         (path (buffer-file-name))) ;; save current window and buffer
+    ;;     (progn
+    ;;       (when (and (fboundp 'projectile-project-p)
+    ;;                  (projectile-project-p)
+    ;;                  (fboundp 'projectile-project-root))
+    ;;         (neotree-dir (projectile-project-root)))
+    ;;       (neotree-find path))
+    ;;     (select-window cw)))))
 #+END_SRC
 
-**** Neotree
+*** Treemacs
 Sidebar filebrowser, very handy. People seem to have accepted Treemacs as the new norm, but I like NeoTree :) Here, I’ve defined some key mappings that make it a little nicer to interact with - they should be quite self-explanatory.
 
 #+BEGIN_SRC emacs-lisp
-(use-package neotree
-  :after evil
-  :hook (neotree-mode . (lambda () (setq mode-line-format nil)))
-  :bind
-  ("C-;"     . neotree-show)
-  ("C-c C-;" . neotree-toggle)
-  (:map neotree-mode-map
-        ("C-c C-h" . neotree-hidden-file-toggle)
-        ("C-c C-y" . neotree-copy-filepath-to-yank-ring)
-        ("C-;"     . (lambda () (interactive) (select-window (previous-window)))))
-  :custom
-  (neo-theme (if window-system 'icons 'arrows))
+(use-package treemacs
+  :init
+  (with-eval-after-load 'winum
+    (define-key winum-keymap (kbd "C-;") #'treemacs-select-window))
   :config
-  (evil-define-key 'normal neotree-mode-map (kbd "TAB") 'neotree-enter)
-  (evil-define-key 'normal neotree-mode-map (kbd "SPC") 'neotree-quick-look)
-  (evil-define-key 'normal neotree-mode-map (kbd "q") 'neotree-hide)
-  (evil-define-key 'normal neotree-mode-map (kbd "RET") 'neotree-enter))
+  (progn
+    (setq treemacs-collapse-dirs                   1
+          treemacs-deferred-git-apply-delay        0.5
+          treemacs-directory-name-transformer      #'identity
+          treemacs-display-in-side-window          t
+          treemacs-eldoc-display                   'simple
+          treemacs-file-event-delay                2000
+          treemacs-file-extension-regex            treemacs-last-period-regex-value
+          treemacs-file-follow-delay               0.2
+          treemacs-file-name-transformer           #'identity
+          treemacs-follow-after-init               t
+          treemacs-expand-after-init               t
+          treemacs-find-workspace-method           'find-for-file-or-pick-first
+          treemacs-git-command-pipe                ""
+          treemacs-goto-tag-strategy               'refetch-index
+          treemacs-header-scroll-indicators        '(nil . "^^^^^^")
+          treemacs-hide-dot-git-directory          t
+          treemacs-indentation                     2
+          treemacs-indentation-string              " "
+          treemacs-is-never-other-window           nil
+          treemacs-max-git-entries                 5000
+          treemacs-missing-project-action          'ask
+          treemacs-move-forward-on-expand          nil
+          treemacs-no-png-images                   nil
+          treemacs-no-delete-other-windows         t
+          treemacs-project-follow-cleanup          nil
+          treemacs-persist-file                    (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+          treemacs-position                        'left
+          treemacs-read-string-input               'from-child-frame
+          treemacs-recenter-distance               0.1
+          treemacs-recenter-after-file-follow      nil
+          treemacs-recenter-after-tag-follow       nil
+          treemacs-recenter-after-project-jump     'always
+          treemacs-recenter-after-project-expand   'on-distance
+          treemacs-litter-directories              '("/result")
+          treemacs-project-follow-into-home        nil
+          treemacs-show-cursor                     nil
+          treemacs-show-hidden-files               nil
+          treemacs-silent-filewatch                nil
+          treemacs-silent-refresh                  nil
+          treemacs-sorting                         'alphabetic-asc
+          treemacs-select-when-already-in-treemacs 'move-back
+          treemacs-space-between-root-nodes        t
+          treemacs-tag-follow-cleanup              t
+          treemacs-tag-follow-delay                1.5
+          treemacs-text-scale                      nil
+          treemacs-user-mode-line-format           nil
+          treemacs-user-header-line-format         nil
+          treemacs-wide-toggle-width               70
+          treemacs-width                           35
+          treemacs-width-increment                 1
+          treemacs-width-is-initially-locked       t
+          treemacs-workspace-switch-cleanup        nil)
+
+    ;; The default width and height of the icons is 22 pixels. If you are
+    ;; using a Hi-DPI display, uncomment this to double the icon size.
+    ;; (treemacs-resize-icons 44)
+
+    (treemacs-follow-mode t)
+    (treemacs-filewatch-mode t)
+    (treemacs-fringe-indicator-mode 'always)
+    (when treemacs-python-executable
+      (treemacs-git-commit-diff-mode t))
+
+    (pcase (cons (not (null (executable-find "git")))
+                 (not (null treemacs-python-executable)))
+      (`(t . t)
+       (treemacs-git-mode 'deferred))
+      (`(t . _)
+       (treemacs-git-mode 'simple)))
+
+    (treemacs-hide-gitignored-files-mode nil))
+  :bind
+  (:map global-map
+        ("C-;"       . treemacs-select-window)
+        ("C-x t 1"   . treemacs-delete-other-windows)
+        ("C-x t t"   . treemacs)
+        ("C-x t d"   . treemacs-select-directory)
+        ("C-x t B"   . treemacs-bookmark)
+        ("C-x t C-t" . treemacs-find-file)
+        ("C-x t M-t" . treemacs-find-tag)))
+
+(use-package treemacs-evil
+  :after (treemacs evil))
+
+(use-package treemacs-projectile
+  :after (treemacs projectile))
+
+;; (use-package treemacs-icons-dired
+;;   :hook (dired-mode . treemacs-icons-dired-enable-once)
+;;   :ensure t)
+
+(use-package treemacs-magit
+  :after (treemacs magit))
+
+(use-package treemacs-all-the-icons
+  :after
+  (treemacs all-the-icons)
+  :config
+  (treemacs-load-theme "all-the-icons"))
+
+(use-package treemacs-perspective ;;treemacs-perspective if you use perspective.el vs. persp-mode
+  :after (treemacs perspective) ;;or perspective vs. persp-mode
+  :config (treemacs-set-scope-type 'Perspectives))
+
+;; (use-package treemacs-tab-bar ;;treemacs-tab-bar if you use tab-bar-mode
+;;   :after (treemacs)
+;;   :ensure t
+;;   :config (treemacs-set-scope-type 'Tabs))
 #+END_SRC
 
-**** Magit
+*** Magit
 The one true Git porcelain!
 Truly a joy to use - it surfaces the power of Git in such a fluent manner.
 Anyone using Git and Emacs *needs* Magit in their life!
@@ -873,7 +884,7 @@ I'm also using a handy package to layer on TODO notes in the Magit status buffer
   :after magit)
 #+END_SRC
 
-**** git-link
+*** git-link
 Quickly yank a Git forge link for the current file/line.
 Useful for when collaborating and you want to share what you're looking at.
 #+BEGIN_SRC emacs-lisp
@@ -882,7 +893,7 @@ Useful for when collaborating and you want to share what you're looking at.
   ("C-c g l" . git-link))
 #+END_SRC
 
-**** vterm
+*** vterm
 Fully-fledged terminal emulator based on [[https://github.com/neovim/libvterm][libvterm]]!
 I manage the module and elisp as a Nix overlay in [[https://github.com/cmacrae/config][my system configuration]], so no need to install it.
 Set it up to play nice with Evil.
@@ -930,27 +941,15 @@ Set it up to play nice with Evil.
     ("C-c p t" . multi-vterm-project)))
 #+END_SRC
 
-**** Flycheck
+*** Flycheck
 Have Flycheck turned on for everything - checking stuff is always good!
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck
-  :hook (after-init . global-flycheck-mode)
-  :config
-  (setq flycheck-statix-executable "/Users/cmacrae/.nix-profile/bin/statix")
-  (flycheck-define-checker statix
-    "Lints and suggestions for the nix programming language."
-    ;; :command ("statix check -o errfmt" source)
-    :command ("statix check -o errfmt" source)
-    :error-patterns
-    ((warning line-start (file-name) ">" line ":" column ":W:" (message) line-end))
-              ;; (id (one-or-more (not (any " "))))
-              ;; (message (one-or-more not-newline)
-                       ;; (zero-or-more "\n" (any " ") (one-or-more not-newline)))
-              ;; line-end))
-    :modes (nix-mode)))
+  :after envrc
+  :hook (after-init . global-flycheck-mode))
 #+END_SRC
 
-**** Company
+*** Company
 Slick auto-complete framework
 #+BEGIN_SRC emacs-lisp
 (use-package company
@@ -960,7 +959,7 @@ Slick auto-complete framework
   (company-minimum-prefix-length 1))
 #+END_SRC
 
-**** company-org-block
+*** company-org-block
 #+BEGIN_SRC emacs-lisp
 (use-package company-org-block
   :custom
@@ -969,14 +968,14 @@ Slick auto-complete framework
                        (setq-local company-backends '(company-org-block))))))
 #+END_SRC
 
-**** hydra
+*** hydra
 Great package to tie tangible actions together into convenient keybinding landscapes.
 Here, you'll find some "general" hydras - other hydras that are centric around packages will be found with that package's configuration.
 
 General hydras:
 - Zoom: increase/decrease current buffer text size
 - Transpose: transpose various constructs of text
-- Toggle mode: turn frequently "toggled" modes on and off
+- Perspective: common bindings useful for perspective
 
 #+BEGIN_SRC emacs-lisp
 (use-package hydra
@@ -985,14 +984,13 @@ General hydras:
   ("C-c T" . hydra-transpose/body)
 
   :config
-  ;; Zoom
+
   (defhydra hydra-zoom ()
     "Zoom"
     ("i" text-scale-increase "In")
     ("o" text-scale-decrease "Out")
     ("q" nil "Quit" :color blue))
 
-  ;; Transpose
   (defhydra hydra-transpose (:color red)
     "Transpose"
     ("c" transpose-chars "Characters")
@@ -1000,10 +998,26 @@ General hydras:
     ("l" transpose-lines "Lines")
     ("s" transpose-sentences "Sentences")
     ("p" transpose-paragraphs "Paragraphs")
-    ("q" nil "Quit" :color blue)))
+    ("q" nil "Quit" :color blue))
+
+  (defhydra hydra-persp (:columns 4 :color blue)
+    "Perspective"
+    ("a" persp-add-buffer "Add Buffer")
+    ("i" persp-import "Import")
+    ("c" persp-kill "Close")
+    ("n" persp-next "Next")
+    ("p" persp-prev "Prev")
+    ("k" persp-remove-buffer "Kill Buffer")
+    ("r" persp-rename "Rename")
+    ("A" persp-set-buffer "Set Buffer")
+    ("s" persp-switch "Switch")
+    ("C-x" persp-switch-last "Switch Last")
+    ("b" persp-switch-to-buffer "Switch to Buffer")
+    ("P" projectile-persp-switch-project "Switch Project")
+    ("q" nil "Quit")))
 #+END_SRC
 
-**** ace-window
+*** ace-window
 Jump around Emacs windows & frames using character prefixes.
 I use this constantly - it even works across multiple frames.
 Also added a hydra borrowed from [[https://oremacs.com/2015/01/29/more-hydra-goodness/][here]] for some really convenient movement/manipulation!
@@ -1036,7 +1050,7 @@ Also added a hydra borrowed from [[https://oremacs.com/2015/01/29/more-hydra-goo
   ;;   ("q" nil "Quit")))
 #+END_SRC
 
-**** password-store
+*** password-store
 I use [[https://www.passwordstore.org/][pass]] as my password manager, which comes with its own functions for Emacs
 #+BEGIN_SRC emacs-lisp
 (use-package password-store
@@ -1048,7 +1062,7 @@ I use [[https://www.passwordstore.org/][pass]] as my password manager, which com
   (auth-sources '(password-store)))
 #+END_SRC
 
-**** Smartparens
+*** Smartparens
 Brilliant automatic balancing of pairs. Makes for a really nice experience when typing in any language - programming or not.
 Just check out some of the gifs in the project's README.
 #+BEGIN_SRC emacs-lisp
@@ -1061,7 +1075,7 @@ Just check out some of the gifs in the project's README.
     (smartparens-global-mode . evil-smartparens-mode)))
 #+END_SRC
 
-**** all-the-icons
+*** all-the-icons
 This places little glyphs around to better convey some things where text may be a bit cluttered. That, and it makes things look nice! We’re visual creatures, after-all.
 #+BEGIN_SRC emacs-lisp
 (use-package all-the-icons
@@ -1072,7 +1086,7 @@ This places little glyphs around to better convey some things where text may be 
     (dired-mode . all-the-icons-dired-mode)))
 #+END_SRC
 
-**** rainbow-delimeters
+*** rainbow-delimeters
 Colourize delimiters differently based on their depth. Really helps you not get burried when you’re in deep.
 #+BEGIN_SRC emacs-lisp
 (use-package rainbow-delimiters
@@ -1081,7 +1095,7 @@ Colourize delimiters differently based on their depth. Really helps you not get 
   (yaml-mode . rainbow-delimiters-mode))
 #+END_SRC
 
-**** corral
+*** corral
 Quickly surround text with delimiters.
 #+BEGIN_SRC emacs-lisp
 (use-package corral
@@ -1096,14 +1110,14 @@ Quickly surround text with delimiters.
   ("M-\"" . corral-double-quotes-backward))
 #+END_SRC
 
-**** expand-region
+*** expand-region
 Select regions by semantic units. Really handy for selecting regions of data - just repeat keypress to expand selection further.
 #+BEGIN_SRC emacs-lisp
 (use-package expand-region
   :bind ("C-=" . er/expand-region))
 #+END_SRC
 
-**** hl-todo
+*** hl-todo
 NOTE/TODO/FIXME highlighting in comments
 #+BEGIN_SRC emacs-lisp
 (use-package hl-todo
@@ -1112,7 +1126,7 @@ NOTE/TODO/FIXME highlighting in comments
   (yaml-mode . hl-todo-mode))
 #+END_SRC
 
-**** centered-window-mode
+*** centered-window-mode
 Keep buffer text centered. I've added a hook to ensure my preferred =internal-border-width= setting is retained.
 #+BEGIN_SRC emacs-lisp
 (use-package centered-window
@@ -1122,7 +1136,7 @@ Keep buffer text centered. I've added a hook to ensure my preferred =internal-bo
                             (set-frame-parameter nil 'internal-border-width 10))))
 #+END_SRC
 
-**** Kubernetes
+*** Kubernetes
 #+BEGIN_SRC emacs-lisp
 (use-package kubernetes
   :commands kubernetes-overview
@@ -1132,7 +1146,137 @@ Keep buffer text centered. I've added a hook to ensure my preferred =internal-bo
     :after kubernetes))
 #+END_SRC
 
-**** Languages
+*** mini-frame
+Place a minibuffer on top of the current frame
+#+BEGIN_SRC emacs-lisp
+(use-package mini-frame)
+;; (use-package mini-frame
+;;   :hook (after-init . mini-frame-mode)
+;;   :custom
+;;   (mini-frame-resize t)
+;;   (mini-frame-show-parameters '((top . 10)
+;;                                 (width . 0.7)
+;;                                 (left . 0.5))))
+;;   ;; (mini-frame-internal-border-color (face-attribute 'nano-faded :foreground nil t)))
+#+END_SRC
+
+*** envrc | inheritenv
+Support for ~direnv~, which operates buffer-locally.
+#+BEGIN_SRC emacs-lisp
+(use-package envrc
+  :hook (after-init . envrc-global-mode))
+
+(use-package inheritenv :demand t)
+#+END_SRC
+
+*** GitHub Copilot
+AI assisted programming, what a time to be alive!
+Here, I'm ensuring the dependencies are installed, defining some key bindings,
+and setting up some custom functions to disable copilot-mode where it doesn't fit
+so well ([[https://robert.kra.hn/posts/2023-02-22-copilot-emacs-setup/][many thanks to Robert Krahn for these excellet snippet]]s!).
+
+/Note: as the package isn't hosted on MELPA, this is handled as an ~epkgs~ override in my Nix config/
+
+#+BEGIN_SRC emacs-lisp
+;; (use-package copilot
+;;   :hook (after-init . global-copilot-mode)
+;;   :bind
+;;   (:map company-mode-map
+;;     ("<down>"       . cm/copilot-next-completion)
+;;     ("<up>"         . cm/copilot-previous-completion)
+;;     ("<right>"      . cm/copilot-accept-completion-by-line)
+;;     ("<left>"       . cm/copilot-accept-completion-by-word)
+;;     ("TAB"          . cm/copilot-accept-completion)
+;;     ("<tab>"        . cm/copilot-accept-completion))
+
+;;   :config
+;;   (use-package s
+;;     :ensure t)
+;;   (use-package dash
+;;     :ensure t)
+;;   (use-package editorconfig
+;;     :ensure t)
+
+;;   (defun cm/copilot-accept-completion ()
+;;     (interactive)
+;;     (or (copilot-accept-completion)
+;;         (company-indent-or-complete-common nil)))
+
+;;   (defun cm/copilot-next-completion ()
+;;     (interactive)
+;;     (or (copilot-next-completion)
+;;         (company-select-next-if-tooltip-visible-or-complete-selection nil)))
+
+;;   (defun cm/copilot-previous-completion ()
+;;     (interactive)
+;;     (or (copilot-previous-completion)
+;;         (company-select-previous-or-abort nil)))
+
+;;   (defun cm/copilot-accept-completion-by-line ()
+;;     (interactive)
+;;     (or (copilot-accept-completion-by-line)
+;;         (company-indent-or-complete-common nil)))
+
+;;   (defun cm/copilot-accept-completion-by-word ()
+;;     (interactive)
+;;     (or (copilot-accept-completion-by-word)
+;;         (company-indent-or-complete-common nil)))
+
+;;   (defun cm/no-copilot-mode ()
+;;     "Helper for `cm/no-copilot-modes'."
+;;     (copilot-mode -1))
+
+;;   (defvar cm/no-copilot-modes '(shell-mode
+;;                                 inferior-python-mode
+;;                                 eshell-mode
+;;                                 term-mode
+;;                                 vterm-mode
+;;                                 comint-mode
+;;                                 compilation-mode
+;;                                 debugger-mode
+;;                                 dired-mode-hook
+;;                                 compilation-mode-hook
+;;                                 flutter-mode-hook
+;;                                 minibuffer-mode-hook)
+;;     "Modes in which copilot is inconvenient.")
+
+;;   (defun cm/copilot-disable-predicate ()
+;;     "When copilot should not automatically show completions."
+;;     (or (member major-mode cm/no-copilot-modes)
+;;         (company--active-p)))
+
+;;   (add-to-list 'copilot-disable-predicates #'cm/copilot-disable-predicate)
+
+;;   (defun cm/copilot-quit ()
+;;     "Run `copilot-clear-overlay' or `keyboard-quit'. If copilot is
+;;   cleared, make sure the overlay doesn't come back too soon."
+;;     (interactive)
+;;     (condition-case err
+;;         (when copilot--overlay
+;;           (lexical-let ((pre-copilot-disable-predicates copilot-disable-predicates))
+;;             (setq copilot-disable-predicates (list (lambda () t)))
+;;             (copilot-clear-overlay)
+;;             (run-with-idle-timer
+;;              1.0
+;;              nil
+;;              (lambda ()
+;;                (setq copilot-disable-predicates pre-copilot-disable-predicates)))))
+;;       (error handler)))
+  
+;;   (advice-add 'keyboard-quit :before #'cm/copilot-quit))
+#+END_SRC
+*** ChatGPT
+The magic of LLM, right in your Emacs - the way "god" intended
+
+#+BEGIN_SRC emacs-lisp
+(use-package chatgpt-shell
+  :custom
+  ((chatgpt-shell-openai-key
+    (lambda ()
+      (auth-source-pass-get 'secret "api.openai.com")))))
+#+END_SRC
+
+** Languages
 Configuration for working with various languages
 #+BEGIN_SRC emacs-lisp
 (use-package nix-mode)
@@ -1141,26 +1285,22 @@ Configuration for working with various languages
 (use-package yaml-mode)
 (use-package toml-mode)
 (use-package rego-mode)
+(use-package swift-mode)
+(use-package rustic
+  :after inheritenv
+  :config
+  (setq rustic-lsp-client 'eglot)
+  (setq rustic-format-trigger 'on-save)
+  (setq rustic-format-on-save-method 'eglot-format-buffer))
 
 (use-package markdown-mode
   :mode "\\.md\\'"
   :hook
   (markdown-mode . flyspell-mode))
 
-(use-package terraform-mode
-  :after lsp-mode
-  :hook
-  (terraform-mode . company-mode)
-  (terraform-mode . yas-minor-mode)
-  (terraform-mode . (lambda () (lsp)))
-  (before-save    . terraform-format-buffer)
-  :config
-  (lsp-register-client
-   ;; TODO: Derive the terraform-ls bin location from PATH
-   ;;(make-lsp-client :new-connection (lsp-stdio-connection '((locate-file "terraform-ls" exec-path) "serve"))
-   (make-lsp-client :new-connection (lsp-stdio-connection '("/Users/cmacrae/.nix-profile/bin/terraform-ls" "serve"))
-                    :major-modes '(terraform-mode)
-                    :server-id 'terraform-ls)))
+(use-package terraform-mode)
+  ;; :hook
+  ;; (before-save    . terraform-format-buffer))
 
 (use-package dockerfile-mode
   :mode "\\Dockerfile\\'")
@@ -1171,53 +1311,19 @@ Configuration for working with various languages
   (web-mode-engines-alist '(("go" . "\\.gotmpl\\'"))))
 #+END_SRC
 
-Language Server Protocol integration
+*** Language Server Protocol integration
 #+BEGIN_SRC emacs-lisp
-(use-package lsp-mode
-  :commands (lsp lsp-deferred)
+(use-package eglot
+  :ensure nil
   :hook
-  (lsp-mode . lsp-install-save-hooks)
-  (nix-mode . lsp-deferred)
-  (go-mode  . lsp-deferred)
-  (go-mode  . lsp-go-install-save-hooks)
-
-  :custom
-  (gc-cons-threshold 100000000)
-  (read-process-output-max (* 1024 1024))
-  (lsp-before-save-edits t)
-  (lsp-imenu-show-container-name nil)
-  (lsp-headerline-breadcrumb-enable nil)
-
+  (prog-mode . eglot-ensure)
   :config
-  (defun lsp-install-save-hooks ()
-    (add-hook 'before-save-hook #'lsp-format-buffer t t))
-  (defun lsp-go-install-save-hooks ()
-    (add-hook 'before-save-hook #'lsp-organize-imports t t))
-
-  (add-to-list 'lsp-language-id-configuration '(nix-mode . "nix"))
-  (lsp-register-client
-   (make-lsp-client :new-connection (lsp-stdio-connection '("rnix-lsp"))
-                    :major-modes '(nix-mode)
-                    :server-id 'nix)))
-
-  (use-package yasnippet
-    :hook (go-mode . yas-minor-mode))
-
-  (use-package lsp-ui
-    :commands lsp-ui-mode)
-#+END_SRC
-
-**** mini-frame
-Place a minibuffer on top of the current frame
-#+BEGIN_SRC emacs-lisp
-(use-package mini-frame
-  :hook (after-init . mini-frame-mode)
-  :custom
-  (mini-frame-resize t)
-  (mini-frame-show-parameters '((top . 10)
-                                (width . 0.7)
-                                (left . 0.5)))
-  (mini-frame-internal-border-color (face-attribute 'nano-faded :foreground nil t)))
+  (with-eval-after-load 'eglot
+    (add-to-list 'eglot-server-programs
+                 '(nix-mode . ("rnix-lsp"))
+                 '(python-mode . ("pylsp")))))
+                 ;; '(swift-mode . ("sourcekit-lsp")))))
+                 ;; '(rust-mode . ("rust-analyzer")))))
 #+END_SRC
 
 ** Custom functions

@@ -36,7 +36,7 @@ with pkgs.lib; {
 
   config = {
     # Boot
-    boot.cleanTmpDir = true;
+    boot.tmp.cleanOnBoot = true;
     boot.loader.grub.efiSupport = true;
     boot.loader.efi.canTouchEfiVariables = true;
     boot.loader.grub.zfsSupport = true;
@@ -69,8 +69,6 @@ with pkgs.lib; {
         device = "/dev/disk/by-uuid/${cfg.efiBlockId}";
         fsType = "vfat";
       };
-
-    swapDevices = [ ];
 
     powerManagement.cpuFreqGovernor = "ondemand";
 
