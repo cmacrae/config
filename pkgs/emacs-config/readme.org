@@ -1133,15 +1133,13 @@ Keep buffer text centered. I've added a hook to ensure my preferred =internal-bo
 *** mini-frame
 Place a minibuffer on top of the current frame
 #+BEGIN_SRC emacs-lisp
-(use-package mini-frame)
-;; (use-package mini-frame
-;;   :hook (after-init . mini-frame-mode)
-;;   :custom
-;;   (mini-frame-resize t)
-;;   (mini-frame-show-parameters '((top . 10)
-;;                                 (width . 0.7)
-;;                                 (left . 0.5))))
-;;   ;; (mini-frame-internal-border-color (face-attribute 'nano-faded :foreground nil t)))
+(use-package mini-frame
+  :hook (after-init . mini-frame-mode)
+  :custom
+  (mini-frame-resize t)
+  (mini-frame-show-parameters '((top . 10)
+                                (width . 0.7)
+                                (left . 0.5))))
 #+END_SRC
 
 *** envrc | inheritenv
