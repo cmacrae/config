@@ -56,6 +56,8 @@ let
     sonarr.host = "compute2";
     radarr.port = 7878;
     radarr.host = "compute2";
+    bazarr.port = 6767;
+    bazarr.host = "compute2";
     prowlarr.host = "compute2";
     prowlarr.port = 9696;
     plex.port = 32400;
@@ -128,7 +130,7 @@ with pkgs.lib; {
         listenPort = 51820;
         ips = [ "10.100.0.1/24" ];
 
-        privateKeyFile = config.sops.secrets.net1_wireguard_privatekey.path;
+        privateKeyFile = config.lollypops.secrets.files."net1/wireguard-privatekey".path;
 
         peers = [
           {
@@ -275,7 +277,7 @@ with pkgs.lib; {
 
   security.acme.acceptTerms = true;
   security.acme.defaults.email = "account@${domain}";
-  security.acme.defaults.credentialsFile = config.sops.secrets.net1_acme_dnsimple_envfile.path;
+  security.acme.defaults.credentialsFile = config.lollypops.secrets.files."net1/acme-dnsimple-envfile".path;
   security.acme.certs = mapAttrs'
     (host: _:
       let fullName = "${host}.${domain}";

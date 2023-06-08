@@ -16,24 +16,20 @@ to manage some packages, App Store apps, and macOS Applications. For this to wor
 
 Don't forget to turn off analytics!
 #+BEGIN_EXAMPLE
-    brew analytics off
+brew analytics off
 #+END_EXAMPLE
    
-*** deploy-rs
-For management of remote systems, I use [[https://github.com/serokell/deploy-rs][serokell/deploy-rs]].
-For ease of deployment, this repo hosts a nightly pipeline that builds the =deploy= binary for the various system architectures.
-
-*** sops-nix
-For secret management, I use [[https://github.com/Mic92/sops-nix][Mic92/sops-nix]].
-For ease of deployment, this repo hosts a nightly pipeline that builds the =sops-install-secrets= binary for the various system architectures.
+*** Remote deployments
+I use [[https://github.com/pinpox/lollypops][lollypops]] as a minimal deployment mechanism for remote systems.
+Deploying is as simple as =nix run . -- <hostname>=
 
 ** Machines
 There are several machines defined in =flake.nix=
  
-*** macbook
-As you might've guessed from the name, this is my personal MacBook.
-It provides a darwin environment of which every aspect is expressed, including: [[https://cmacr.ae/post/2020-05-09-managing-firefox-on-macos-with-nix/][Firefox profiles]]
-[[conf.d/emacs.org][literate Emacs config]] with [[https://github.com/nix-community/emacs-overlay/#extra-library-functionality][declarative use-package statements]], declarative Homebrew packages/casks for macOS Application installation, and various other pieces.
+*** air
+My daily driver: a MacBook Air :)
+It provides a darwin environment of which every aspect is expressed, including: [[https://cmacr.ae/post/2020-05-09-managing-firefox-on-macos-with-nix/][Firefox profiles]], 
+[[pkgs/emacs-config/readme.org][literate Emacs config]] with [[https://github.com/nix-community/emacs-overlay/#extra-library-functionality][declarative use-package statements]], declarative Homebrew packages/casks for macOS Application installation, and various other pieces.
     
 *** workbook
 My work MacBook. The same as macbook but with some work specific configuration layered on top.

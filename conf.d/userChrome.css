@@ -21,17 +21,11 @@
 		       #sidebar-button,
 		       #star-button,
 		       #pocket-button,
+		       #save-to-pocket-button,
 		       #permissions-granted-icon,
 		       #fxa-toolbar-menu-button,
 		       #_d7742d87-e61d-4b78-b8a1-b469842139fa_-browser-action, /* Vimium */
 		       #ublock0_raymondhill_net-browser-action) { display: none !important; }
-
-/*
- *  Hide tabs if only one tab
- */
-#titlebar .tabbrowser-tab[first-visible-tab="true"][last-visible-tab="true"]{
-    display: none !important;
-}
 
 /*
  *  Minimal theme
@@ -96,13 +90,13 @@
     display: none !important;
 }
 
-#navigator-toolbox .tab-close-button, #navigator-toolbox #tabs-newtab-button {
+#navigator-toolbox .tab-close-button, #navigator-toolbox #tabs-newtab-button, #firefox-view-button, #alltabs-button {
     display: none;
 }
 
 #navigator-toolbox #urlbar {
     padding: 0 !important;
-    padding-left: 1ch !important;
+    padding-left: 3ch !important;
     font-size: 13px;
 }
 
@@ -113,6 +107,7 @@
 
 #navigator-toolbox .toolbarbutton-1 {
     width: 22px;
+    padding-left: 1ch !important;
 }
 
 #navigator-toolbox .tabbrowser-tab {
@@ -195,7 +190,17 @@
 }
 
 #TabsToolbar{ margin-left: var(--uc-navigationbar-width); }
+/* #tabbrowser-tabs{ --tab-min-height: var(--uc-toolbar-height) !important; } */
 #tabbrowser-tabs{ --tab-min-height: var(--uc-toolbar-height) !important; }
+
+/* Hide Tab bar with only one Tab - [110] */
+#tabbrowser-tabs .tabbrowser-tab:only-of-type,
+#tabbrowser-tabs .tabbrowser-tab:only-of-type + #tabbrowser-arrowscrollbox-periphery{
+  display:none !important;
+}
+/* #tabbrowser-tabs, #tabbrowser-arrowscrollbox {min-height:0!important;} */
+#tabbrowser-tabs, #tabbrowser-arrowscrollbox {min-height: var(--uc-toolbar-height)!important;}
+/* #TabsToolbar:not(:hover) */ #alltabs-button {display:none !important;}
 
 /* This isn't useful when tabs start in the middle of the window */
 .titlebar-placeholder[type="pre-tabs"],

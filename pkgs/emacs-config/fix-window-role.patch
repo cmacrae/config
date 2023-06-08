@@ -22,3 +22,4 @@ index 6f9b208953..aa6c1d286f 100644
        && curbuf && ! NILP (BVAR (curbuf, mark_active)))
 -- 
 2.26.2
+
