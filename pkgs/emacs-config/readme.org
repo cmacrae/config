@@ -1277,6 +1277,7 @@ Configuration for working with various languages
 (use-package toml-mode)
 (use-package rego-mode)
 (use-package swift-mode)
+(use-package python-mode)
 (use-package rustic
   :after inheritenv
   :config
@@ -1308,14 +1309,15 @@ Configuration for working with various languages
   :ensure nil
   :hook
   (prog-mode . eglot-ensure)
+  (prog-mode . (lambda () (add-hook 'before-save-hook 'eglot-format nil t)))
   :config
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
-                 '(nix-mode . ("rnix-lsp"))
-                 '(python-mode . ("pylsp")))))
-                 ;; '(swift-mode . ("sourcekit-lsp")))))
-                 ;; '(rust-mode . ("rust-analyzer")))))
-#+END_SRC
+                 '(nix-mode    . ("rnix-lsp"))
+                 '(python-mode . ("pylsp"))
+                 '(swift-mode  . ("sourcekit-lsp"))
+                 '(rust-mode   . ("rust-analyzer")))))
+                  #+END_SRC
 
 ** Custom functions
 Useful functions gathered that don’t quite require an entire package.
