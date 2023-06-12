@@ -97,7 +97,7 @@ rec {
       version = "5.0.3";
       src = builtins.fetchTarball {
         url = "https://github.com/koekeishiya/yabai/releases/download/v${version}/yabai-v${version}.tar.gz";
-        sha256 = "sha256-dnUrdCbEN/M4RAr/GH3x10bfr2TUjuomxIUStFK7X9M=";
+        sha256 = "1l306siwdv84m4az40dg30jrmrh4apjy0dhhmdqmgqg9p3z74f77";
       };
     }));
     enableScriptingAddition = true;
@@ -108,7 +108,7 @@ rec {
       normal_window_border_color = "0xff3b4252";
       window_border_hidpi = "on";
       focus_follows_mouse = "autoraise";
-      mouse_follows_focus = "off";
+      mouse_follows_focus = "on";
       mouse_drop_action = "stack";
       window_placement = "second_child";
       window_opacity = "off";
