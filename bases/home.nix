@@ -177,6 +177,7 @@ in
 
     programs.firefox.profiles =
       let
+        userChrome = builtins.readFile ../conf.d/userChrome.css;
         extensions = with pkgs.nur.repos.rycee.firefox-addons; [
           browserpass
           betterttv
@@ -216,15 +217,14 @@ in
       in
       {
         home = {
-          inherit settings extensions;
+          inherit userChrome settings extensions;
           id = 0;
-          userChrome = builtins.readFile ../conf.d/userChrome.css;
         };
 
         # TODO: make this conditional
         work = {
           id = 1;
-          inherit extensions;
+          inherit userChrome extensions;
           settings = settings // {
             "browser.startup.homepage" = "about:blank";
             "browser.urlbar.placeholderName" = "Google";
