@@ -270,6 +270,15 @@ For convenience, I've also defined a =erc-conn= function for my usual connection
 *** org-mode
 Various pieces of configuration for the mighty org-mode.
 #+BEGIN_SRC emacs-lisp
+(use-package org
+  :ensure nil
+  :custom
+  (org-src-fontify-natively            t)
+  (org-fontify-quote-and-verse-blocks  t)
+  (org-src-tab-acts-natively           t)
+  (org-edit-src-content-indentation    0)
+  (org-src-preserve-indentation        t))
+
 (use-package org-modern
   :hook
   (org-mode . org-modern-mode)
@@ -294,8 +303,8 @@ Various pieces of configuration for the mighty org-mode.
   (org-agenda-current-time-string
     "⭠ now ─────────────────────────────────────────────────"))
 
-  (use-package org-appear
-    :hook (org-mode . org-appear-mode))
+(use-package org-appear
+  :hook (org-mode . org-appear-mode))
 #+END_SRC
 
 *** Native compilation
