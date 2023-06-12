@@ -101,6 +101,7 @@
               networking.hostName = "workbook";
 
               home-manager.users.cmacrae = {
+                programs.gpg.scdaemonSettings.disable-ccid = true;
                 home.packages = with pkgs; [
                   awscli
                   aws-iam-authenticator
