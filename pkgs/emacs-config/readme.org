@@ -1310,7 +1310,10 @@ Configuration for working with various languages
   :hook
   (prog-mode . eglot-ensure)
   (prog-mode . (lambda () (add-hook 'before-save-hook 'eglot-format nil t)))
+  (prog-mode . (lambda () (add-hook 'before-save-hook 'cm/eglot-organize-imports nil t)))
   :config
+  (defun cm/eglot-organize-imports () (interactive)
+          (eglot-code-actions nil nil "source.organizeImports" t))
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
                  '(nix-mode    . ("rnix-lsp"))
