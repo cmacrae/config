@@ -343,9 +343,9 @@ This section outlines my preference for Emacs' completion system/interface.
 
 (use-package orderless
   :custom
-  (completion-styles '(orderless))
+  (completion-styles '(orderless basic))
   (completion-category-defaults nil)
-  (completion-category-overrides '((file (styles partial-completion)))))
+  (completion-category-overrides '((file (styles . (partial-completion))))))
 
 (use-package marginalia
   :hook (after-init . marginalia-mode)
@@ -463,6 +463,33 @@ This section outlines my preference for Emacs' completion system/interface.
   (setq consult-project-function (lambda (_) (projectile-project-root))))
 #+END_SRC
 
+*** Corfu
+In buffer completion with a small popup.
+Enable some extra functionality.
+Some customisations:
+- TAB cycle if there are only few candidates
+- Enable indentation+completion using the TAB key.
+- Enable cycling for =corfu-next/previous=
+- Enable autocompletion
+- Make sure the popup gets out of the way when it's not needed
+- Orderless field separator
+#+BEGIN_SRC emacs-lisp
+(use-package corfu
+  :hook
+  (after-init . global-corfu-mode)
+  (corfu-mode . corfu-history-mode)
+  (corfu-mode . corfu-popupinfo-mode)
+  :init
+  (setq completion-cycle-threshold 3)
+  (setq tab-always-indent 'complete)
+
+  :custom
+  (corfu-cycle          t)
+  (corfu-auto           t)
+  (corfu-quit-no-match  'separator)
+  (corfu-separator      ?\s))
+#+END_SRC
+
 *** Theme | Modeline
 **** theme
 #+BEGIN_SRC emacs-lisp
@@ -527,6 +554,8 @@ The following expression adds a little flair to focussed buffers and those visit
 
 (use-package dimmer
   :hook (after-init . dimmer-mode)
+  :custom
+  (dimmer-buffer-exclusion-regexps '("^ \\*corfu-popupinfo\\*$"))
   :config
   (dimmer-configure-hydra)
   (dimmer-configure-magit)
@@ -940,25 +969,6 @@ Have Flycheck turned on for everything - checking stuff is always good!
 (use-package flycheck
   :after envrc
   :hook (after-init . global-flycheck-mode))
-#+END_SRC
-
-*** Company
-Slick auto-complete framework
-#+BEGIN_SRC emacs-lisp
-(use-package company
-  :hook (after-init . global-company-mode)
-  :custom
-  (company-idle-delay 0)
-  (company-minimum-prefix-length 1))
-#+END_SRC
-
-*** company-org-block
-#+BEGIN_SRC emacs-lisp
-(use-package company-org-block
-  :custom
-  (company-org-block-edit-style 'auto)
-  :hook ((org-mode . (lambda ()
-                       (setq-local company-backends '(company-org-block))))))
 #+END_SRC
 
 *** hydra
