@@ -1,5 +1,8 @@
 { config, pkgs, lib, ... }:
 
+with builtins;
+with pkgs.lib;
+
 let
   domain = "cmacr.ae";
   vpnAddressSpace = "10.100.0.0/24";
@@ -23,6 +26,8 @@ let
     compute2.mac = "b8:ae:ed:7d:19:06";
     compute3.ip = "10.0.10.3";
     compute3.mac = "b8:ae:ed:7d:1a:09";
+    build1.ip = "10.0.10.4";
+    build1.mac = "e2:fc:13:e6:cc:aa";
 
     ds1819.ip = "10.0.1.1";
     ds1819.mac = "00:11:32:cf:10:eb";
@@ -56,31 +61,20 @@ let
     sonarr.host = "compute2";
     radarr.port = 7878;
     radarr.host = "compute2";
-    bazarr.port = 6767;
-    bazarr.host = "compute2";
     prowlarr.host = "compute2";
     prowlarr.port = 9696;
     plex.port = 32400;
     plex.host = "compute3";
-    prometheus.host = "compute1";
-    prometheus.port = 9090;
-    alertmanager.host = "compute1";
-    alertmanager.port = 9093;
-    grafana.host = "compute1";
-    grafana.port = 3000;
-    loki.host = "compute1";
-    loki.port = 3100;
   };
 
 in
-with pkgs.lib; {
-  boot.tmpOnTmpfs = true;
-  boot.kernelPackages = pkgs.linuxPackages_rpi4;
-  boot.loader.raspberryPi.enable = true;
-  boot.loader.raspberryPi.version = 4;
+{
+  boot.tmp.useTmpfs = true;
+  boot.kernelPackages = pkgs.linuxKernel.packages.linux_rpi4;
   boot.loader.grub.enable = false;
+  boot.loader.generic-extlinux-compatible.enable = true;
   boot.initrd.checkJournalingFS = false;
-  boot.initrd.availableKernelModules = [ "usbhid" "usb_storage" ];
+  boot.initrd.availableKernelModules = [ "usbhid" "usb_storage" "vc4" "pcie_brcmstb" "reset-raspberrypi" ];
   hardware.enableRedistributableFirmware = true;
   powerManagement.cpuFreqGovernor = "ondemand";
 
@@ -96,6 +90,11 @@ with pkgs.lib; {
     fsType = "ext4";
     options = [ "noatime" ];
   };
+
+  environment.systemPackages = with pkgs; [
+    libraspberrypi
+    raspberrypi-eeprom
+  ];
 
   networking = {
     hostName = "net1";
@@ -155,32 +154,47 @@ with pkgs.lib; {
 
   services.timesyncd.enable = true;
 
-  services.dhcpd4 = {
+  services.kea.dhcp4 = {
     enable = true;
-    extraConfig = ''
-      ddns-update-style none;
-      shared-network local {
-          option routers ${ipReservations.erl.ip};
-          option domain-name "${domain}";
-          option domain-name-servers ${ipReservations.net1.ip};
-          option domain-search "${domain}";
-          option time-servers ${concatStringsSep ", " config.networking.timeServers};
-          subnet 10.0.0.0 netmask 255.255.0.0 {
-              range 10.0.20.1 10.0.20.254;
-          }
-      }
-    '';
+    settings = {
+      rebind-timer = 2000;
+      renew-timer = 1000;
+      valid-lifetime = 4000;
 
-    machines = mapAttrsToList
-      (
-        machine: attributes:
-          {
-            hostName = "${machine}.${domain}";
-            ethernetAddress = builtins.toString (catAttrs "mac" (singleton attributes));
-            ipAddress = builtins.toString (catAttrs "ip" (singleton attributes));
-          }
-      )
-      ipReservations;
+      interfaces-config.interfaces = [ "eth0" ];
+
+      lease-database = {
+        name = "/var/lib/kea/dhcp4.leases";
+        persist = true;
+        type = "memfile";
+      };
+
+      option-data = mapAttrsToList (name: attr: attr) (mapAttrs'
+        (name: value: nameValuePair name { inherit name; data = value; })
+        {
+          routers = ipReservations.erl.ip;
+          domain-name = domain;
+          domain-search = domain;
+          domain-name-servers = ipReservations.net1.ip;
+          time-servers = "82.219.4.30, 85.199.214.98, 193.150.34.2, 129.250.35.251";
+        });
+
+      subnet4 = [{
+        subnet = "10.0.0.0/16";
+        pools = [{
+          pool = "10.0.20.1 - 10.0.20.254";
+        }];
+
+        reservations = mapAttrsToList
+          (machine: attributes:
+            {
+              hw-address = toString (catAttrs "mac" (singleton attributes));
+              ip-address = toString (catAttrs "ip" (singleton attributes));
+            }
+          )
+          ipReservations;
+      }];
+    };
   };
 
   services.unbound = {
@@ -248,7 +262,7 @@ with pkgs.lib; {
         mapAttrsToList
           (
             name: attributes:
-              ''"${name}.${domain}. IN A ${builtins.toString (catAttrs "ip" (singleton attributes))}"''
+              ''"${name}.${domain}. IN A ${toString (catAttrs "ip" (singleton attributes))}"''
           )
           ipReservations
       ) ++ (
