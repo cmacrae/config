@@ -75,6 +75,7 @@ rec {
     "firefox"
     "keepingyouawake"
     "notion"
+    "zoom"
   ];
 
   system.activationScripts.postUserActivation.text = ''
