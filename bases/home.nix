@@ -39,16 +39,6 @@ in
 
     nixpkgs.config.allowUnfree = true;
 
-    # FIXME: autoPatchelfHook is not supported on aarch64-darwin
-    # TODO: submit PR to upstream
-    # nixpkgs.overlays = [
-    #   (final: prev: {
-    #     browserpass = prev.browserpass.overrideAttrs (_: {
-    #       nativeBuildInputs = [ prev.makeWrapper ];
-    #     });
-    #   })
-    # ];
-
     home.stateVersion = "23.05";
     home.packages = with pkgs; [
       aspell
@@ -56,6 +46,7 @@ in
       aspellDicts.en-computers
       bc
       clang
+      ffmpeg
       gnumake
       gnupg
       gnused
@@ -221,8 +212,7 @@ in
           id = 0;
         };
 
-        # TODO: make this conditional
-        work = {
+        work = pkgs.lib.mkIf (config.networking.hostName == "workbook") {
           id = 1;
           inherit userChrome extensions;
           settings = settings // {
@@ -248,7 +238,7 @@ in
           alwaysTangle = true;
           package =
             if isDarwin then
-              pkgs.emacs-git.overrideAttrs
+              pkgs.emacs-pgtk.overrideAttrs
                 (o: {
                   patches = o.patches ++ [
                     ../pkgs/emacs-config/fix-window-role.patch
@@ -256,7 +246,7 @@ in
                     ../pkgs/emacs-config/system-appearance.patch
                   ];
                 })
-            else pkgs.emacs-git;
+            else pkgs.emacs-pgtk;
 
           defaultInitFile = pkgs.callPackage ../pkgs/emacs-config { };
           config = ../pkgs/emacs-config/readme.org;
@@ -282,9 +272,8 @@ in
     programs.fzf.enable = true;
     programs.fzf.enableZshIntegration = true;
 
-    # TODO: pkg currently broken on aarch64-darwin due to autoPatchelfHook
-    # programs.browserpass.enable = true;
-    # programs.browserpass.browsers = [ "firefox" ];
+    programs.browserpass.enable = true;
+    programs.browserpass.browsers = [ "firefox" ];
 
     programs.alacritty = {
       enable = true;
