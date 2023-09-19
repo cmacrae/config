@@ -7,7 +7,7 @@
 
   nix.settings.cores = 0;
   nix.settings.max-jobs = "auto";
-  nix.settings.trusted-users = [ "root" "cmacrae" ];
+  nix.settings.trusted-users = [ "root" "cmacrae" "admin" ];
   nix.settings.auto-optimise-store = true;
 
   nix.package = pkgs.nixFlakes;
@@ -22,8 +22,13 @@
   nixpkgs.config.allowUnfree = true;
 
   nix.settings.substituters = [
+    "https://cache.nixos.org"
     "https://cachix.org/api/v1/cache/cmacrae"
     "https://cachix.org/api/v1/cache/nix-community"
+  ];
+
+  nix.settings.trusted-substituters = [
+    "https://cache.nixos.org"
   ];
 
   nix.settings.trusted-public-keys = [
