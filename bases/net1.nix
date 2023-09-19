@@ -291,17 +291,14 @@ in
 
   security.acme.acceptTerms = true;
   security.acme.defaults.email = "account@${domain}";
+  security.acme.defaults.dnsProvider = "dnsimple";
+  security.acme.defaults.dnsPropagationCheck = true;
+  security.acme.defaults.reloadServices = [ "nginx" ];
   security.acme.defaults.credentialsFile = config.lollypops.secrets.files."net1/acme-dnsimple-envfile".path;
   security.acme.certs = mapAttrs'
-    (host: _:
-      let fullName = "${host}.${domain}";
-      in
-      nameValuePair (fullName) ({
-        domain = fullName;
-        dnsProvider = "dnsimple";
-        dnsPropagationCheck = false;
-        reloadServices = [ "nginx" ];
-      }))
+    (service: _:
+      nameValuePair "${service}.${domain}" { }
+    )
     proxyServices;
 
   # TODO: Figure out how to stop nginx from checking upstream DNS.
@@ -311,12 +308,14 @@ in
   services.nginx = {
     enable = true;
     recommendedProxySettings = true;
+    recommendedTlsSettings = true;
     virtualHosts = mapAttrs'
       (host: attr:
         let fullName = "${host}.${domain}";
         in
         nameValuePair (fullName) ({
           forceSSL = true;
+          enableACME = true;
           sslCertificate = "/var/lib/acme/${fullName}/cert.pem";
           sslCertificateKey = "/var/lib/acme/${fullName}/key.pem";
           locations."/" = {
