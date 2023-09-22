@@ -572,35 +572,29 @@ Fancy buffer tabs
 - Set the cycle scope to current project tabs
 - Bind "N"/"E" in normal Evil state to move forward/backward
 #+BEGIN_SRC emacs-lisp
-;; (use-package centaur-tabs
-;;   :after evil-colemak-basics
-;;   :hook
-;;   (evil-colemak-basics-mode . centaur-tabs-mode)
-;;   (vterm-mode               . centaur-tabs-local-mode)
-;;   (calendar-mode            . centaur-tabs-local-mode)
-;;   (org-agenda-mode          . centaur-tabs-local-mode)
-;;   (helpful                  . centaur-tabs-local-mode)
-;;   :config
-;;   (centaur-tabs-headline-match)
-;;   (centaur-tabs-group-by-projectile-project)
-;;   ;; (define-key evil-normal-state-map (kbd "N") 'centaur-tabs-backward)
-;;   ;; (define-key evil-normal-state-map (kbd "N") 'centaur-tabs-backward)
-;;   ;; (define-key evil-colemak-basics-map (kbd "N") 'centaur-tabs-backward)
-;;   ;; (define-key evil-colemak-basics-map (kbd "N") 'centaur-tabs-backward)
-;;   :custom
-;;   (centaur-tabs-style "bar")
-;;   (centaur-tabs-set-bar 'left)
-;;   (centaur-tabs-set-close-button nil)
-;;   (centaur-tabs-show-new-tab-button nil)
-;;   (centaur-tabs-set-icons t)
-;;   (centaur-tabs-cycle-scope 'tabs))
-;;   ;; :bind
-;;   ;; (:map evil-colemak-basics-keymap
-;;   ;;    ("N" . centaur-tabs-backward)
-;;   ;;    ("E" . centaur-tabs-forward)
-;;   ;;  :map evil-normal-state-map
-;;   ;;    ("N" . centaur-tabs-backward)
-;;   ;;    ("E" . centaur-tabs-forward)))
+(use-package centaur-tabs
+  :hook
+  (after-init      . centaur-tabs-mode)
+  (vterm-mode      . centaur-tabs-local-mode)
+  (calendar-mode   . centaur-tabs-local-mode)
+  (org-agenda-mode . centaur-tabs-local-mode)
+  (helpful         . centaur-tabs-local-mode)
+
+  :bind
+  ("C-<tab>" . centaur-tabs-backward)
+  ("C-S-<tab>" . centaur-tabs-forward)
+
+  :config
+  (centaur-tabs-headline-match)
+  (centaur-tabs-group-by-projectile-project)
+
+  :custom
+  (centaur-tabs-style "bar")
+  (centaur-tabs-set-bar 'left)
+  (centaur-tabs-set-close-button nil)
+  (centaur-tabs-show-new-tab-button nil)
+  (centaur-tabs-set-icons t)
+  (centaur-tabs-cycle-scope 'tabs))
 #+END_SRC
 
 *** which-key
@@ -1327,8 +1321,6 @@ Configuration for working with various languages
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
                  '(nix-mode    . ("rnix-lsp"))
-                 '(python-mode . ("pylsp"))
-                 '(swift-mode  . ("sourcekit-lsp"))
                  '(rust-mode   . ("rust-analyzer")))))
                   #+END_SRC
 
