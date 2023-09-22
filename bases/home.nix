@@ -172,6 +172,7 @@ in
         extensions = with pkgs.nur.repos.rycee.firefox-addons; [
           browserpass
           betterttv
+          consent-o-matic
           reddit-enhancement-suite
           ublock-origin
           vimium
