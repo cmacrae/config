@@ -54,6 +54,7 @@ in
       hugo
       ipcalc
       jq
+      just
       mpv
       nix-prefetch-git
       nmap
@@ -64,6 +65,7 @@ in
       podman
       python3
       pwgen
+      qemu
       ranger
       ripgrep
       rnix-lsp
@@ -256,8 +258,8 @@ in
             copilot = elPackage "copilot" (pkgs.fetchFromGitHub {
               owner = "zerolfx";
               repo = "copilot.el";
-              rev = "85999e64845a746c78c6e578d1517ccf7b1a6765";
-              sha256 = "1j2ng15x4c8i5zgqx73899jlq6vxal3r1fzx1wjv3fsrc8ryhrzk";
+              rev = "ba1d6018fdc2d735fecab1b2dcd4b5ea121b05ac";
+              sha256 = "0glbmgfznmqbq8nggdl2fsxf25wv3gav40m65g4637l0gyyyx0av";
             });
 
             nano-dialog = elPackage "nano-dialog" (pkgs.fetchFromGitHub {

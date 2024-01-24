@@ -719,8 +719,7 @@ Workspaces! Indespensible if you work on a lot of projects. Perspective is like 
 
   (use-package persp-projectile
     :ensure t
-    :after perspective
-    :bind ("C-c x" . hydra-persp/body)))
+    :after perspective))
 #+END_SRC
 
 *** Treemacs
@@ -975,6 +974,7 @@ General hydras:
   :bind
   ("C-c z" . hydra-zoom/body)
   ("C-c T" . hydra-transpose/body)
+  ("C-c x" . hydra-persp/body)
 
   :config
 
@@ -1168,92 +1168,20 @@ so well ([[https://robert.kra.hn/posts/2023-02-22-copilot-emacs-setup/][many tha
 /Note: as the package isn't hosted on MELPA, this is handled as an ~epkgs~ override in my Nix config/
 
 #+BEGIN_SRC emacs-lisp
-;; (use-package copilot
-;;   :hook (after-init . global-copilot-mode)
-;;   :bind
-;;   (:map company-mode-map
-;;     ("<down>"       . cm/copilot-next-completion)
-;;     ("<up>"         . cm/copilot-previous-completion)
-;;     ("<right>"      . cm/copilot-accept-completion-by-line)
-;;     ("<left>"       . cm/copilot-accept-completion-by-word)
-;;     ("TAB"          . cm/copilot-accept-completion)
-;;     ("<tab>"        . cm/copilot-accept-completion))
+(use-package copilot
+  :hook (prog-mode . copilot-mode)
+  :bind
+  (:map copilot-completion-map
+    ("<tab>" . copilot-accept-completion)
+    ("TAB"   . copilot-accept-completion))
 
-;;   :config
-;;   (use-package s
-;;     :ensure t)
-;;   (use-package dash
-;;     :ensure t)
-;;   (use-package editorconfig
-;;     :ensure t)
-
-;;   (defun cm/copilot-accept-completion ()
-;;     (interactive)
-;;     (or (copilot-accept-completion)
-;;         (company-indent-or-complete-common nil)))
-
-;;   (defun cm/copilot-next-completion ()
-;;     (interactive)
-;;     (or (copilot-next-completion)
-;;         (company-select-next-if-tooltip-visible-or-complete-selection nil)))
-
-;;   (defun cm/copilot-previous-completion ()
-;;     (interactive)
-;;     (or (copilot-previous-completion)
-;;         (company-select-previous-or-abort nil)))
-
-;;   (defun cm/copilot-accept-completion-by-line ()
-;;     (interactive)
-;;     (or (copilot-accept-completion-by-line)
-;;         (company-indent-or-complete-common nil)))
-
-;;   (defun cm/copilot-accept-completion-by-word ()
-;;     (interactive)
-;;     (or (copilot-accept-completion-by-word)
-;;         (company-indent-or-complete-common nil)))
-
-;;   (defun cm/no-copilot-mode ()
-;;     "Helper for `cm/no-copilot-modes'."
-;;     (copilot-mode -1))
-
-;;   (defvar cm/no-copilot-modes '(shell-mode
-;;                                 inferior-python-mode
-;;                                 eshell-mode
-;;                                 term-mode
-;;                                 vterm-mode
-;;                                 comint-mode
-;;                                 compilation-mode
-;;                                 debugger-mode
-;;                                 dired-mode-hook
-;;                                 compilation-mode-hook
-;;                                 flutter-mode-hook
-;;                                 minibuffer-mode-hook)
-;;     "Modes in which copilot is inconvenient.")
-
-;;   (defun cm/copilot-disable-predicate ()
-;;     "When copilot should not automatically show completions."
-;;     (or (member major-mode cm/no-copilot-modes)
-;;         (company--active-p)))
-
-;;   (add-to-list 'copilot-disable-predicates #'cm/copilot-disable-predicate)
-
-;;   (defun cm/copilot-quit ()
-;;     "Run `copilot-clear-overlay' or `keyboard-quit'. If copilot is
-;;   cleared, make sure the overlay doesn't come back too soon."
-;;     (interactive)
-;;     (condition-case err
-;;         (when copilot--overlay
-;;           (lexical-let ((pre-copilot-disable-predicates copilot-disable-predicates))
-;;             (setq copilot-disable-predicates (list (lambda () t)))
-;;             (copilot-clear-overlay)
-;;             (run-with-idle-timer
-;;              1.0
-;;              nil
-;;              (lambda ()
-;;                (setq copilot-disable-predicates pre-copilot-disable-predicates)))))
-;;       (error handler)))
-  
-;;   (advice-add 'keyboard-quit :before #'cm/copilot-quit))
+  :config
+  (use-package s
+    :ensure t)
+  (use-package dash
+    :ensure t)
+  (use-package editorconfig
+    :ensure t))
 #+END_SRC
 *** ChatGPT
 The magic of LLM, right in your Emacs - the way "god" intended
@@ -1314,11 +1242,11 @@ Configuration for working with various languages
   (defun cm/eglot-organize-imports () (interactive)
           (eglot-code-actions nil nil "source.organizeImports" t))
   (with-eval-after-load 'eglot
-    (add-to-list 'eglot-server-programs
-                 '(nix-mode    . ("rnix-lsp"))
-                 '(python-mode . ("pylsp"))
-                 '(swift-mode  . ("sourcekit-lsp"))
-                 '(rust-mode   . ("rust-analyzer")))))
+    (dolist (mode '((nix-mode    . ("rnix-lsp"))
+                    (python-mode . ("pylsp"))
+                    (swift-mode  . ("sourcekit-lsp"))
+                    (rust-mode   . ("rust-analyzer"))))
+      (add-to-list 'eglot-server-programs mode))))
                   #+END_SRC
 
 ** Custom functions
