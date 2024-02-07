@@ -22,11 +22,6 @@ with pkgs.lib; {
         '';
       };
 
-      domain = mkOption {
-        type = types.str;
-        description = "DNS domain for compute nodes.";
-      };
-
       hostId = mkOption {
         type = types.str;
         description = "Unique network host ID for ZFS support.";
@@ -48,9 +43,6 @@ with pkgs.lib; {
     boot.initrd.availableKernelModules = [ "xhci_pci" "ehci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
     boot.kernelModules = [ "kvm-intel" ];
     boot.extraModulePackages = [ ];
-
-    # aarch64 emulation
-    boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
     fileSystems."/" =
       {
@@ -74,15 +66,14 @@ with pkgs.lib; {
 
     # NFS Mounts
     fileSystems."/media" = {
-      device = "ds1819.${cfg.domain}:/volume1/media";
+      device = "ds1819.${config.networking.domain}:/volume1/media";
       fsType = "nfs";
     };
 
     # Network
     networking = {
+      inherit (cfg) hostId;
       hostName = "compute${builtins.toString cfg.id}";
-      hostId = cfg.hostId;
-      domain = cfg.domain;
       firewall.enable = false;
     };
 

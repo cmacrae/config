@@ -465,23 +465,11 @@ This section outlines my preference for Emacs' completion system/interface.
 
 *** Theme | Modeline
 **** theme
+Colour scheme is managed system-wide by [[https://github.com/danth/stylix][stylix]], so we just inherit that :)
 #+BEGIN_SRC emacs-lisp
-(use-package timu-rouge-theme
-  :custom
-  (timu-rouge-scale-org-level-1        t)
-  (timu-rouge-scale-org-level-2        t)
-  (timu-rouge-scale-org-level-3        t)
-  (timu-rouge-scale-org-document-title t)
-  (timu-rouge-scale-org-document-info  t)
+(use-package base16-stylix-theme
   :config
-  (load-theme 'timu-rouge t)
-
-(dolist (face '(window-divider
-                window-divider-first-pixel
-                window-divider-last-pixel))
-  (face-spec-reset-face face)
-  (set-face-foreground face (face-attribute 'default :background)))
-(set-face-background 'fringe (face-attribute 'default :background)))
+  (load-theme 'base16-stylix t))
 #+END_SRC
 
 **** mood-line
@@ -684,42 +672,33 @@ Some configuration I use:
 - Setting the completion system to =ivy=
 - Further integration of Counsel with Projectile than what's provided natively
 #+BEGIN_SRC emacs-lisp
-(use-package projectile
-  :hook
-  (after-init . projectile-global-mode)
-  :custom
-  (projectile-completion-system 'auto)
-  (projectile-switch-project-action 'treemacs)
-  :bind
-  (:map projectile-mode-map
-          ("C-c p p" . projectile-persp-switch-project)))
-  ;; :config
-  ;; (use-package counsel-projectile
-  ;;   :ensure t
-  ;;   :after projectile
-  ;;   :hook
-  ;;   (projectile-global-mode . counsel-projectile-mode)
-  ;;   :bind
-  ;;   ("C-c p s r" . counsel-projectile-rg)
-  ;;   (:map projectile-mode-map
-  ;;         ("C-c p p" . projectile-persp-switch-project)
-  ;;         ("C-c p f" . counsel-projectile-find-file))))
+;; TODO: uncomment when we get around the nix build issue
+;; (use-package projectile
+;;   :hook
+;;   (after-init . projectile-global-mode)
+;;   :custom
+;;   (projectile-completion-system 'auto)
+;;   (projectile-switch-project-action 'treemacs)
+;;   :bind
+;;   (:map projectile-mode-map
+;;           ("C-c p p" . projectile-persp-switch-project)))
 #+END_SRC
 
 *** perspective
 Workspaces! Indespensible if you work on a lot of projects. Perspective is like workspaces (virtual desktops) for Emacs. It’s a means of namespacing a group of tangible buffers. When combined with Projectile, this becomes a really nice combination as projects then seemlessly translate to workspaces.
 
 #+BEGIN_SRC emacs-lisp
-(use-package perspective
-  :hook (after-init . persp-mode)
-  :custom
-  (persp-show-modestring nil)
-  (persp-suppress-no-prefix-key-warning t)
-  :config
+;; TODO: uncomment when we get around the nix build issue
+;; (use-package perspective
+;;   :hook (after-init . persp-mode)
+;;   :custom
+;;   (persp-show-modestring nil)
+;;   (persp-suppress-no-prefix-key-warning t)
+;;   :config
 
-  (use-package persp-projectile
-    :ensure t
-    :after perspective))
+;;   (use-package persp-projectile
+;;     :ensure t
+;;     :after perspective))
 #+END_SRC
 
 *** Treemacs
@@ -816,8 +795,9 @@ Sidebar filebrowser, very handy.
 (use-package treemacs-evil
   :after (treemacs evil))
 
-(use-package treemacs-projectile
-  :after (treemacs projectile))
+;; TODO: uncomment when we get around the nix build issue
+;; (use-package treemacs-projectile
+;;   :after (treemacs projectile))
 
 ;; (use-package treemacs-icons-dired
 ;;   :hook (dired-mode . treemacs-icons-dired-enable-once)
@@ -1161,9 +1141,7 @@ Support for ~direnv~, which operates buffer-locally.
 
 *** GitHub Copilot
 AI assisted programming, what a time to be alive!
-Here, I'm ensuring the dependencies are installed, defining some key bindings,
-and setting up some custom functions to disable copilot-mode where it doesn't fit
-so well ([[https://robert.kra.hn/posts/2023-02-22-copilot-emacs-setup/][many thanks to Robert Krahn for these excellet snippet]]s!).
+Here, I'm ensuring the dependencies are installed, defining some key bindings.
 
 /Note: as the package isn't hosted on MELPA, this is handled as an ~epkgs~ override in my Nix config/
 
@@ -1174,6 +1152,9 @@ so well ([[https://robert.kra.hn/posts/2023-02-22-copilot-emacs-setup/][many tha
   (:map copilot-completion-map
     ("<tab>" . copilot-accept-completion)
     ("TAB"   . copilot-accept-completion))
+
+  :custom
+  (copilot-indent-warning-suppress t)
 
   :config
   (use-package s
@@ -1242,7 +1223,7 @@ Configuration for working with various languages
   (defun cm/eglot-organize-imports () (interactive)
           (eglot-code-actions nil nil "source.organizeImports" t))
   (with-eval-after-load 'eglot
-    (dolist (mode '((nix-mode    . ("rnix-lsp"))
+    (dolist (mode '((nix-mode    . ("nixd"))
                     (python-mode . ("pylsp"))
                     (swift-mode  . ("sourcekit-lsp"))
                     (rust-mode   . ("rust-analyzer"))))

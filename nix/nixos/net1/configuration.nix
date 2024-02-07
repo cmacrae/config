@@ -1,5 +1,4 @@
-{ config, pkgs, lib, ... }:
-
+{ config, lib, pkgs, inputs, ... }:
 with builtins;
 with pkgs.lib;
 
@@ -69,6 +68,11 @@ let
 
 in
 {
+  imports = [
+    inputs.self.nixosModules.common
+    inputs.self.nixosModules.server
+  ];
+
   boot.tmp.useTmpfs = true;
   boot.kernelPackages = pkgs.linuxKernel.packages.linux_rpi4;
   boot.loader.grub.enable = false;
@@ -90,6 +94,39 @@ in
     fsType = "ext4";
     options = [ "noatime" ];
   };
+
+  lollypops.secrets.files."net1/wireguard-privatekey" = { };
+  lollypops.secrets.files."net1/acme-dnsimple-envfile" = { };
+  lollypops.tasks = [ "deploy-secrets" "rebuild" ];
+  lollypops.deployment.local-evaluation = true;
+  lollypops.extraTasks.rebuild =
+    let
+      inherit (config.networking) hostName;
+      inherit (config.lollypops.deployment.ssh) user;
+    in
+    {
+      dir = ".";
+      deps = [ "check-vars" ];
+      desc = "Local build & swtich for: ${hostName}";
+      cmds = [
+        ''
+          set -e
+          BPATH=$(mktemp -d)
+          cd $BPATH
+          nix build -L \
+          ${inputs.self}#nixosConfigurations.${hostName}.config.system.build.toplevel
+          REAL_PATH=$(realpath ./result)
+          nix copy -s --to ssh://${user}@${hostName} $REAL_PATH 2>&1
+          ssh ${user}@${hostName} \
+          "sudo nix-env -p /nix/var/nix/profiles/system --set $REAL_PATH && \
+          sudo /nix/var/nix/profiles/system/bin/switch-to-configuration switch"
+          rm -rf $BPATH
+        ''
+      ];
+    };
+
+  system.stateVersion = "21.05";
+  nixpkgs.hostPlatform = "aarch64-linux";
 
   environment.systemPackages = with pkgs; [
     libraspberrypi
@@ -313,7 +350,7 @@ in
       (host: attr:
         let fullName = "${host}.${domain}";
         in
-        nameValuePair (fullName) ({
+        nameValuePair fullName {
           forceSSL = true;
           enableACME = true;
           sslCertificate = "/var/lib/acme/${fullName}/cert.pem";
@@ -322,7 +359,7 @@ in
             proxyPass = "http://${attr.host}.${domain}:${toString attr.port}";
             extraConfig = "proxy_pass_header Authorization;";
           };
-        }))
+        })
       proxyServices;
   };
 }
