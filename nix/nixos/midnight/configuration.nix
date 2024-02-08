@@ -86,7 +86,7 @@
     ];
   };
 
-  stylix.image = pkgs.fetchurl {
+  stylix.image = builtins.fetchurl {
     url = "https://w.wallhaven.cc/full/d6/wallhaven-d6mg33.png";
     sha256 = "01vhwfx2qsvxgcrhbyx5d0c6c0ahjp50qy147638m7zfinhk70vx";
   };
