@@ -824,7 +824,8 @@ The one true Git porcelain!
 Truly a joy to use - it surfaces the power of Git in such a fluent manner.
 Anyone using Git and Emacs *needs* Magit in their life!
 
-Here I'm extending Magit's functionality to work with  popular "git forges". Specific configuration for this is to:
+Here, I'm ensuring Emacs knows to use the gpg-agent's SSH socket.
+I'm also extending Magit's functionality to work with  popular "git forges". Specific configuration for this is to:
 - Only show open topics (issues/PRs)
 - Only show authored PRs
 - Upon PR creation, yank the title & URL
@@ -832,7 +833,9 @@ Here I'm extending Magit's functionality to work with  popular "git forges". Spe
 I'm also using a handy package to layer on TODO notes in the Magit status buffer.
 #+BEGIN_SRC emacs-lisp
 (use-package magit
-  :bind ("C-c m" . magit-status))
+  :bind ("C-c m" . magit-status)
+  :config
+  (setenv "SSH_AUTH_SOCK" "/run/user/1000/gnupg/S.gpg-agent.ssh"))
 
 (use-package forge
   :after magit
