@@ -1,4 +1,4 @@
-{ config, lib, pkgs, modulesPath, inputs, ... }:
+{ config, pkgs, modulesPath, inputs, ... }:
 
 let
   inherit (pkgs) lib;
