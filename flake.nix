@@ -8,6 +8,10 @@
     stylix.url = "github:danth/stylix";
     lollypops.url = "github:pinpox/lollypops";
 
+    # TODO: move to nixpkgs provided kernel once vendor patches
+    #       are available upstream
+    nix-rpi5.url = "gitlab:vriska/nix-rpi5";
+
     flakelight = {
       url = "github:nix-community/flakelight";
       inputs.nixpkgs.follows = "nixpkgs";

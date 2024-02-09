@@ -1,9 +1,9 @@
-{ config, lib, pkgs, inputs, ... }:
-with builtins;
-with pkgs.lib;
+{ config, lib, pkgs, modulesPath, inputs, ... }:
 
 let
-  domain = "cmacr.ae";
+  inherit (pkgs) lib;
+  inherit (config.networking) domain;
+
   vpnAddressSpace = "10.100.0.0/24";
 
   ipReservations = {
@@ -25,8 +25,6 @@ let
     compute2.mac = "b8:ae:ed:7d:19:06";
     compute3.ip = "10.0.10.3";
     compute3.mac = "b8:ae:ed:7d:1a:09";
-    build1.ip = "10.0.10.4";
-    build1.mac = "e2:fc:13:e6:cc:aa";
 
     ds1819.ip = "10.0.1.1";
     ds1819.mac = "00:11:32:cf:10:eb";
@@ -67,81 +65,89 @@ let
   };
 
 in
+
+with lib;
+with builtins;
+
 {
   imports = [
     inputs.self.nixosModules.common
     inputs.self.nixosModules.server
+
+    (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
-  boot.tmp.useTmpfs = true;
-  boot.kernelPackages = pkgs.linuxKernel.packages.linux_rpi4;
-  boot.loader.grub.enable = false;
-  boot.loader.generic-extlinux-compatible.enable = true;
-  boot.initrd.checkJournalingFS = false;
-  boot.initrd.availableKernelModules = [ "usbhid" "usb_storage" "vc4" "pcie_brcmstb" "reset-raspberrypi" ];
-  hardware.enableRedistributableFirmware = true;
+  boot.kernelModules = [ ];
+  boot.extraModulePackages = [ ];
+  boot.initrd.kernelModules = [ ];
+  boot.initrd.availableKernelModules = [ "usbhid" "usb_storage" ];
+  # TODO: use vendor kernel while waiting for it to be upstreamed
+  boot.kernelPackages = inputs.nix-rpi5.legacyPackages.aarch64-linux.linuxPackages_rpi5;
+
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = false;
+
   powerManagement.cpuFreqGovernor = "ondemand";
 
-  boot.kernelParams = [
-    "cma=64M"
-    "8250.nr_uarts=1"
-    "console=tty1"
-    "console=ttyAMA0,115200"
-  ];
+  fileSystems."/" =
+    {
+      device = "/dev/disk/by-uuid/ecb26648-686e-403c-a415-406ac554653d";
+      fsType = "ext4";
+    };
 
-  fileSystems."/" = {
-    device = "/dev/disk/by-label/NIXOS_SD";
-    fsType = "ext4";
-    options = [ "noatime" ];
-  };
+  fileSystems."/boot" =
+    {
+      device = "/dev/disk/by-uuid/0CAE-25FE";
+      fsType = "vfat";
+    };
+
+  zramSwap.enable = true;
+
+  nixpkgs.hostPlatform = "aarch64-linux";
+  system.stateVersion = "23.11";
 
   lollypops.secrets.files."net1/wireguard-privatekey" = { };
   lollypops.secrets.files."net1/acme-dnsimple-envfile" = { };
-  lollypops.tasks = [ "deploy-secrets" "rebuild" ];
-  lollypops.deployment.local-evaluation = true;
-  lollypops.extraTasks.rebuild =
-    let
-      inherit (config.networking) hostName;
-      inherit (config.lollypops.deployment.ssh) user;
-    in
-    {
-      dir = ".";
-      deps = [ "check-vars" ];
-      desc = "Local build & swtich for: ${hostName}";
-      cmds = [
-        ''
-          set -e
-          BPATH=$(mktemp -d)
-          cd $BPATH
-          nix build -L \
-          ${inputs.self}#nixosConfigurations.${hostName}.config.system.build.toplevel
-          REAL_PATH=$(realpath ./result)
-          nix copy -s --to ssh://${user}@${hostName} $REAL_PATH 2>&1
-          ssh ${user}@${hostName} \
-          "sudo nix-env -p /nix/var/nix/profiles/system --set $REAL_PATH && \
-          sudo /nix/var/nix/profiles/system/bin/switch-to-configuration switch"
-          rm -rf $BPATH
-        ''
-      ];
-    };
 
-  system.stateVersion = "21.05";
-  nixpkgs.hostPlatform = "aarch64-linux";
-
-  environment.systemPackages = with pkgs; [
-    libraspberrypi
-    raspberrypi-eeprom
-  ];
+  # FIXME: seem to be having issues with signing key trust for
+  #        derivations built on other systems.
+  #        TODO: circle back to this later
+  # lollypops.tasks = [ "deploy-secrets" "rebuild" ];
+  # lollypops.deployment.local-evaluation = true;
+  # lollypops.extraTasks.rebuild =
+  #   let
+  #     inherit (config.networking) hostName;
+  #     inherit (config.lollypops.deployment.ssh) user;
+  #   in
+  #   {
+  #     dir = ".";
+  #     deps = [ "check-vars" ];
+  #     desc = "Local build & swtich for: ${hostName}";
+  #     cmds = [
+  #       ''
+  #         set -e
+  #         BPATH=$(mktemp -d)
+  #         cd $BPATH
+  #         nix build -L \
+  #         ${inputs.self}#nixosConfigurations.${hostName}.config.system.build.toplevel
+  #         REAL_PATH=$(realpath ./result)
+  #         nix copy -s --to ssh://${user}@${hostName} $REAL_PATH 2>&1
+  #         ssh ${user}@${hostName} \
+  #         "sudo nix-env -p /nix/var/nix/profiles/system --set $REAL_PATH && \
+  #         sudo /nix/var/nix/profiles/system/bin/switch-to-configuration switch"
+  #         rm -rf $BPATH
+  #       ''
+  #     ];
+  #   };
 
   networking = {
     hostName = "net1";
-    domain = "cmacr.ae";
     dhcpcd.enable = false;
     defaultGateway = "10.0.0.1";
     useDHCP = false;
     wireless.enable = false;
 
-    interfaces.eth0.ipv4.addresses = [
+    interfaces.end0.ipv4.addresses = [
       {
         address = ipReservations.net1.ip;
         prefixLength = 16;
@@ -149,15 +155,14 @@ in
     ];
 
     nat.enable = true;
-    nat.externalInterface = "eth0";
-    # nat.internalInterfaces = [ "wg0" ];
+    nat.externalInterface = "end0";
     firewall = {
       enable = true;
-      allowedTCPPorts = [ 22 80 443 9100 ];
+      allowedTCPPorts = [ 22 80 443 853 9100 ];
       allowedUDPPorts = [ 53 51820 ];
 
       extraCommands = ''
-        ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -s ${vpnAddressSpace} -o eth0 -j MASQUERADE
+        ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -s ${vpnAddressSpace} -o end0 -j MASQUERADE
       '';
     };
 
@@ -189,8 +194,6 @@ in
     };
   };
 
-  services.timesyncd.enable = true;
-
   services.kea.dhcp4 = {
     enable = true;
     settings = {
@@ -198,7 +201,7 @@ in
       renew-timer = 1000;
       valid-lifetime = 4000;
 
-      interfaces-config.interfaces = [ "eth0" ];
+      interfaces-config.interfaces = [ "end0" ];
 
       lease-database = {
         name = "/var/lib/kea/dhcp4.leases";
@@ -234,104 +237,93 @@ in
     };
   };
 
-  services.unbound = {
-    enable = true;
-    settings.server = {
-      interface = [ "0.0.0.0" ];
+  services.blocky.enable = true;
+  services.blocky.settings = {
+    upstreams.groups.default = [
+      "tcp-tls:1.1.1.1:853"
+      "tcp-tls:1.0.0.1:853"
+    ];
 
-      prefetch = "yes";
-      prefetch-key = "yes";
-      harden-glue = "yes";
-      hide-version = "yes";
-      hide-identity = "yes";
-      use-caps-for-id = "yes";
-      val-clean-additional = "yes";
-      harden-dnssec-stripped = "yes";
-      cache-min-ttl = "3600";
-      cache-max-ttl = "86400";
-      unwanted-reply-threshold = "10000";
-
-      verbosity = "2";
-      log-queries = "yes";
-
-      tls-cert-bundle = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
-
-      num-threads = "4";
-      infra-cache-slabs = "4";
-      key-cache-slabs = "4";
-      msg-cache-size = "131721898";
-      msg-cache-slabs = "4";
-      num-queries-per-thread = "4096";
-      outgoing-range = "8192";
-      rrset-cache-size = "263443797";
-      rrset-cache-slabs = "4";
-      minimal-responses = "yes";
-      serve-expired = "yes";
-      so-reuseport = "yes";
-
-      private-address = [
-        "10.0.0.0/8"
-        "172.16.0.0/12"
-        "192.168.0.0/16"
-      ];
-
-      access-control = [
-        "127.0.0.0/8 allow"
-        "10.0.0.0/8 allow"
-      ];
-
-      local-zone = [
-        ''"localhost." static''
-        ''"127.in-addr.arpa." static''
-
-        ''"${domain}" transparent''
-      ];
-
-      local-data = [
-        ''"localhost. 10800 IN NS localhost."''
-        ''"localhost. 10800 IN SOA localhost. nobody.invalid. 1 3600 1200 604800 10800"''
-
-        ''"localhost. 10800 IN A 127.0.0.1"''
-        ''"127.in-addr.arpa. 10800 IN NS localhost."''
-        ''"127.in-addr.arpa. 10800 IN SOA localhost. nobody.invalid. 2 3600 1200 604800 10800"''
-        ''"1.0.0.127.in-addr.arpa. 10800 IN PTR localhost."''
-      ] ++ (
-        mapAttrsToList
-          (
-            name: attributes:
-              ''"${name}.${domain}. IN A ${toString (catAttrs "ip" (singleton attributes))}"''
-          )
-          ipReservations
-      ) ++ (
-        mapAttrsToList
-          (
-            name: _:
-              ''"${name}.${domain} CNAME net1.${domain}"''
-          )
-          proxyServices
-      );
-
-      private-domain = [
-        ''"${domain}."''
-      ];
+    customDNS = {
+      customTTL = "1h";
+      filterUnmappedTypes = false;
+      mapping =
+        mapAttrs'
+          (name: value:
+            nameValuePair (name + ".${domain}") value.ip)
+          ipReservations //
+        mapAttrs'
+          (name: _:
+            nameValuePair (name + ".${domain}") ipReservations.net1.ip)
+          proxyServices;
     };
 
-    settings.forward-zone = {
-      name = ".";
-      forward-tls-upstream = "yes";
-      forward-addr = [
-        "1.1.1.1@853"
-        "1.0.0.1@853"
-      ];
+    blocking = {
+      blackLists = {
+        ads = [
+          "http://sysctl.org/cameleon/hosts"
+          "https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt"
+          "https://s3.amazonaws.com/lists.disconnect.me/simple_tracking.txt"
+          "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
+        ];
+        special = [
+          "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews/hosts"
+        ];
+      };
+      clientGroupsBlock = {
+        default = [ "ads" "special" ];
+      };
+      blockType = "nxDomain";
+      blockTTL = "1m";
+      loading = {
+        refreshPeriod = "24h";
+        downloads = {
+          timeout = "60s";
+          attempts = 5;
+          cooldown = "10s";
+        };
+        concurrency = 16;
+        strategy = "failOnError";
+        maxErrorsPerSource = 5;
+      };
     };
+    caching = {
+      minTime = "5m";
+      prefetching = true;
+    };
+    clientLookup.clients = mapAttrs
+      (name: value: [ value.ip ])
+      ipReservations;
+
+    minTlsServeVersion = "1.3";
+    bootstrapDns = [
+      "tcp+udp:1.1.1.1"
+      "https://1.1.1.1/dns-query"
+    ];
+    ports = {
+      dns = 53;
+      tls = 853;
+    };
+    log = {
+      level = "warn";
+      format = "text";
+      timestamp = false;
+      privacy = false;
+    };
+    ede.enable = true;
+    specialUseDomains.rfc6762-appendixG = true;
   };
 
   security.acme.acceptTerms = true;
-  security.acme.defaults.email = "account@${domain}";
-  security.acme.defaults.dnsProvider = "dnsimple";
-  security.acme.defaults.dnsPropagationCheck = true;
-  security.acme.defaults.reloadServices = [ "nginx" ];
-  security.acme.defaults.credentialsFile = config.lollypops.secrets.files."net1/acme-dnsimple-envfile".path;
+  security.acme.defaults = {
+    email = "account@${domain}";
+    dnsProvider = "dnsimple";
+    reloadServices = [ "nginx" ];
+    credentialFiles = {
+      "DNSIMPLE_OAUTH_TOKEN_FILE" = config.lollypops.secrets.files."net1/acme-dnsimple-envfile".path;
+    };
+  };
+
   security.acme.certs = mapAttrs'
     (service: _:
       nameValuePair "${service}.${domain}" { }
@@ -353,8 +345,7 @@ in
         nameValuePair fullName {
           forceSSL = true;
           enableACME = true;
-          sslCertificate = "/var/lib/acme/${fullName}/cert.pem";
-          sslCertificateKey = "/var/lib/acme/${fullName}/key.pem";
+          acmeRoot = null;
           locations."/" = {
             proxyPass = "http://${attr.host}.${domain}:${toString attr.port}";
             extraConfig = "proxy_pass_header Authorization;";
