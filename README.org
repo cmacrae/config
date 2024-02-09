@@ -26,7 +26,7 @@ There are several machines defined in =nix/nixos=
 My daily driver: an M2 MacBook Air (running NixOS, courtesy of the amazing [[https://asahilinux.org/][Asahi Project]] & [[https://github.com/tpwrules/nixos-apple-silicon][nixos-apple-silicon]]). A minimal macOS installation remains, but it's pretty much just an Ableton hypervisor
  
 *** net1
-A Raspberry Pi 4 that acts as a DHCP (Kea), DNS (unbound), and proxy (nginx) server for upstream media services, also a Wireguard gateway to my home network
+A Raspberry Pi 5 that acts as a DHCP (Kea), DNS (blocky), and proxy (nginx) server for upstream media services, also a WireGuard gateway to my home network
 
 *** compute1, compute2, compute3
 3 Intel NUCs that occupy 1u in my cabinet. Homelab & various media management services
