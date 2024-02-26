@@ -65,8 +65,6 @@ rec {
   homebrew.caskArgs.language = "en-GB";
 
   homebrew.taps = [
-    "homebrew/core"
-    "homebrew/cask"
     "homebrew/cask-drivers"
   ];
 
@@ -75,7 +73,6 @@ rec {
     "firefox"
     "keepingyouawake"
     "notion"
-    "zoom"
   ];
 
   system.activationScripts.postUserActivation.text = ''
