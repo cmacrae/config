@@ -581,8 +581,8 @@ Fancy buffer tabs
   (helpful         . centaur-tabs-local-mode)
 
   :bind
-  ("C-<tab>" . centaur-tabs-backward)
-  ("C-S-<tab>" . centaur-tabs-forward)
+  ("C-<tab>" . centaur-tabs-forward)
+  ("C-S-<tab>" . centaur-tabs-backward)
 
   :config
   (centaur-tabs-headline-match)
