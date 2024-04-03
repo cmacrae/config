@@ -3,6 +3,7 @@
     inputs.self.nixosModules.common
     inputs.self.nixosModules.home
     inputs.self.nixosModules.graphical
+    inputs.home-manager.nixosModules.home-manager
   ];
 
   boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];

@@ -1,36 +1,51 @@
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, lib, inputs, ... }:
 
+let
+  inherit (lib) mkIf mkMerge optional;
+  inherit (pkgs.stdenv.hostPlatform) isDarwin isLinux;
+
+in
 {
-  imports = [ inputs.home-manager.nixosModules.home-manager ];
-
-  users.users.cmacrae = {
-    description = "Calum MacRae";
-    shell = pkgs.zsh;
-    isNormalUser = true;
-    extraGroups = [ "input" "tty" "video" "wheel" ];
-  };
+  users.users.cmacrae = mkMerge [
+    {
+      description = "Calum MacRae";
+      shell = pkgs.zsh;
+      home = "/Users/cmacrae";
+    }
+    (mkIf isLinux {
+      home = "/home/cmacrae";
+      isNormalUser = true;
+      extraGroups = [ "input" "tty" "video" "wheel" ];
+    })
+  ];
 
   # for nix-direnv
   nix.settings.keep-outputs = true;
   nix.settings.keep-derivations = true;
   environment.pathsToLink = [ "/share/nix-direnv" ];
 
-  fonts.fontDir.enable = true;
-  fonts.packages = with pkgs; [
-    eb-garamond
-    emacs-all-the-icons-fonts
-    etBook
-    fira-code
-    font-awesome
-    nerdfonts
-    roboto
-    roboto-mono
-  ];
+  fonts =
+    let
+      fnts = with pkgs; [
+        eb-garamond
+        emacs-all-the-icons-fonts
+        etBook
+        fira-code
+        font-awesome
+        nerdfonts
+        roboto
+        roboto-mono
+      ];
+    in
+    # TODO: hack to get around waiting for nix-darwin#870
+    { fontDir.enable = true; }
+    // mkIf isLinux { packages = fnts; }
+    // mkIf isDarwin { fonts = fnts; };
 
+  home-manager.useGlobalPkgs = true;
   home-manager.users.cmacrae = {
 
-    # TODO: look at using predicate
-    nixpkgs.config.allowUnfree = true;
+    imports = optional isDarwin inputs.self.homeModules.darwin-gpg-agent;
 
     home.stateVersion = "24.05";
     home.packages = with pkgs; [
@@ -48,12 +63,11 @@
       just
       mpv
       nixd
+      nil
       nixpkgs-fmt
       nix-prefetch-git
       nmap
-      nodejs # for copilot
       pass
-      podman
       python3
       pwgen
       ranger
@@ -63,11 +77,15 @@
       up
       wget
       yt-dlp
-    ];
+    ] ++
+    # NOTE: podman install on macOS is handled by homebrew
+    #       as it includes podman-remote
+    (lib.optionals isLinux podman);
 
     home.sessionVariables = {
       PAGER = "less -R";
       EDITOR = "emacsclient";
+      PATH = mkIf isDarwin "$PATH:/opt/homebrew/bin";
     };
 
     programs.git = {
@@ -87,7 +105,7 @@
         trust = 5;
         source = builtins.fetchurl {
           url = "https://github.com/cmacrae.gpg";
-          sha256 = "sha256-Y+r7YOdUu/DSwnexV/b890g3N94mmOjx6vfsdqdfuBA=";
+          sha256 = "0s9qs9r85mrhjs360zzra5ig93rrkbaqqx4ws3xx6mnkxryp7yis";
         };
       }];
       settings = {
@@ -113,83 +131,103 @@
       };
     };
 
-    services.gpg-agent = {
-      enable = true;
-      enableZshIntegration = true;
-      enableSshSupport = true;
-      sshKeys = [ "4F39E235299187ED7B9A8049A85F3EE3488CF521" ];
-      pinentryFlavor = "qt";
-      extraConfig = ''
-        allow-emacs-pinentry
-        allow-loopback-pinentry
-      '';
-    };
+    services =
+      let
+        conf = {
+          enable = true;
+          enableZshIntegration = true;
+          enableSshSupport = true;
+          sshKeys = [ "4F39E235299187ED7B9A8049A85F3EE3488CF521" ];
+          pinentryFlavor = if isDarwin then "mac" else "qt";
+          extraConfig = ''
+            allow-emacs-pinentry
+            allow-loopback-pinentry
+          '';
+        };
+      in
+      # TODO: hack to get around waiting for home-manager#2964
+      mkMerge [
+        (mkIf isLinux { gpg-agent = conf; })
+        (mkIf isDarwin { darwin-gpg-agent = conf; })
+      ];
 
     programs.direnv.enable = true;
     programs.direnv.nix-direnv.enable = true;
     programs.direnv.enableZshIntegration = true;
 
     programs.firefox.enable = true;
-    programs.firefox.profiles.home = {
-      id = 0;
-      userChrome = builtins.readFile ../../conf.d/userChrome.css;
-      extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-        browserpass
-        betterttv
-        metamask
-        reddit-enhancement-suite
-        ublock-origin
-        vimium
-      ];
+    programs.firefox.package =
+      if isDarwin then
+      # NOTE: firefox install is handled via homebrew
+        pkgs.runCommand "firefox-0.0.0" { } "mkdir $out"
+      else
+        pkgs.firefox;
+    programs.firefox.profiles.home = mkMerge [
+      {
+        id = 0;
+        extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+          browserpass
+          betterttv
+          consent-o-matic
+          metamask
+          multi-account-containers
+          reddit-enhancement-suite
+          ublock-origin
+          vimium
+        ];
 
-      search.default = "DuckDuckGo";
-      search.force = true;
+        search.default = "DuckDuckGo";
+        search.force = true;
 
-      settings = {
-        "app.update.auto" = false;
-        "app.normandy.enabled" = false;
-        "beacon.enabled" = false;
-        "browser.startup.homepage" = "https://lobste.rs";
-        "browser.search.region" = "GB";
-        "browser.search.countryCode" = "GB";
-        "browser.search.hiddenOneOffs" = "Google,Amazon.com,Bing";
-        "browser.search.isUS" = false;
-        "browser.ctrlTab.recentlyUsedOrder" = false;
-        "browser.newtabpage.enabled" = false;
-        "browser.bookmarks.showMobileBookmarks" = true;
-        "browser.uidensity" = 1;
-        "browser.urlbar.update" = true;
-        "datareporting.healthreport.service.enabled" = false;
-        "datareporting.healthreport.uploadEnabled" = false;
-        "datareporting.policy.dataSubmissionEnabled" = false;
-        "distribution.searchplugins.defaultLocale" = "en-GB";
-        "extensions.getAddons.cache.enabled" = false;
-        "extensions.getAddons.showPane" = false;
-        "extensions.pocket.enabled" = false;
-        "extensions.webservice.discoverURL" = "";
-        "general.useragent.locale" = "en-GB";
-        "identity.fxaccounts.account.device.name" = config.networking.hostName;
-        "privacy.donottrackheader.enabled" = true;
-        "privacy.donottrackheader.value" = 1;
-        "privacy.trackingprotection.enabled" = true;
-        "privacy.trackingprotection.cryptomining.enabled" = true;
-        "privacy.trackingprotection.fingerprinting.enabled" = true;
-        "privacy.trackingprotection.socialtracking.enabled" = true;
-        "privacy.trackingprotection.socialtracking.annotate.enabled" = true;
-        "reader.color_scheme" = "auto";
-        "services.sync.declinedEngines" = "addons,passwords,prefs";
-        "services.sync.engine.addons" = false;
-        "services.sync.engineStatusChanged.addons" = true;
-        "services.sync.engine.passwords" = false;
-        "services.sync.engine.prefs" = false;
-        "services.sync.engineStatusChanged.prefs" = true;
-        "signon.rememberSignons" = false;
-        "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
-        "toolkit.telemetry.enabled" = false;
-        "toolkit.telemetry.rejected" = true;
-        "toolkit.telemetry.updatePing.enabled" = false;
-      };
-    };
+        settings = {
+          "app.update.auto" = false;
+          "app.normandy.enabled" = false;
+          "beacon.enabled" = false;
+          "browser.startup.homepage" = "https://lobste.rs";
+          "browser.search.region" = "GB";
+          "browser.search.countryCode" = "GB";
+          "browser.search.hiddenOneOffs" = "Google,Amazon.com,Bing";
+          "browser.search.isUS" = false;
+          "browser.ctrlTab.recentlyUsedOrder" = false;
+          "browser.newtabpage.enabled" = false;
+          "browser.bookmarks.showMobileBookmarks" = true;
+          "browser.uidensity" = 1;
+          "browser.urlbar.update" = true;
+          "datareporting.healthreport.service.enabled" = false;
+          "datareporting.healthreport.uploadEnabled" = false;
+          "datareporting.policy.dataSubmissionEnabled" = false;
+          "distribution.searchplugins.defaultLocale" = "en-GB";
+          "extensions.getAddons.cache.enabled" = false;
+          "extensions.getAddons.showPane" = false;
+          "extensions.pocket.enabled" = false;
+          "extensions.webservice.discoverURL" = "";
+          "general.useragent.locale" = "en-GB";
+          "identity.fxaccounts.account.device.name" = config.networking.hostName;
+          "privacy.donottrackheader.enabled" = true;
+          "privacy.donottrackheader.value" = 1;
+          "privacy.trackingprotection.enabled" = true;
+          "privacy.trackingprotection.cryptomining.enabled" = true;
+          "privacy.trackingprotection.fingerprinting.enabled" = true;
+          "privacy.trackingprotection.socialtracking.enabled" = true;
+          "privacy.trackingprotection.socialtracking.annotate.enabled" = true;
+          "reader.color_scheme" = "auto";
+          "services.sync.declinedEngines" = "addons,passwords,prefs";
+          "services.sync.engine.addons" = false;
+          "services.sync.engineStatusChanged.addons" = true;
+          "services.sync.engine.passwords" = false;
+          "services.sync.engine.prefs" = false;
+          "services.sync.engineStatusChanged.prefs" = true;
+          "signon.rememberSignons" = false;
+          "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+          "toolkit.telemetry.enabled" = false;
+          "toolkit.telemetry.rejected" = true;
+          "toolkit.telemetry.updatePing.enabled" = false;
+        };
+      }
+      (mkIf isLinux {
+        userChrome = builtins.readFile ../../conf.d/userChrome.css;
+      })
+    ];
 
     # my emacs configuration composed into a package.
     # defined here: `nix/packages/cmacraeEmacs`

@@ -2,6 +2,7 @@
 
   imports = [
     inputs.nixos-apple-silicon.nixosModules.apple-silicon-support
+    inputs.home-manager.nixosModules.home-manager
     inputs.self.nixosModules.common
     inputs.self.nixosModules.home
     inputs.self.nixosModules.graphical

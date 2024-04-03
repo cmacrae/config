@@ -1,6 +1,12 @@
 { config, pkgs, lib, inputs, ... }:
+let
+  inherit (lib) mkForce mkIf mkMerge optional;
+  inherit (pkgs.stdenv.hostPlatform) isDarwin isLinux;
+
+in
 {
   imports = [ inputs.lollypops.nixosModules.lollypops ];
+
   lollypops.secrets.default-cmd = "pass";
   lollypops.secrets.cmd-name-prefix = "Tech/nix-secrets/";
 
@@ -10,10 +16,15 @@
   nixpkgs.config.allowUnfree = true;
   nix = {
     registry = builtins.mapAttrs (_: v: { flake = v; }) inputs;
-    nixPath =
-      lib.mapAttrsToList (k: v: "${k}=${v.to.path}") config.nix.registry;
+    nixPath = mkForce
+      (lib.mapAttrsToList
+        (k: v: "${k}=${v.to.path}")
+        config.nix.registry);
     settings = rec {
-      allowed-users = [ "@wheel" ];
+      trusted-users =
+        (optional isLinux "@wheel")
+        ++
+        (optional isDarwin "@admin");
       auto-optimise-store = true;
       warn-dirty = false;
       experimental-features = "nix-command flakes";
@@ -36,10 +47,13 @@
   environment.systemPackages = with pkgs; [ curl file git rsync vim zsh ];
 
   time.timeZone = "Europe/London";
-  i18n.defaultLocale = "en_GB.UTF-8";
 
-  networking.domain = "cmacr.ae";
+  # TODO: seems no matter what combination of `mkIf` `mkMerge`, etc.
+  #       I can't get this to be conditional on `isLinux`...
+  # i18n.defaultLocale = "en_GB.UTF-8";
 
-  security.sudo.enable = true;
-  security.sudo.wheelNeedsPassword = false;
+  # networking.domain = "cmacr.ae";
+
+  # security.sudo.enable = true;
+  # security.sudo.wheelNeedsPassword = false;
 }

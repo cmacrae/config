@@ -17,6 +17,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    flakelight-darwin.url = "github:cmacrae/flakelight-darwin";
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -32,16 +34,26 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    limani = {
+      # url = "path:/Users/cmacrae/src/github.com/cmacrae/limani";
+      url = "/Users/cmacrae/src/github.com/cmacrae/limani";
+      # url = "github:cmacrae/limani";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { flakelight, ... }@inputs:
+  outputs = { flakelight, flakelight-darwin, ... }@inputs:
     flakelight ./. {
       inherit inputs;
+      imports = [
+        flakelight-darwin.flakelightModules.default
+      ];
+
       withOverlays = with inputs; [
-        emacs-overlay.overlays.package
-        emacs-overlay.overlays.emacs
-        nixos-apple-silicon.overlays.apple-silicon-overlay
         nur.overlay
+        emacs-overlay.overlays.emacs
+        emacs-overlay.overlays.package
+        nixos-apple-silicon.overlays.apple-silicon-overlay
       ];
 
       apps.default = { system, ... }:

@@ -12,7 +12,7 @@ This repository is based on [[https://nixos.wiki/wiki/Flakes][Nix Flakes]], comp
  
 ** Features
 Quite hard to capture all the benefits I feel I've garnered by way of my meticulous obsession with declarative systems, but here are a few key points
-- Supports some flake native conventions: additional *checks* (=nix flake check=) with [[https://github.com/astro/deadnix][deadnix]] & [[https://github.com/NerdyPepper/statix][statix]], *formatter* (=nix fmt=) with [[https://github.com/nix-community/nixpkgs-fmt][nixpkgs-fmt]] (also enforced /in-editor/ via [[https://github.com/nix-community/nixd][nixd]])
+- Supports some flake native conventions: additional *checks* (=nix flake check=) with [[https://github.com/astro/deadnix][deadnix]] & [[https://github.com/NerdyPepper/statix][statix]], *formatter* (=nix fmt=) with [[https://github.com/nix-community/nixpkgs-fmt][nixpkgs-fmt]] (also enforced /in-editor/ via [[https://github.com/oxalica/nil][nil]])
 - Dead-simple remote deployments with [[https://github.com/pinpox/lollypops][lollypops]], mapped to a flake *app* (=nix run= interface for deployments & local rebuild)
 - Secrets management is also handled by [[https://github.com/pinpox/lollypops][lollypops]], backed by [[https://www.passwordstore.org/][pass]], which I secure with a YubiKey (in fact all cryptographic operations, including SSH - which extends to the previously mentioned deployments - and Git signing, all go via PGP, and thus my YubiKey)
 - Graphical systems are pure Wayland: minimal session management handled by [[https://sr.ht/~kennylevinsen/greetd/][greetd]]/[[https://github.com/apognu/tuigreet][tuigreet]], colour scheme (configurable on a per-system basis) inherited with [[https://github.com/danth/stylix][stylix]] (further composed & mapped to CSS)
@@ -25,6 +25,9 @@ There are several machines defined in =nix/nixos=
 *** midnight
 My daily driver: an M2 MacBook Air (running NixOS, courtesy of the amazing [[https://asahilinux.org/][Asahi Project]] & [[https://github.com/tpwrules/nixos-apple-silicon][nixos-apple-silicon]]). A minimal macOS installation remains, but it's pretty much just an Ableton hypervisor
  
+*** nilbook
+M3 MacBook Pro for work, macOS
+
 *** net1
 A Raspberry Pi 5 that acts as a DHCP (Kea), DNS (blocky), and proxy (nginx) server for upstream media services, also a WireGuard gateway to my home network
 
