@@ -146,6 +146,7 @@ Also, when typing =M-3=, insert an octothorp - I use a British keyboard.
 (setq make-backup-files       nil
       auto-save-default       nil
       inhibit-startup-message t
+      frame-title-format      'none
       ring-bell-function      'ignore)
 (dolist (mode
          '(tool-bar-mode
