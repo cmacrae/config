@@ -55,11 +55,12 @@ emacsWithPackagesFromUsePackage {
   config = ./readme.org;
 
   override = epkgs: epkgs // {
-    copilot = elPackage "copilot" (fetchFromGitHub {
-      owner = "zerolfx";
-      repo = "copilot.el";
-      rev = "ba1d6018fdc2d735fecab1b2dcd4b5ea121b05ac";
-      sha256 = "0glbmgfznmqbq8nggdl2fsxf25wv3gav40m65g4637l0gyyyx0av";
+    # TODO: remove once new ELPA version is published
+    nano-modeline = elPackage "nano-modeline" (fetchFromGitHub {
+      owner = "rougier";
+      repo = "nano-modeline";
+      rev = "e0a1d9f688000bdd4e0d7adaea4b21d078614edb";
+      hash = "sha256-FJO41UtMXJoRyWTokDs3ocrdlASAVvkhS8E2JZMYGbc=";
     });
 
     nano-dialog = elPackage "nano-dialog" (fetchFromGitHub {

@@ -324,7 +324,7 @@ control it from within this file. Whilst this statement may seem recursive, it e
 (use-package use-package)
 #+END_SRC
 
-*** Vertico | savehist | orderless | marginalia | Embark | Consult
+*** Vertico | savehist | orderless | marginalia | Embark | Consult | corfu | cape
 This section outlines my preference for Emacs' completion system/interface.
 - Vertico: consistent, minimalistic completion UI
 - savehist: persists completion history
@@ -332,11 +332,19 @@ This section outlines my preference for Emacs' completion system/interface.
 - marginalia: annotations for minibuffer candidates
 - Embark: act on targets, sort of like a right-click menu
 - Consult: practical completion
+- corfu: in-buffer completion with pop-ups
+- cape: completion-at-point extensions
 #+BEGIN_SRC emacs-lisp
 (use-package vertico
   :hook (after-init . vertico-mode)
   :custom
   (vertico-resize t))
+
+(use-package vertico-posframe
+  :hook
+  (vertico-mode . (lambda () (vertico-posframe-mode 1)))
+  :custom
+  (vertico-posframe-poshandler #'posframe-poshandler-point-frame-center))
 
 (use-package savehist-mode
   :ensure nil
@@ -462,24 +470,51 @@ This section outlines my preference for Emacs' completion system/interface.
 
   (autoload 'projectile-project-root "projectile")
   (setq consult-project-function (lambda (_) (projectile-project-root))))
+
+(use-package corfu
+  :custom
+  (corfu-auto t)
+  :hook
+  (after-init . global-corfu-mode))
+
+(use-package cape
+  :after corfu
+  :config
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-file))
 #+END_SRC
 
 *** Theme | Modeline
 **** theme
-Colour scheme is managed system-wide by [[https://github.com/danth/stylix][stylix]], so we just inherit that :)
 #+BEGIN_SRC emacs-lisp
-(use-package base16-stylix-theme
+(use-package nano-theme
+  :custom
+  (nano-window-divider-show t)
   :config
-  (load-theme 'base16-stylix t))
+  (load-theme 'nano-light t))
 #+END_SRC
 
 **** mood-line
 #+BEGIN_SRC emacs-lisp
-(use-package doom-modeline
-  :hook (after-init . doom-modeline-mode)
-  :custom
-  (doom-modeline-buffer-encoding nil)
-  (doom-modeline-buffer-file-name-style 'relative-to-project))
+(use-package nano-modeline
+  :demand t
+  :hook
+  (prog-mode            . nano-modeline-prog-mode)
+  (text-mode            . nano-modeline-text-mode)
+  (org-mode             . nano-modeline-org-mode)
+  (pdf-view-mode        . nano-modeline-pdf-mode)
+  (mu4e-headers-mode    . nano-modeline-mu4e-headers-mode)
+  (mu4e-view-mode       . nano-modeline-mu4e-message-mode)
+  (elfeed-show-mode     . nano-modeline-elfeed-entry-mode)
+  (elfeed-search-mode   . nano-modeline-elfeed-search-mode)
+  (vterm-mode           . nano-modeline-term-mode)
+  (xwidget-webkit-mode  . nano-modeline-xwidget-mode)
+  (messages-buffer-mode . nano-modeline-message-mode)
+  (org-capture-mode     . nano-modeline-org-capture-mode)
+  (org-agenda-mode      . nano-modeline-org-agenda-mode)
+
+  :config
+  (setq-default mode-line-format nil))
 #+END_SRC
 
 *** tectum
@@ -670,7 +705,6 @@ Absolutely essential package for me. This makes hopping around and between vario
 Not only that, but it allows project-wide actions. Like killing all buffers for a project, performing a project-wide find-and-replace, or a grep, etc.
 
 Some configuration I use:
-- Setting the completion system to =ivy=
 - Further integration of Counsel with Projectile than what's provided natively
 #+BEGIN_SRC emacs-lisp
 (use-package projectile
@@ -678,10 +712,10 @@ Some configuration I use:
   (after-init . projectile-global-mode)
   :custom
   (projectile-completion-system 'auto)
-  (projectile-switch-project-action 'treemacs)
+  (projectile-switch-project-action 'treemacs-add-and-display-current-project-exclusively)
   :bind
   (:map projectile-mode-map
-          ("C-c p p" . projectile-persp-switch-project)))
+          ("C-x p p" . projectile-persp-switch-project)))
 #+END_SRC
 
 *** perspective
@@ -755,17 +789,13 @@ Sidebar filebrowser, very handy.
           treemacs-tag-follow-cleanup              t
           treemacs-tag-follow-delay                1.5
           treemacs-text-scale                      nil
-          treemacs-user-mode-line-format           nil
+          treemacs-user-mode-line-format           'none
           treemacs-user-header-line-format         nil
           treemacs-wide-toggle-width               70
           treemacs-width                           35
           treemacs-width-increment                 1
           treemacs-width-is-initially-locked       t
           treemacs-workspace-switch-cleanup        nil)
-
-    ;; The default width and height of the icons is 22 pixels. If you are
-    ;; using a Hi-DPI display, uncomment this to double the icon size.
-    ;; (treemacs-resize-icons 44)
 
     (treemacs-follow-mode t)
     (treemacs-filewatch-mode t)
@@ -836,25 +866,27 @@ I'm also using a handy package to layer on TODO notes in the Magit status buffer
 (use-package magit
   :bind ("C-c m" . magit-status)
   :config
-  (setenv "SSH_AUTH_SOCK" "/run/user/1000/gnupg/S.gpg-agent.ssh"))
+  (cond
+   ((string-equal system-type "linux")
+    (setenv "SSH_AUTH_SOCK" "/run/user/1000/gnupg/S.gpg-agent.ssh"))))
 
 (use-package forge
   :after magit
   :custom
   (forge-topic-list-limit '(30 . -1))
   :config
-  (defun cm/forge-post-submit-callback-kill-info (value _headers _status _req)
+  (defun cm/forge-post-submit-callback-browse-pr (value _headers _status _req)
     (when t
-      (when-let ((url (alist-get 'html_url value))
-                 (title (alist-get 'title value)))
-        (kill-new (format "%s\n%s" title url)))))
+      (when-let ((url (alist-get 'html_url value)))
+        (browse-url url))))
 
   (magit-add-section-hook 'magit-status-sections-hook 'forge-insert-authored-pullreqs 'forge-insert-pullreqs 'replace)
-  (add-hook 'forge-post-submit-callback-hook 'cm/forge-post-submit-callback-kill-info))
+  (add-hook 'forge-post-submit-callback-hook 'cm/forge-post-submit-callback-browse-pr))
 
 
 (use-package magit-todos
-  :after magit)
+  :after magit
+  :config (magit-todos-mode 1))
 #+END_SRC
 
 *** git-link
@@ -911,7 +943,7 @@ Set it up to play nice with Evil.
   (use-package multi-vterm
     :ensure t
     :bind
-    ("C-c p t" . multi-vterm-project)))
+    ("C-x p t" . multi-vterm-project)))
 #+END_SRC
 
 *** Flycheck
@@ -920,25 +952,6 @@ Have Flycheck turned on for everything - checking stuff is always good!
 (use-package flycheck
   :after envrc
   :hook (after-init . global-flycheck-mode))
-#+END_SRC
-
-*** Company
-Slick auto-complete framework
-#+BEGIN_SRC emacs-lisp
-(use-package company
-  :hook (after-init . global-company-mode)
-  :custom
-  (company-idle-delay 0)
-  (company-minimum-prefix-length 1))
-#+END_SRC
-
-*** company-org-block
-#+BEGIN_SRC emacs-lisp
-(use-package company-org-block
-  :custom
-  (company-org-block-edit-style 'auto)
-  :hook ((org-mode . (lambda ()
-                       (setq-local company-backends '(company-org-block))))))
 #+END_SRC
 
 *** hydra
@@ -953,9 +966,9 @@ General hydras:
 #+BEGIN_SRC emacs-lisp
 (use-package hydra
   :bind
-  ("C-c z" . hydra-zoom/body)
-  ("C-c T" . hydra-transpose/body)
-  ("C-c x" . hydra-persp/body)
+  ("C-x z" . hydra-zoom/body)
+  ("C-x T" . hydra-transpose/body)
+  ("C-x x" . hydra-persp/body)
 
   :config
 
@@ -1030,7 +1043,7 @@ I use [[https://www.passwordstore.org/][pass]] as my password manager, which com
 (use-package password-store
   :demand t
   :bind
-  ("C-c M-p" . password-store-copy)
+  ("C-x M-p" . password-store-copy)
   :custom
   (auth-sources '(password-store)))
 #+END_SRC
@@ -1140,40 +1153,15 @@ Support for ~direnv~, which operates buffer-locally.
 (use-package inheritenv :demand t)
 #+END_SRC
 
-*** GitHub Copilot
-AI assisted programming, what a time to be alive!
-Here, I'm ensuring the dependencies are installed, defining some key bindings.
-
-/Note: as the package isn't hosted on MELPA, this is handled as an ~epkgs~ override in my Nix config/
-
+*** gptel
+LLMs in Emacs, what a time to be alive
 #+BEGIN_SRC emacs-lisp
-(use-package copilot
-  :hook (prog-mode . copilot-mode)
-  :bind
-  (:map copilot-completion-map
-    ("<tab>" . copilot-accept-completion)
-    ("TAB"   . copilot-accept-completion))
-
-  :custom
-  (copilot-indent-warning-suppress t)
-
-  :config
-  (use-package s
-    :ensure t)
-  (use-package dash
-    :ensure t)
-  (use-package editorconfig
-    :ensure t))
-#+END_SRC
-*** ChatGPT
-The magic of LLM, right in your Emacs - the way "god" intended
-
-#+BEGIN_SRC emacs-lisp
-(use-package chatgpt-shell
-  :custom
-  ((chatgpt-shell-openai-key
-    (lambda ()
-      (auth-source-pass-get 'secret "api.openai.com")))))
+(use-package gptel
+  :hook
+  (gptel-mode . visual-line-mode)
+  (gptel-post-stream . gptel-auto-scroll)
+  (gptel-post-response-functions . gptel-end-of-response)
+  :custom (gptel-default-mode #'org-mode))
 #+END_SRC
 
 ** Languages
@@ -1187,8 +1175,12 @@ Configuration for working with various languages
 (use-package rego-mode)
 (use-package swift-mode)
 (use-package python-mode)
+(use-package just-mode)
+
+(use-package jenkinsfile-mode
+  :mode ("\\Jenkinsfile\\'" "\\.pipeline\\'"))
+
 (use-package rustic
-  :after inheritenv
   :config
   (setq rustic-lsp-client 'eglot)
   (setq rustic-format-trigger 'on-save)
@@ -1200,8 +1192,6 @@ Configuration for working with various languages
   (markdown-mode . flyspell-mode))
 
 (use-package terraform-mode)
-  ;; :hook
-  ;; (before-save    . terraform-format-buffer))
 
 (use-package dockerfile-mode
   :mode "\\Dockerfile\\'")
@@ -1216,18 +1206,17 @@ Configuration for working with various languages
 #+BEGIN_SRC emacs-lisp
 (use-package eglot
   :ensure nil
+  :after inheritenv
   :hook
   (prog-mode . eglot-ensure)
   (prog-mode . (lambda () (add-hook 'before-save-hook 'eglot-format nil t)))
-  (prog-mode . (lambda () (add-hook 'before-save-hook 'cm/eglot-organize-imports nil t)))
   :config
-  (defun cm/eglot-organize-imports () (interactive)
-          (eglot-code-actions nil nil "source.organizeImports" t))
   (with-eval-after-load 'eglot
-    (dolist (mode '((nix-mode    . ("nixd"))
-                    (python-mode . ("pylsp"))
-                    (swift-mode  . ("sourcekit-lsp"))
-                    (rust-mode   . ("rust-analyzer"))))
+    (dolist (mode '((nix-mode       . ("nil" :initializationOptions
+                                             (:formatting (:command [ "nixpkgs-fmt" ]))))
+                    (python-mode    . ("pylsp"))
+                    (terraform-mode . ("terraform-lsp"))
+                    (rust-mode      . ("rust-analyzer"))))
       (add-to-list 'eglot-server-programs mode))))
                   #+END_SRC
 
