@@ -1,0 +1,6 @@
+* config
+A collection of system configurations, expressed in [[https://nixos.org/nix][Nix]].
+This repository is based on [[https://nixos.wiki/wiki/Flakes][Nix Flakes]], composed by [[https://flake.parts/][flake-parts]] & [[https://github.com/ehllie/ez-configs/][ez-configs]].
+
+** About
+Better documentation coming soon... I'm in the middle of overhauling everything :)
