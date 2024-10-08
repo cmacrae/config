@@ -22,13 +22,15 @@
       }
     },
     "elisp-helpers": {
-      "flake": false,
+      "inputs": {
+        "fromElisp": "fromElisp"
+      },
       "locked": {
-        "lastModified": 1727406797,
-        "narHash": "sha256-lvwqYuahxFtQijND1SlAdGZQAYxX4ZwWC1gRbQy/h9A=",
+        "lastModified": 1728190720,
+        "narHash": "sha256-Zppl5O1qvaLqzEq52VeX0SY7eS5pIi3eQVlunx71QLE=",
         "owner": "emacs-twist",
         "repo": "elisp-helpers",
-        "rev": "b4bd23d3d486ad39c688a16186540a23a6190b5e",
+        "rev": "79689d57fb07ace7b24a7a3988171f9348adf51a",
         "type": "github"
       },
       "original": {
@@ -174,6 +176,22 @@
         "type": "github"
       }
     },
+    "fromElisp": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1723987997,
+        "narHash": "sha256-OhaVgTG6zjLByzl+uPTvtCld3p2uqgbCXmOl/s3LVRo=",
+        "owner": "talyz",
+        "repo": "fromElisp",
+        "rev": "f071a0e262c02c0895b575c4e322b7fd90713543",
+        "type": "github"
+      },
+      "original": {
+        "owner": "talyz",
+        "repo": "fromElisp",
+        "type": "github"
+      }
+    },
     "gnu-elpa": {
       "flake": false,
       "locked": {
@@ -309,6 +327,7 @@
     "root": {
       "inputs": {
         "darwin": "darwin",
+        "elisp-helpers": "elisp-helpers",
         "emacs": "emacs",
         "emacs-overlay": "emacs-overlay",
         "ez-configs": "ez-configs",
@@ -341,18 +360,21 @@
     },
     "twist": {
       "inputs": {
-        "elisp-helpers": "elisp-helpers"
+        "elisp-helpers": [
+          "elisp-helpers"
+        ]
       },
       "locked": {
-        "lastModified": 1727406832,
-        "narHash": "sha256-2xGtuzp0RXelPbdEufq2xUUJZGpJcdZbuEr2NOv6dTQ=",
+        "lastModified": 1728224231,
+        "narHash": "sha256-YHXfUk4Nfy9LxxEUBhgH5kbu4OoWpSRCcP9ndn556xM=",
         "owner": "emacs-twist",
         "repo": "twist.nix",
-        "rev": "f0c487f93a290dc07d085abacdc83c0cec49bdb8",
+        "rev": "6cfc4a4d97dd7745485ad637d265afe72805412a",
         "type": "github"
       },
       "original": {
         "owner": "emacs-twist",
+        "ref": "non-overlay-api",
         "repo": "twist.nix",
         "type": "github"
       }

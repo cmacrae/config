@@ -1,67 +1,52 @@
-{
-  lib,
-  stdenv,
-  trivialBuild,
-  initFiles,
-  emacs-all-the-icons-fonts,
-  aspell,
-  aspellDicts,
-  ripgrep,
-  lndir,
-}:
+{ inputs, pkgs }:
 let
-  init = trivialBuild {
-    pname = "config-init";
-    version = "1";
+  inherit (pkgs) lib;
+  inherit (inputs) self;
+  emacsPackage = pkgs.emacs-pgtk;
 
-    src = initFiles;
-
-    buildPhase = ''
-      runHook preBuild
-
-      export HOME="$(mktemp -d)"
-
-      mkdir -p "$HOME/.emacs.d"
-      emacs --batch --quick \
-        --eval '(setq byte-compile-error-on-warn t)' \
-	--eval '(setq byte-compile-warnings '"'"'(not docstrings))' \
-        --funcall batch-byte-compile \
-        *.el
-
-      runHook postBuild
-    '';
-
-    # Temporary hack because the Emacs native load path is not respected.
-    fixupPhase = ''
-      if [ -d "$HOME/.emacs.d/eln-cache" ]; then
-        mv $HOME/.emacs.d/eln-cache/* $out/share/emacs/native-lisp
-      fi
-    '';
-  };
-in
-stdenv.mkDerivation {
-  name = "emacs-config";
-
-  dontUnpack = true;
-
-  buildInputs = [
-    aspell
-    aspellDicts.en
-    emacs-all-the-icons-fonts
-    ripgrep
+  treeSitterLoadPath = lib.pipe pkgs.tree-sitter-grammars [
+    (lib.filterAttrs (name: _: name != "recurseForDerivations"))
+    builtins.attrValues
+    (map (drv: {
+      # Some grammars don't contain "tree-sitter-" as the prefix,
+      # so add it explicitly.
+      name = "libtree-sitter-${
+          lib.pipe (lib.getName drv) [
+            (lib.removeSuffix "-grammar")
+            (lib.removePrefix "tree-sitter-")
+          ]
+        }${pkgs.stdenv.targetPlatform.extensions.sharedLibrary}";
+      path = "${drv}/parser";
+    }))
+    (pkgs.linkFarm "treesit-grammars")
   ];
+in
 
-  passthru.components = {
-    inherit init;
-  };
+(inputs.twist.lib.makeEnv {
+  inherit emacsPackage pkgs;
 
-  installPhase = ''
-    mkdir -p $out
-    ${lndir}/bin/lndir -silent ${init}/share/emacs/site-lisp $out
+  lockDir = ./.lock;
+  initFiles = [ (pkgs.tangleOrgBabelFile "init.el" ./README.org { }) ];
 
-    if [ -d "${init}/share/emacs/native-lisp" ]; then
-      mkdir -p $out/eln-cache
-      ${lndir}/bin/lndir -silent ${init}/share/emacs/native-lisp $out/eln-cache
-    fi
+  configurationRevision =
+    "${builtins.substring 0 8 self.lastModifiedDate}.${
+      if self ? rev then builtins.substring 0 7 self.rev else "dirty"
+    }";
+
+  inputOverrides = import ./input-overrides.nix { inherit (pkgs) lib; };
+
+  extraSiteStartElisp = ''
+    (add-to-list 'treesit-extra-load-path "${treeSitterLoadPath}/")
   '';
-}
+
+  registries = import ./registries.nix {
+    inherit inputs;
+    emacsSrc = emacsPackage.src;
+  };
+}).overrideScope (
+  _: prev': {
+    elispPackages = prev'.elispPackages.overrideScope (
+      pkgs.callPackage ./package-overrides.nix { inherit (prev') emacs; }
+    );
+  }
+)

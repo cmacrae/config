@@ -36,7 +36,12 @@
     firefox-addons.inputs.nixpkgs.follows = "nixpkgs";
 
     # Emacs
-    twist.url = "github:emacs-twist/twist.nix";
+    # FIXME: move back to default branch once this is merged
+    #        https://github.com/emacs-twist/twist.nix/pull/183
+    #        the elisp-helpers follow can go after the merge also.
+    elisp-helpers.url = "github:emacs-twist/elisp-helpers";
+    twist.url = "github:emacs-twist/twist.nix/non-overlay-api";
+    twist.inputs.elisp-helpers.follows = "elisp-helpers";
     org-babel.url = "github:emacs-twist/org-babel";
     emacs.url = "github:emacs-mirror/emacs";
     emacs.flake = false;
@@ -56,35 +61,33 @@
 
       systems = nixpkgs.lib.systems.flakeExposed;
 
-      perSystem = { config, pkgs, system, ... }: {
+      perSystem = { config, pkgs, system, emacs-env, ... }: {
         _module.args.pkgs = import inputs.nixpkgs {
           inherit system;
-          overlays = with inputs; [
-            emacs-overlay.overlays.emacs
-            org-babel.overlays.default
-            twist.overlays.default
-
-            (import ./configurations/emacs/overlay.nix { inherit inputs; })
+          overlays = [
+            inputs.emacs-overlay.overlays.emacs
+            inputs.org-babel.overlays.default
           ];
           config = { };
         };
 
+        _module.args.emacs-env = import ./configurations/emacs {
+          inherit inputs pkgs;
+        };
+
         packages = {
-          inherit (pkgs) emacs-env emacs-config;
+          inherit emacs-env;
         };
 
-        checks = {
-          build-env = config.packages.emacs-env;
-          build-config = config.packages.emacs-config;
-        };
-
-        apps = pkgs.emacs-env.makeApps {
+        apps = emacs-env.makeApps {
           lockDirName = "configurations/emacs/.lock";
         };
       };
 
       ezConfigs = {
-        globalArgs = { inherit inputs; };
+        globalArgs = {
+          inherit inputs;
+        };
       } // builtins.listToAttrs (map
         (name: {
           inherit name;
