@@ -615,7 +615,11 @@ Below you'll find various extensions to my Evil layer that generally improve the
   (setq evil-want-keybinding nil)
   :hook (after-init . evil-mode)
   :custom (evil-respect-visual-line-mode t))
+#+end_src
 
+**** Evil easymotion
+A port of vim easymotion. Buffer movement using character hints
+#+begin_src emacs-lisp
 (use-package evil-easymotion
   :ensure t
   :after evil
