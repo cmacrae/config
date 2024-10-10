@@ -696,7 +696,7 @@ I use [[https://www.passwordstore.org/][pass]] as my password manager, which com
 #+begin_src emacs-lisp
 (use-package password-store
   :ensure t
-  ;; :demand t
+  :demand t
   :bind
   ("C-x M-p" . password-store-copy)
   :custom
