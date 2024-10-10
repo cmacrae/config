@@ -1010,6 +1010,8 @@
         "terraform-mode": "terraform-mode",
         "treemacs": "treemacs",
         "treemacs-all-the-icons": "treemacs-all-the-icons",
+        "treemacs-evil": "treemacs-evil",
+        "treemacs-magit": "treemacs-magit",
         "treemacs-perspective": "treemacs-perspective",
         "treepy": "treepy",
         "vertico": "vertico",
@@ -1083,6 +1085,38 @@
       }
     },
     "treemacs-all-the-icons": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1723730834,
+        "narHash": "sha256-C4BrnV232sOrkjZuh3E6nSdKTi6gRUg/4Yb8g9TdZW8=",
+        "owner": "Alexander-Miller",
+        "repo": "treemacs",
+        "rev": "2377d231bcb4ff6841cbf6a7c1e4b6747e26ddd0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Alexander-Miller",
+        "repo": "treemacs",
+        "type": "github"
+      }
+    },
+    "treemacs-evil": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1723730834,
+        "narHash": "sha256-C4BrnV232sOrkjZuh3E6nSdKTi6gRUg/4Yb8g9TdZW8=",
+        "owner": "Alexander-Miller",
+        "repo": "treemacs",
+        "rev": "2377d231bcb4ff6841cbf6a7c1e4b6747e26ddd0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Alexander-Miller",
+        "repo": "treemacs",
+        "type": "github"
+      }
+    },
+    "treemacs-magit": {
       "flake": false,
       "locked": {
         "lastModified": 1723730834,

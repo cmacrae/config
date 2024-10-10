@@ -699,18 +699,13 @@ Sidebar filebrowser, very handy.
         ("C-x t C-t" . treemacs-find-file)
         ("C-x t M-t" . treemacs-find-tag)))
 
-;; (use-package treemacs-projectile
-;;   :ensure t
-;;   :after (treemacs projectile))
+(use-package treemacs-evil
+  :ensure t
+  :after (treemacs evil))
 
-;; (use-package treemacs-icons-dired
-;;   :ensure t
-;;   :hook (dired-mode . treemacs-icons-dired-enable-once)
-;;   :ensure t)
-;; 
-;; (use-package treemacs-magit
-;;   :ensure t
-;;   :after (treemacs magit))
+(use-package treemacs-magit
+  :ensure t
+  :after (treemacs magit))
 
 (use-package treemacs-all-the-icons
   :ensure t

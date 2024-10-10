@@ -385,6 +385,18 @@
       repo = "treemacs";
       type = "github";
     };
+    treemacs-evil = {
+      flake = false;
+      owner = "Alexander-Miller";
+      repo = "treemacs";
+      type = "github";
+    };
+    treemacs-magit = {
+      flake = false;
+      owner = "Alexander-Miller";
+      repo = "treemacs";
+      type = "github";
+    };
     treemacs-perspective = {
       flake = false;
       owner = "Alexander-Miller";
