@@ -139,29 +139,6 @@ Also, when typing =M-3=, insert an octothorp - I use a British keyboard.
   (funcall mode 0))
 #+end_src
 
-*** Comfier frame settings
-#+begin_src emacs-lisp
-;; (setq default-frame-alist
-;;       (append (list
-;;                '(undecorated-round     . t)
-;;                '(min-height            . 1)
-;;                '(height                . 45)
-;;                '(min-width             . 1)
-;;                '(width                 . 81)
-;;                '(vertical-scroll-bars  . nil)
-;;                '(left-fringe           . 1)
-;;                '(right-fringe          . 1)
-;;                '(tool-bar-lines        . 0)
-;;                '(menu-bar-lines        . 0))))
-;; 
-;; (modify-all-frames-parameters
-;;  '((right-divider-width . 10)
-;;    (internal-border-width . 20)))
-;; 
-(setq window-divider-default-places 'right-only)
-(window-divider-mode 1)
-#+end_src
-
 *** Set =fill-column=
 #+begin_src emacs-lisp
 (setq-default fill-column 80)
