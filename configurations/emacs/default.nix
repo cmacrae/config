@@ -35,8 +35,12 @@ in
 
   exportManifest = true;
   configurationRevision =
-    "${builtins.substring 0 8 self.lastModifiedDate}.${
-      if self ? rev then builtins.substring 0 7 self.rev else "dirty"
+    with builtins;
+    "${substring 0 8 self.lastModifiedDate}.${
+      if self ? rev then
+        substring 0 7 self.rev
+      else
+        "dirty.${substring 0 7 (hashFile "sha256" ./README.org)}"
     }";
 
   inputOverrides = import ./input-overrides.nix { inherit (pkgs) lib; };
