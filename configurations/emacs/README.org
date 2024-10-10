@@ -686,7 +686,6 @@ Sidebar filebrowser, very handy.
   (treemacs-workspace-switch-cleanup        nil)
   (treemacs-follow-mode                     t)
   (treemacs-filewatch-mode                  t)
-  (treemacs-git-commit-diff-mode            t)
   (treemacs-hide-gitignored-files-mode      nil)
   (treemacs-fringe-indicator-mode           nil)
   :bind
