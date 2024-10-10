@@ -192,9 +192,10 @@ in
     enable = true;
     emacsclient.enable = true;
     config = inputs.self.packages.${pkgs.stdenv.system}.emacs-env;
-    earlyInitFile = "${inputs.self}/configurations/emacs/early-init.el";
+    earlyInitFile = inputs.self.packages.${pkgs.stdenv.system}.emacs-early-init;
     createInitFile = true;
     createManifestFile = true;
+    icons.enable = false;
   };
 
   programs.fzf.enable = true;

@@ -55,28 +55,45 @@
     emacs-overlay.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs@{ self, nixpkgs, flake-parts, ez-configs, ... }:
+  outputs = inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = [ ez-configs.flakeModule ];
+      imports = [ inputs.ez-configs.flakeModule ];
 
-      systems = nixpkgs.lib.systems.flakeExposed;
+      systems = [
+        "aarch64-darwin"
+        "aarch64-linux"
+        "x86_64-linux"
+      ];
 
-      perSystem = { config, pkgs, system, emacs-env, ... }: {
-        _module.args.pkgs = import inputs.nixpkgs {
-          inherit system;
-          overlays = [
-            inputs.emacs-overlay.overlays.emacs
-            inputs.org-babel.overlays.default
-          ];
-          config = { };
-        };
+      perSystem = { config, pkgs, system, emacs-env, emacs-early-init, ... }: {
+        _module.args = {
+          pkgs = import inputs.nixpkgs {
+            inherit system;
+            overlays = [
+              inputs.emacs-overlay.overlays.emacs
+              inputs.org-babel.overlays.default
+            ];
+          };
 
-        _module.args.emacs-env = import ./configurations/emacs {
-          inherit inputs pkgs;
+          emacs-env = import ./configurations/emacs {
+            inherit inputs pkgs;
+          };
+
+          emacs-early-init =
+            let
+              org = inputs.org-babel.lib;
+            in
+            (pkgs.tangleOrgBabelFile "early-init.el" ./configurations/emacs/README.org {
+              processLines = org.selectHeadlines (org.tag "early");
+            });
+
+          config.extraSpecialArgs = {
+            inherit emacs-env emacs-early-init;
+          };
         };
 
         packages = {
-          inherit emacs-env;
+          inherit emacs-env emacs-early-init;
         };
 
         apps = emacs-env.makeApps {
@@ -85,9 +102,7 @@
       };
 
       ezConfigs = {
-        globalArgs = {
-          inherit inputs;
-        };
+        globalArgs = { inherit inputs; };
       } // builtins.listToAttrs (map
         (name: {
           inherit name;

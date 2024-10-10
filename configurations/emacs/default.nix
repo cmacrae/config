@@ -2,6 +2,7 @@
 let
   inherit (pkgs) lib;
   inherit (inputs) self;
+  org = inputs.org-babel.lib;
   emacsPackage = pkgs.emacs-pgtk;
 
   treeSitterLoadPath = lib.pipe pkgs.tree-sitter-grammars [
@@ -26,8 +27,13 @@ in
   inherit emacsPackage pkgs;
 
   lockDir = ./.lock;
-  initFiles = [ (pkgs.tangleOrgBabelFile "init.el" ./README.org { }) ];
+  initFiles = [
+    (pkgs.tangleOrgBabelFile "init.el" ./README.org {
+      processLines = org.excludeHeadlines (org.tag "early");
+    })
+  ];
 
+  exportManifest = true;
   configurationRevision =
     "${builtins.substring 0 8 self.lastModifiedDate}.${
       if self ? rev then builtins.substring 0 7 self.rev else "dirty"

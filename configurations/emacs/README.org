@@ -7,18 +7,18 @@ This is my collection of configurations for how I like to use Emacs :)
 While there are =use-package= statements throughout, package management is handled in Nix via [[https://github.com/emacs-twist][emacs-twist]].
 For packages to load, we rely on [[https://github.com/emacs-twist/twist.nix][twist.nix]]'s home-manager module, which wraps the Emacs executable, injecting a =load-path= comprised of Nix store paths for each package.
 
-* Early initialization
-#+begin_src emacs-lisp :tangle early-init.el :early:
+* Early initialization :early:
+#+begin_src emacs-lisp
 ;;; early-init.el --- Early Initialization -*- lexical-binding: t; -*-
 #+end_src
 *** Startup
 [[https://github.com/emacs-twist/twist.nix][twist.nix]] requires each =use-package= statement to have =:ensure t= set explicitly. In order to prevent =use-package= from trying to fulfill these requests, since package requirements are already satisfied through twist's =load-path= injection, we have to patch the fulfillment function to be a no-op.
-#+begin_src emacs-lisp :tangle early-init.el :early:
+#+begin_src emacs-lisp :early:
 (advice-add 'use-package-ensure-elpa :override (lambda (&rest _) nil))
 #+end_src
 
 Time the startup and display the startup time after completed.
-#+begin_src emacs-lisp :tangle early-init.el :early:
+#+begin_src emacs-lisp
 (add-hook 'emacs-startup-hook
           (lambda ()
             (message "Loaded Emacs in %.03fs"
@@ -26,7 +26,7 @@ Time the startup and display the startup time after completed.
 #+end_src
 
 Temporarily reduce garbage collection to gain some performance boost during startup.
-#+begin_src emacs-lisp :tangle early-init.el :early:
+#+begin_src emacs-lisp
 (let ((normal-gc-cons-threshold gc-cons-threshold)
       (normal-gc-cons-percentage gc-cons-percentage)
       (normal-file-name-handler-alist file-name-handler-alist)
@@ -44,7 +44,7 @@ Temporarily reduce garbage collection to gain some performance boost during star
 
 Inhibit startup screen and messages. If you are new to Emacs it is recommended to not
 disable the startup screen as it has great content to get you going.
-#+begin_src emacs-lisp :tangle early-init.el :early:
+#+begin_src emacs-lisp
 (setq inhibit-startup-echo-area-message t)
 (setq inhibit-startup-screen t)
 (setq initial-scratch-message nil)
@@ -52,17 +52,17 @@ disable the startup screen as it has great content to get you going.
 
 ** UI
 Don't implicitly resize frames when changing various settings.
-#+begin_src emacs-lisp :tangle early-init.el :early:
+#+begin_src emacs-lisp
 (setq frame-inhibit-implied-resize t)
 #+end_src
 
 Ignore X resources.
-#+begin_src emacs-lisp :tangle early-init.el :early:
+#+begin_src emacs-lisp
 (advice-add #'x-apply-session-resources :override #'ignore)
 #+end_src
 
 * Configuration
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 ;;; init.el --- Initialization -*- lexical-binding: t; -*-
 #+end_src
 ** General
