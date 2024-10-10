@@ -8,9 +8,8 @@ While there are =use-package= statements throughout, package management is handl
 For packages to load, we rely on [[https://github.com/emacs-twist/twist.nix][twist.nix]]'s home-manager module, which wraps the Emacs executable, injecting a =load-path= comprised of Nix store paths for each package.
 
 * Early initialization :early:
-#+begin_src emacs-lisp
-;;; early-init.el --- Early Initialization -*- lexical-binding: t; -*-
-#+end_src
+This block is tangled and propagated to =early-init.el= using twist's [[https://github.com/emacs-twist/org-babel][org-babel]] and [[https://github.com/emacs-twist/twist.nix][twist.nix]]'s home-manager module. It serves as configuration for early initialisation operations.
+
 *** Startup
 [[https://github.com/emacs-twist/twist.nix][twist.nix]] requires each =use-package= statement to have =:ensure t= set explicitly. In order to prevent =use-package= from trying to fulfill these requests, since package requirements are already satisfied through twist's =load-path= injection, we have to patch the fulfillment function to be a no-op.
 #+begin_src emacs-lisp :early:
@@ -62,9 +61,8 @@ Ignore X resources.
 #+end_src
 
 * Configuration
-#+begin_src emacs-lisp
-;;; init.el --- Initialization -*- lexical-binding: t; -*-
-#+end_src
+This block is tangled and propagated to =init.el= using twist's [[https://github.com/emacs-twist/org-babel][org-babel]] and [[https://github.com/emacs-twist/twist.nix][twist.nix]]'s home-manager module. It serves as the main configuration of my Emacs distribution.
+
 ** General
 *** About me
 Tell Emacs who's driving
@@ -976,7 +974,7 @@ Truly a joy to use - I wouldn't be the Git wizard I can be without it.
 #+end_src
 
 ** Auxiliary
-Packages that are not essential to my configuration, but enhance the quality of life greatly
+Configuration & packages that are not essential to my Emacs experience, but enhance the quality of life greatly
 
 *** org-mode
 Various pieces of configuration for the mighty org-mode.
