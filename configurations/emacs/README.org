@@ -202,6 +202,18 @@ I use =aspell=, so this simply sets [[https://www.emacswiki.org/emacs/FlySpell][
 Packages that build the foundation of my configuration.
 Mostly my preference for Emacs' completion system/interface, modal editing, project/workspace management, etc.
 
+*** exec-path-from-shell
+Correctly configures my Emacs environment based on the shell
+#+begin_src emacs-lisp
+(use-package exec-path-from-shell
+  :ensure t
+  :config
+  (when (or (memq window-system '(mac ns x pgtk))
+            (daemonp))
+    (exec-path-from-shell-initialize)
+    (exec-path-from-shell-copy-envs '("SSH_AUTH_SOCK" "GNUPGHOME"))))
+#+end_src
+
 *** Vertico
 Consistent, minimalistic completion UI
 #+begin_src emacs-lisp

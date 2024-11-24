@@ -432,6 +432,22 @@
         "type": "github"
       }
     },
+    "exec-path-from-shell": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1730963955,
+        "narHash": "sha256-fgOLqHOok6uUqlvMepkMGJZGG687QeNzawCDEdEvpNA=",
+        "owner": "purcell",
+        "repo": "exec-path-from-shell",
+        "rev": "4896a797252fbfdac32fb77508500ac7d220f717",
+        "type": "github"
+      },
+      "original": {
+        "owner": "purcell",
+        "repo": "exec-path-from-shell",
+        "type": "github"
+      }
+    },
     "expand-region": {
       "flake": false,
       "locked": {
@@ -973,6 +989,7 @@
         "evil-multiedit": "evil-multiedit",
         "evil-snipe": "evil-snipe",
         "evil-surround": "evil-surround",
+        "exec-path-from-shell": "exec-path-from-shell",
         "expand-region": "expand-region",
         "flycheck": "flycheck",
         "forge": "forge",

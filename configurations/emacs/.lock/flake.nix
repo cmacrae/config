@@ -163,6 +163,12 @@
       repo = "evil-surround";
       type = "github";
     };
+    exec-path-from-shell = {
+      flake = false;
+      owner = "purcell";
+      repo = "exec-path-from-shell";
+      type = "github";
+    };
     expand-region = {
       flake = false;
       owner = "magnars";
