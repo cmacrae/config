@@ -144,6 +144,12 @@ Also, when typing =M-3=, insert an octothorp - I use a British keyboard.
 (setq-default fill-column 80)
 #+end_src
 
+*** Never use tabs
+#+begin_src emacs-lisp
+(setq-default indent-tabs-mode nil)
+(setq tab-width 4)
+#+end_src
+
 *** winner-mode
 #+begin_src emacs-lisp
 (winner-mode 1)
