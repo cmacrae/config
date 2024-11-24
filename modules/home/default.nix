@@ -97,6 +97,12 @@ in
       use-agent = "";
       throw-keyids = "";
     };
+    scdaemonSettings = {
+      pcsc-driver = "${pkgs.pcsclite.lib}/lib/libpcsclite.so";
+      card-timeout = "5";
+      disable-ccid = "";
+      pcsc-shared = "";
+    };
   };
 
   services.gpg-agent = {
