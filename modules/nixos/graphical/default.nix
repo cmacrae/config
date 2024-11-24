@@ -161,6 +161,8 @@ in
 
           input = {
             follow_mouse = 1;
+            kb_layout = "gb";
+            kb_variant = "mac";
             kb_options = "ctrl:nocaps";
             sensitivity = "0.65";
             touchpad.natural_scroll = true;
