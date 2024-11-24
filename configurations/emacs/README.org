@@ -851,6 +851,20 @@ Automatic resizing of windows to the golden ratio
 #+end_src
 
 ** Appearance
+*** Font
+On Linux, use Roboto fonts
+#+begin_src emacs-lisp
+(when (eq system-type 'gnu/linux)
+  (let ((faces '((default . "Roboto Mono")
+                 (fixed-pitch . "Roboto Mono")
+                 (variable-pitch . "Roboto")
+                 (bold . "Roboto Mono Bold")
+                 (italic . "Roboto Mono Italic"))))
+    (dolist (face faces)
+      (when (find-font (font-spec :name (cdr face)))
+        (set-face-attribute (car face) nil :font (cdr face))))))
+#+end_src
+
 *** Theme
 Currently, I'm enjoying doom-one :)
 #+begin_src emacs-lisp
