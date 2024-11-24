@@ -2,7 +2,7 @@
 
 let
   inherit (lib) mkIf mkMerge;
-  inherit (pkgs.stdenv.hostPlatform) isDarwin isLinux;
+  inherit (pkgs.stdenv.hostPlatform) isDarwin;
 
 in
 {
@@ -52,8 +52,9 @@ in
   home.sessionVariables = {
     PAGER = "less -R";
     EDITOR = "emacsclient";
-    PATH = mkIf isDarwin "$PATH:/opt/homebrew/bin";
-  };
+  } // (mkIf isDarwin {
+    PATH = "$PATH:/opt/homebrew/bin";
+  });
 
   programs.git = {
     enable = true;
@@ -183,9 +184,6 @@ in
         "toolkit.telemetry.updatePing.enabled" = false;
       };
     }
-    (mkIf isLinux {
-      userChrome = builtins.readFile ../../conf.d/userChrome.css;
-    })
   ];
 
   programs.emacs-twist = {

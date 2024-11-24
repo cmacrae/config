@@ -1,0 +1,122 @@
+* {
+  font-family: FontAwesome, Roboto, Helvetica, Arial, sans-serif;
+  font-size: 13px;
+}
+
+window#waybar {
+   background-color: @base;
+   border: none;
+   color: @text;
+   transition-property: background-color;
+   transition-duration: .5s;
+}
+
+button {
+    box-shadow: inset 0 -3px transparent;
+    border: none;
+    border-radius: 0;
+}
+
+#clock,
+#battery,
+#cpu,
+#memory,
+#disk,
+#temperature,
+#backlight,
+#network,
+#pulseaudio,
+#wireplumber,
+#custom-notifications,
+#tray,
+#mode,
+#idle_inhibitor,
+#scratchpad,
+#mpd {
+    padding: 0 10px;
+    color: @text;
+}
+
+#workspaces button {
+    background: transparent;
+    color: @muted;
+}
+
+#workspaces button.active {
+    background: transparent;
+    color: @love;
+}
+
+.modules-left > widget:first-child > #workspaces {
+    margin-left: 0px;
+}
+
+.modules-center {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+#custom-notch {
+    background: transparent;
+    color: transparent;
+}
+
+#cava {
+    padding: 0 20px;
+    font-size: 10px;
+    color: @muted;
+    margin-left: 30px;
+}
+       
+#mpris {
+    margin-left: 5px;
+    color: @pine;
+}
+
+#custom-notifications {
+  color: @subtle;
+  font-size: 10px;
+}
+
+#bluetooth.disabled, #bluetooth.on {
+    color: @muted;
+}
+
+#bluetooth.connected {
+    color: @foam;
+}
+
+#network.disabled, #network.disconnected {
+    color: @muted;
+}
+
+#network.wifi {
+    color: @pine;
+}
+
+#wireplumber {
+    color: @rose;
+}
+
+#wireplumber.muted {
+    color: @muted;
+}
+
+#battery {
+    color: @foam;
+}
+
+#battery.full.charging {
+}
+
+#battery.warning:not(.charging) {
+    color: @gold;
+}
+
+#battery.critical:not(.charging) {
+    color: @love;
+}
+
+#clock {
+   color: @iris;
+}

@@ -124,7 +124,6 @@ Also, when typing =M-3=, insert an octothorp - I use a British keyboard.
 - Audible bell
 - Toolbar, tooltip, scrollbar, blinking cursor
 #+begin_src emacs-lisp
-
 (setq make-backup-files       nil
       create-lockfiles        nil
       auto-save-default       nil
@@ -134,6 +133,7 @@ Also, when typing =M-3=, insert an octothorp - I use a British keyboard.
 (dolist (mode
          '(tool-bar-mode
            tooltip-mode
+	   menu-bar-mode
            scroll-bar-mode
            blink-cursor-mode))
   (funcall mode 0))

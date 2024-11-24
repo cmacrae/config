@@ -13,7 +13,7 @@
   };
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-darwin.url = "github:NixOS/nixpkgs/nixpkgs-24.05-darwin";
 
     flake-parts.url = "github:hercules-ci/flake-parts";
@@ -28,20 +28,22 @@
 
     # FIXME: tracking a fork until issues discussed here are addressed 
     #        https://github.com/nix-community/home-manager/issues/3864
-    # url = "github:nix-community/home-manager/release-24.05";
-    home-manager.url = "github:cmacrae/home-manager/fix/gpg-agent_launchd";
+    home-manager.url = "github:nix-community/home-manager";
+    home-manager-darwin.url = "github:cmacrae/home-manager/fix/gpg-agent_launchd";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
     firefox-addons.url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
     firefox-addons.inputs.nixpkgs.follows = "nixpkgs";
 
+    disko.url = "github:nix-community/disko/latest";
+    disko.inputs.nixpkgs.follows = "nixpkgs";
+
+    stylix.url = "github:danth/stylix";
+    stylix.inputs.nixpkgs.follows = "nixpkgs";
+
     # Emacs
-    # FIXME: move back to default branch once this is merged
-    #        https://github.com/emacs-twist/twist.nix/pull/183
-    #        the elisp-helpers follow can go after the merge also.
-    elisp-helpers.url = "github:emacs-twist/elisp-helpers";
-    twist.url = "github:emacs-twist/twist.nix/non-overlay-api";
-    twist.inputs.elisp-helpers.follows = "elisp-helpers";
+    twist.url = "github:emacs-twist/twist.nix";
     org-babel.url = "github:emacs-twist/org-babel";
     emacs.url = "github:emacs-mirror/emacs";
     emacs.flake = false;

@@ -8,7 +8,7 @@ in
 
   imports = with inputs; [
     "${self}/modules/shared"
-    home-manager.darwinModules.home-manager
+    home-manager-darwin.darwinModules.home-manager
   ];
 
   # Recreate /run/current-system symlink after boot
