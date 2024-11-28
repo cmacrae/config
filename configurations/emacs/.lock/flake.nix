@@ -73,6 +73,12 @@
       repo = "dash.el";
       type = "github";
     };
+    devdocs = {
+      flake = false;
+      owner = "astoff";
+      repo = "devdocs.el";
+      type = "github";
+    };
     doom-themes = {
       flake = false;
       owner = "doomemacs";

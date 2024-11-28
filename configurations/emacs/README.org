@@ -864,6 +864,14 @@ Automatic resizing of windows to the golden ratio
   (golden-ratio-auto-scale t))
 #+end_src
 
+*** devdocs
+Developer documentation in Emacs
+#+begin_src emacs-lisp
+(use-package devdocs
+  :ensure t
+  :bind ("C-h D" . devdocs-lookup))
+#+end_src
+
 ** Appearance
 *** Font
 On Linux, use Roboto fonts
