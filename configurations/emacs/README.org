@@ -1045,6 +1045,11 @@ Language Server Protocol integration
   :mode "\\Dockerfile\\'")
 #+end_src
 
+*** just
+#+begin_src emacs-lisp
+(use-package just-mode :ensure t)
+#+end_src
+
 *** Swift
 No tree-sitter grammar available conveniently at the moment.
 Perhaps I'll try and package [[https://github.com/alex-pinkus/tree-sitter-swift/tree/main][this one]] at some point, but for now, let's just rely on regular swift-mode.

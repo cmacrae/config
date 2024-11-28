@@ -253,6 +253,12 @@
       repo = "jenkinsfile-mode";
       type = "github";
     };
+    just-mode = {
+      flake = false;
+      owner = "leon-barrett";
+      repo = "just-mode.el";
+      type = "github";
+    };
     lv = {
       flake = false;
       owner = "abo-abo";

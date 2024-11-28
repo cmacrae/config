@@ -672,6 +672,22 @@
         "type": "github"
       }
     },
+    "just-mode": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1713982154,
+        "narHash": "sha256-1BXUJdcFAlhIyzDSVSy74LTjZvXR55IlM/jIcKEQvVM=",
+        "owner": "leon-barrett",
+        "repo": "just-mode.el",
+        "rev": "4c0df4cc4b8798f1a7e99fb78b79c4bf7eec12c1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "leon-barrett",
+        "repo": "just-mode.el",
+        "type": "github"
+      }
+    },
     "lv": {
       "flake": false,
       "locked": {
@@ -1004,6 +1020,7 @@
         "iedit": "iedit",
         "inheritenv": "inheritenv",
         "jenkinsfile-mode": "jenkinsfile-mode",
+        "just-mode": "just-mode",
         "lv": "lv",
         "magit": "magit",
         "magit-section": "magit-section",
