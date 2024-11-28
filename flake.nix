@@ -33,6 +33,10 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     home-manager-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
+    # NOTE: currently private, working on releasing soon :)
+    limani.url = "github:cmacrae/limani";
+    limani.inputs.nixpkgs.follows = "nixpkgs";
+
     firefox-addons.url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
     firefox-addons.inputs.nixpkgs.follows = "nixpkgs";
 
