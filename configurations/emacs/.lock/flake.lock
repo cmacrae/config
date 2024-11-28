@@ -1024,6 +1024,7 @@
         "projectile": "projectile",
         "s": "s",
         "spacious-padding": "spacious-padding",
+        "swift-mode": "swift-mode",
         "terraform-mode": "terraform-mode",
         "treemacs": "treemacs",
         "treemacs-all-the-icons": "treemacs-all-the-icons",
@@ -1067,6 +1068,22 @@
       "original": {
         "owner": "protesilaos",
         "repo": "spacious-padding",
+        "type": "github"
+      }
+    },
+    "swift-mode": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1726893863,
+        "narHash": "sha256-BpIAlQcnLDB0HsB7aygy2Qta9GMf8N1wIabKV9hA15w=",
+        "owner": "swift-emacs",
+        "repo": "swift-mode",
+        "rev": "ab189d6e89ac4c0f776d691a41ddeaf9730260d1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "swift-emacs",
+        "repo": "swift-mode",
         "type": "github"
       }
     },

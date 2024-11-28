@@ -955,6 +955,7 @@ Language Server Protocol integration
     (dolist (mode '((nix-mode       . ("nil" :initializationOptions
                                              (:formatting (:command [ "nixpkgs-fmt" ]))))
                     (python-mode    . ("pylsp"))
+		    (swift-mode     . ("sourcekit-lsp"))
                     (terraform-mode . ("terraform-ls"))
                     (rust-mode      . ("rust-analyzer"))))
       (add-to-list 'eglot-server-programs mode))))
@@ -1042,6 +1043,14 @@ Language Server Protocol integration
 #+begin_src emacs-lisp
 (use-package dockerfile-ts-mode
   :mode "\\Dockerfile\\'")
+#+end_src
+
+*** Swift
+No tree-sitter grammar available conveniently at the moment.
+Perhaps I'll try and package [[https://github.com/alex-pinkus/tree-sitter-swift/tree/main][this one]] at some point, but for now, let's just rely on regular swift-mode.
+#+begin_src emacs-lisp
+(use-package swift-mode
+  :ensure t)
 #+end_src
 
 ** Custom functions

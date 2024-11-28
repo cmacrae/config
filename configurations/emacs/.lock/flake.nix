@@ -373,6 +373,12 @@
       repo = "spacious-padding";
       type = "github";
     };
+    swift-mode = {
+      flake = false;
+      owner = "swift-emacs";
+      repo = "swift-mode";
+      type = "github";
+    };
     terraform-mode = {
       flake = false;
       owner = "hcl-emacs";

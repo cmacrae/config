@@ -43,6 +43,7 @@ in
     ranger
     ripgrep
     rsync
+    sourcekit-lsp
     unzip
     up
     wget
