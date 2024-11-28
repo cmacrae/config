@@ -22,6 +22,7 @@
     home.packages = with pkgs; [
       awscli2
       terraform-ls
+      nodePackages.bash-language-server
     ];
 
     programs.limani.enable = true;
