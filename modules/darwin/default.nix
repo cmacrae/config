@@ -112,7 +112,111 @@ in
     useGlobalPkgs = true;
     useUserPackages = true;
     users.cmacrae = {
-      imports = [ inputs.self.homeModules.default ];
+      imports = [
+        inputs.self.homeModules.default
+        inputs.self.homeModules.aerospace
+      ];
+
+      programs.aerospace.enable = true;
+      programs.aerospace.config = {
+        enable-normalization-flatten-containers = true;
+        enable-normalization-opposite-orientation-for-nested-containers = true;
+        accordion-padding = 30;
+        default-root-container-layout = "tiles";
+        default-root-container-orientation = "auto";
+        on-focused-monitor-changed = [ "move-mouse monitor-lazy-center" ];
+        automatically-unhide-macos-hidden-apps = true;
+
+        key-mapping = {
+          preset = "qwerty";
+        };
+
+        gaps =
+          let
+            pad = 15;
+          in
+          {
+            inner.horizontal = pad;
+            inner.vertical = pad;
+            outer = {
+              left = pad;
+              bottom = pad;
+              top = pad;
+              right = pad;
+            };
+          };
+
+        mode = {
+          main.binding =
+            let
+              mkWorkspaceBindings = prefix: action:
+                builtins.listToAttrs (map
+                  (i: {
+                    name = "${prefix}${toString i}";
+                    value = "${action} ${toString i}";
+                  })
+                  (builtins.genList (x: x + 1) 9));
+
+              directionBindings = builtins.listToAttrs (builtins.concatMap
+                (dir: [
+                  { name = "cmd-ctrl-${dir.key}"; value = "focus ${dir.name}"; }
+                  { name = "cmd-ctrl-shift-${dir.key}"; value = "move ${dir.name}"; }
+                ])
+                [
+                  { key = "h"; name = "left"; }
+                  { key = "j"; name = "down"; }
+                  { key = "k"; name = "up"; }
+                  { key = "l"; name = "right"; }
+                ]);
+
+            in
+            {
+              "cmd-ctrl-slash" = "layout tiles horizontal vertical";
+              "cmd-ctrl-comma" = "layout accordion horizontal vertical";
+              "cmd-ctrl-n" = "workspace next";
+              "cmd-ctrl-p" = "workspace prev";
+              "cmd-ctrl-shift-n" = "move-node-to-workspace next";
+              "cmd-ctrl-shift-p" = "move-node-to-workspace prev";
+              "cmd-ctrl-minus" = "resize smart -50";
+              "cmd-ctrl-equal" = "resize smart +50";
+              "cmd-ctrl-tab" = "workspace-back-and-forth";
+              "cmd-ctrl-shift-tab" = "move-workspace-to-monitor --wrap-around next";
+              "cmd-ctrl-f" = "layout floating tiling";
+              "cmd-ctrl-semicolon" = "mode service";
+              "cmd-ctrl-a" = "mode apps";
+              "cmd-ctrl-r" = "mode resize";
+            }
+            // directionBindings
+            // mkWorkspaceBindings "cmd-ctrl-" "workspace"
+            // mkWorkspaceBindings "cmd-ctrl-shift-" "move-node-to-workspace";
+
+          apps.binding = {
+            "e" = [ "exec-and-forget zsh -c /etc/profiles/per-user/cmacrae/bin/emacs" "mode main" ];
+            "f" = [ "exec-and-forget open -a /Applications/Firefox.app --args '--profile ~/Library/Application\ Support/Firefox/Profiles/home'" "mode main" ];
+          };
+
+          service.binding = {
+            "a" = [ "layout accordion" "mode main" ];
+            "r" = [ "flatten-workspace-tree" "mode main" ];
+            "f" = [ "layout floating tiling" "mode main" ];
+            "backspace" = [ "close-all-windows-but-current" "mode main" ];
+            "cmd-ctrl-shift-h" = [ "join-with left" "mode main" ];
+            "cmd-ctrl-shift-j" = [ "join-with down" "mode main" ];
+            "cmd-ctrl-shift-k" = [ "join-with up" "mode main" ];
+            "cmd-ctrl-shift-l" = [ "join-with right" "mode main" ];
+          };
+
+          resize.binding = {
+            h = "resize width -50";
+            j = "resize height +50";
+            k = "resize height -50";
+            l = "resize width +50";
+            b = [ "balance-sizes" "mode main" ];
+            enter = "mode main";
+            esc = "mode main";
+          };
+        };
+      };
     };
   };
 }
