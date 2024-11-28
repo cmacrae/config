@@ -415,6 +415,12 @@
       repo = "treepy.el";
       type = "github";
     };
+    twist = {
+      flake = false;
+      owner = "emacs-twist";
+      repo = "twist.el";
+      type = "github";
+    };
     vertico = {
       flake = false;
       owner = "minad";

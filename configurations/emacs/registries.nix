@@ -1,6 +1,10 @@
 { inputs, emacsSrc }:
 [
   {
+    type = "melpa";
+    path = ./recipes;
+  }
+  {
     name = "gnu";
     type = "elpa";
     path = inputs.gnu-elpa.outPath + "/elpa-packages";

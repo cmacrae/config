@@ -749,6 +749,14 @@ Truly a joy to use - I wouldn't be the Git wizard I can be without it.
 ** Auxiliary
 Configuration & packages that are not essential to my Emacs experience, but enhance the quality of life greatly
 
+*** twist.el
+Supports hot-reloading configuration & packages when doing rebuilds with Nix
+#+begin_src emacs-lisp
+(use-package twist
+  :ensure t
+  :hook (after-init . twist-watch-mode))
+#+end_src
+
 *** org-mode
 Various pieces of configuration for the mighty org-mode.
 - org-modern brings a bit of style.
