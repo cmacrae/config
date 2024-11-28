@@ -14,7 +14,6 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixpkgs-darwin.url = "github:NixOS/nixpkgs/nixpkgs-24.05-darwin";
 
     flake-parts.url = "github:hercules-ci/flake-parts";
     flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
@@ -24,7 +23,7 @@
     ez-configs.inputs.flake-parts.follows = "flake-parts";
 
     darwin.url = "github:lnl7/nix-darwin/master";
-    darwin.inputs.nixpkgs.follows = "nixpkgs-darwin";
+    darwin.inputs.nixpkgs.follows = "nixpkgs";
 
     # FIXME: tracking a fork until issues discussed here are addressed 
     #        https://github.com/nix-community/home-manager/issues/3864
