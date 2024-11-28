@@ -115,6 +115,7 @@ in
       imports = [
         inputs.self.homeModules.default
         inputs.self.homeModules.aerospace
+        inputs.self.homeModules.jankyborders
       ];
 
       programs.aerospace.enable = true;
@@ -216,6 +217,13 @@ in
             esc = "mode main";
           };
         };
+      };
+
+      programs.jankyborders.enable = true;
+      programs.jankyborders.config = {
+        active_color = "0xffcdedfd";
+        inactive_color = "0xff494d64";
+        width = 8.0;
       };
     };
   };
