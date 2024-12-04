@@ -932,6 +932,16 @@ Automatically sets the titlebar colour on macOS to match the theme
   :hook (after-init . ns-auto-titlebar-mode))
 #+end_src
 
+*** mood-line
+Lightweight mode line
+#+begin_src emacs-lisp
+(use-package mood-line
+  :ensure t
+  :hook (after-init . mood-line-mode)
+  :custom
+  (mood-line-glyph-alist mood-line-glyphs-unicode))
+#+end_src
+
 ** Language Support
 All packages and configurations that enhance working with various programming/configuration/expression languages.
 

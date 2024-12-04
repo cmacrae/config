@@ -784,6 +784,22 @@
         "type": "github"
       }
     },
+    "mood-line": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1702214727,
+        "narHash": "sha256-Y9n0p3jO5Ol/uUigrRNfrfxD5aeeb98NjNSDtroRffc=",
+        "owner": "jessieh",
+        "repo": "mood-line",
+        "rev": "a15d166249f04b047a6136856e5be109357762d3",
+        "type": "gitlab"
+      },
+      "original": {
+        "owner": "jessieh",
+        "repo": "mood-line",
+        "type": "gitlab"
+      }
+    },
     "multi-vterm": {
       "flake": false,
       "locked": {
@@ -1043,6 +1059,7 @@
         "magit-section": "magit-section",
         "marginalia": "marginalia",
         "markdown-mode": "markdown-mode",
+        "mood-line": "mood-line",
         "multi-vterm": "multi-vterm",
         "nix-mode": "nix-mode",
         "nix-ts-mode": "nix-ts-mode",

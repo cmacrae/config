@@ -295,6 +295,12 @@
       repo = "markdown-mode";
       type = "github";
     };
+    mood-line = {
+      flake = false;
+      owner = "jessieh";
+      repo = "mood-line";
+      type = "gitlab";
+    };
     multi-vterm = {
       flake = false;
       owner = "suonlight";
