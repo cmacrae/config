@@ -69,7 +69,7 @@
     "darwin": {
       "inputs": {
         "nixpkgs": [
-          "nixpkgs-darwin"
+          "nixpkgs"
         ]
       },
       "locked": {
@@ -427,6 +427,26 @@
         "type": "github"
       }
     },
+    "limani": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1729432988,
+        "narHash": "sha256-oL8eq6JfR8biIvBei7cUu1iG5CdSYmFEjnywFrXPncw=",
+        "owner": "cmacrae",
+        "repo": "limani",
+        "rev": "d9d120785df5f574849604f9125cc22a3a8fafbf",
+        "type": "github"
+      },
+      "original": {
+        "owner": "cmacrae",
+        "repo": "limani",
+        "type": "github"
+      }
+    },
     "melpa": {
       "flake": false,
       "locked": {
@@ -455,22 +475,6 @@
       "original": {
         "owner": "NixOS",
         "ref": "nixos-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs-darwin": {
-      "locked": {
-        "lastModified": 1728940272,
-        "narHash": "sha256-zVl25LPDCt1l34AS7Ba4MPTxHQ8tkFL2hxVGEntmngI=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "8eec6bbcf05c919b19ce8dfb3f96cc4585d30cce",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "nixpkgs-24.05-darwin",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -534,9 +538,9 @@
         "gnu-elpa": "gnu-elpa",
         "home-manager": "home-manager",
         "home-manager-darwin": "home-manager-darwin",
+        "limani": "limani",
         "melpa": "melpa",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-darwin": "nixpkgs-darwin",
         "nongnu-elpa": "nongnu-elpa",
         "org-babel": "org-babel",
         "stylix": "stylix",
