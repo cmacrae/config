@@ -84,6 +84,7 @@ in
   homebrew.caskArgs.language = "en-GB";
 
   homebrew.casks = [
+    "claude"
     "discord"
     "element"
     "figma"
