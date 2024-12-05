@@ -50,12 +50,13 @@ in
     yt-dlp
   ];
 
-  home.sessionVariables = {
-    PAGER = "less -R";
-    EDITOR = "emacsclient";
-  } // (mkIf isDarwin {
-    PATH = "$PATH:/opt/homebrew/bin";
-  });
+  home.sessionVariables = mkMerge [
+    {
+      PAGER = "less -R";
+      EDITOR = "emacsclient";
+    }
+    (mkIf isDarwin { PATH = "$PATH:/opt/homebrew/bin"; })
+  ];
 
   programs.git = {
     enable = true;
