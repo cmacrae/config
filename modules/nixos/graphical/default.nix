@@ -170,9 +170,6 @@ in
 
           input = {
             follow_mouse = 1;
-            kb_layout = "gb";
-            kb_variant = "mac";
-            kb_options = "ctrl:nocaps";
             sensitivity = "0.65";
             touchpad.natural_scroll = true;
           };
@@ -267,28 +264,16 @@ in
             "$mainMod,B,togglesplit,"
             "$mainMod,TAB,focuscurrentorlast,"
 
+            # Colemak
+            "$mainMod,m,movefocus,l"
+            "$mainMod,i,movefocus,r"
+            "$mainMod,e,movefocus,u"
+            "$mainMod,n,movefocus,d"
 
-            # NOTE: colemak
-            # "$mainMod,m,movefocus,l"
-            # "$mainMod,i,movefocus,r"
-            # "$mainMod,e,movefocus,u"
-            # "$mainMod,n,movefocus,d"
-
-            "$mainMod,h,movefocus,l"
-            "$mainMod,l,movefocus,r"
-            "$mainMod,k,movefocus,u"
-            "$mainMod,j,movefocus,d"
-
-            # NOTE: colemak
-            # "$mainMod SHIFT,m,movewindow,l"
-            # "$mainMod SHIFT,i,movewindow,r"
-            # "$mainMod SHIFT,e,movewindow,u"
-            # "$mainMod SHIFT,n,movewindow,d"
-
-            "$mainMod SHIFT,h,movewindow,l"
-            "$mainMod SHIFT,l,movewindow,r"
-            "$mainMod SHIFT,k,movewindow,u"
-            "$mainMod SHIFT,j,movewindow,d"
+            "$mainMod SHIFT,m,movewindow,l"
+            "$mainMod SHIFT,i,movewindow,r"
+            "$mainMod SHIFT,e,movewindow,u"
+            "$mainMod SHIFT,n,movewindow,d"
 
             "$mainMod CTRL,n,workspace,e+1"
             "$mainMod CTRL,e,workspace,e-1"
@@ -297,6 +282,8 @@ in
 
             "$mainMod,g,togglegroup"
             "$mainMod,tab,changegroupactive"
+
+            "$mainMod,grave,submap,qwerty"
           ] ++ (
             (flr: ceil:
               with builtins;
@@ -309,6 +296,20 @@ in
                 )
                 (ceil - flr + 1))) 1 9
           );
+
+          submap.qwerty.bind = [
+            # QWERTY
+            "$mainMod,h,movefocus,l"
+            "$mainMod,l,movefocus,r"
+            "$mainMod,k,movefocus,u"
+            "$mainMod,j,movefocus,d"
+            "$mainMod SHIFT,h,movewindow,l"
+            "$mainMod SHIFT,l,movewindow,r"
+            "$mainMod SHIFT,k,movewindow,u"
+            "$mainMod SHIFT,j,movewindow,d"
+
+            "$mainMod,grave,submap,reset"
+          ];
         };
       };
 
