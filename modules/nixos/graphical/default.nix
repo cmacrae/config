@@ -24,6 +24,15 @@ in
   fonts.enableDefaultPackages = true;
 
   # Bluetooth
+  # NOTE to self:
+  # bluetoothctl:
+  # power on
+  # agent on
+  # default-agent
+  # scan on
+  # pair XX:XX:XX:XX:XX:XX
+  # trust XX:XX:XX:XX:XX:XX
+  # connect XX:XX:XX:XX:XX:XX
   hardware.bluetooth.enable = true;
 
   # Screen
