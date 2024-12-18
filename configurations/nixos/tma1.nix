@@ -16,6 +16,20 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  # Disable on-board wifi interface
+  boot.blacklistedKernelModules = [
+    "mt7921e"
+    "mt7921_common"
+    "mt792x_lib"
+    "mt76_connac_lib"
+    "mt76"
+  ];
+
+  # Disable on-board bluetooth controller
+  services.udev.extraRules = ''
+    ACTION=="add", SUBSYSTEM=="bluetooth", ATTR{address}=="D8:80:83:33:A0:C6", ENV{DEVTYPE}=="bluetooth", TEST=="power/control", ATTR{power/control}="off"
+  '';
+
   disko.devices.disk.main = {
     type = "disk";
     content.type = "gpt";
