@@ -170,7 +170,7 @@ in
             if isMacBook then
               "eDP-1,highres,auto,1.600000"
             else
-              "DP-1,3840x2160@240,auto,1.333333";
+              "DP-1,3840x2160@240,auto,1";
 
           input = {
             follow_mouse = 1;
