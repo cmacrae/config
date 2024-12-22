@@ -79,6 +79,19 @@
 
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/rose-pine.yaml";
 
+  programs.gamemode.enable = true;
+  programs.gamemode.settings = {
+    gpu.apply_gpu_optimisations = "accept-responsibility";
+    gpu.gpu_device = 1;
+    gpu.amd_performance_level = "high";
+
+    custom = {
+      start = "${pkgs.libnotify}/bin/notify-send 'GameMode started'";
+      end = "${pkgs.libnotify}/bin/notify-send 'GameMode ended'";
+    };
+  };
+  users.users.cmacrae.extraGroups = [ "gamemode" ];
+
   programs.steam = {
     enable = true;
   };
