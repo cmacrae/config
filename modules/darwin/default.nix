@@ -148,31 +148,17 @@ in
             };
           };
 
-        mode = {
-          main.binding =
-            let
-              mkWorkspaceBindings = prefix: action:
-                builtins.listToAttrs (map
-                  (i: {
-                    name = "${prefix}${toString i}";
-                    value = "${action} ${toString i}";
-                  })
-                  (builtins.genList (x: x + 1) 9));
+        mode =
+          let
+            mkWorkspaceBindings = prefix: action:
+              builtins.listToAttrs (map
+                (i: {
+                  name = "${prefix}${toString i}";
+                  value = "${action} ${toString i}";
+                })
+                (builtins.genList (x: x + 1) 9));
 
-              directionBindings = builtins.listToAttrs (builtins.concatMap
-                (dir: [
-                  { name = "cmd-ctrl-${dir.key}"; value = "focus ${dir.name}"; }
-                  { name = "cmd-ctrl-shift-${dir.key}"; value = "move ${dir.name}"; }
-                ])
-                [
-                  { key = "h"; name = "left"; }
-                  { key = "j"; name = "down"; }
-                  { key = "k"; name = "up"; }
-                  { key = "l"; name = "right"; }
-                ]);
-
-            in
-            {
+            commonBindings = {
               "cmd-ctrl-slash" = "layout tiles horizontal vertical";
               "cmd-ctrl-comma" = "layout accordion horizontal vertical";
               "cmd-ctrl-n" = "workspace next";
@@ -187,37 +173,70 @@ in
               "cmd-ctrl-semicolon" = "mode service";
               "cmd-ctrl-a" = "mode apps";
               "cmd-ctrl-r" = "mode resize";
-            }
-            // directionBindings
-            // mkWorkspaceBindings "cmd-ctrl-" "workspace"
-            // mkWorkspaceBindings "cmd-ctrl-shift-" "move-node-to-workspace";
+              "cmd-ctrl-backtick" = "mode colemak";
+            };
 
-          apps.binding = {
-            "e" = [ "exec-and-forget zsh -c /etc/profiles/per-user/cmacrae/bin/emacs" "mode main" ];
-            "f" = [ "exec-and-forget open -a /Applications/Firefox.app --args '--profile ~/Library/Application\ Support/Firefox/Profiles/home'" "mode main" ];
-          };
+            layouts = {
+              qwerty = [
+                { key = "h"; dir = "left"; }
+                { key = "j"; dir = "down"; }
+                { key = "k"; dir = "up"; }
+                { key = "l"; dir = "right"; }
+              ];
+              colemak = [
+                { key = "m"; dir = "left"; }
+                { key = "n"; dir = "down"; }
+                { key = "e"; dir = "up"; }
+                { key = "i"; dir = "right"; }
+              ];
+            };
 
-          service.binding = {
-            "a" = [ "layout accordion" "mode main" ];
-            "r" = [ "flatten-workspace-tree" "mode main" ];
-            "f" = [ "layout floating tiling" "mode main" ];
-            "backspace" = [ "close-all-windows-but-current" "mode main" ];
-            "cmd-ctrl-shift-h" = [ "join-with left" "mode main" ];
-            "cmd-ctrl-shift-j" = [ "join-with down" "mode main" ];
-            "cmd-ctrl-shift-k" = [ "join-with up" "mode main" ];
-            "cmd-ctrl-shift-l" = [ "join-with right" "mode main" ];
-          };
+            makeDirectionBindings = directions:
+              builtins.listToAttrs (builtins.concatMap
+                (d: [
+                  { name = "cmd-ctrl-${d.key}"; value = "focus ${d.dir}"; }
+                  { name = "cmd-ctrl-shift-${d.key}"; value = "move ${d.dir}"; }
+                ])
+                directions);
+          in
+          {
+            main.binding = commonBindings //
+              (makeDirectionBindings layouts.qwerty) //
+              mkWorkspaceBindings "cmd-ctrl-" "workspace" //
+              mkWorkspaceBindings "cmd-ctrl-shift-" "move-node-to-workspace";
 
-          resize.binding = {
-            h = "resize width -50";
-            j = "resize height +50";
-            k = "resize height -50";
-            l = "resize width +50";
-            b = [ "balance-sizes" "mode main" ];
-            enter = "mode main";
-            esc = "mode main";
+            colemak.binding = commonBindings //
+              (makeDirectionBindings layouts.colemak) //
+              mkWorkspaceBindings "cmd-ctrl-" "workspace" //
+              mkWorkspaceBindings "cmd-ctrl-shift-" "move-node-to-workspace" //
+              { "cmd-ctrl-backtick" = "mode main"; };
+
+            apps.binding = {
+              "e" = [ "exec-and-forget zsh -c /etc/profiles/per-user/cmacrae/bin/emacs" "mode main" ];
+              "f" = [ "exec-and-forget open -a /Applications/Firefox.app --args '--profile ~/Library/Application\ Support/Firefox/Profiles/home'" "mode main" ];
+            };
+
+            service.binding = {
+              "a" = [ "layout accordion" "mode main" ];
+              "r" = [ "flatten-workspace-tree" "mode main" ];
+              "f" = [ "layout floating tiling" "mode main" ];
+              "backspace" = [ "close-all-windows-but-current" "mode main" ];
+              "cmd-ctrl-shift-h" = [ "join-with left" "mode main" ];
+              "cmd-ctrl-shift-j" = [ "join-with down" "mode main" ];
+              "cmd-ctrl-shift-k" = [ "join-with up" "mode main" ];
+              "cmd-ctrl-shift-l" = [ "join-with right" "mode main" ];
+            };
+
+            resize.binding = {
+              h = "resize width -50";
+              j = "resize height +50";
+              k = "resize height -50";
+              l = "resize width +50";
+              b = [ "balance-sizes" "mode main" ];
+              enter = "mode main";
+              esc = "mode main";
+            };
           };
-        };
       };
 
       programs.jankyborders.enable = true;
