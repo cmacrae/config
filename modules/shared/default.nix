@@ -12,11 +12,7 @@ in
 
   system.configurationRevision = inputs.self.rev or null;
 
-  # TODO: use predicate
   nixpkgs.config.allowUnfree = true;
-  # nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-  #   "betterttv"
-  # ];
 
   nix = {
     settings = {
