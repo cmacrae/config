@@ -119,7 +119,7 @@ in
         inputs.self.homeModules.jankyborders
       ];
 
-      programs.aerospace.enable = true;
+      programs.aerospace.enable = pkgs.lib.mkDefault true;
       programs.aerospace.config = {
         enable-normalization-flatten-containers = true;
         enable-normalization-opposite-orientation-for-nested-containers = true;
@@ -239,7 +239,7 @@ in
           };
       };
 
-      programs.jankyborders.enable = true;
+      programs.jankyborders.enable = pkgs.lib.mkDefault true;
       programs.jankyborders.config = {
         active_color = "0xffcdedfd";
         inactive_color = "0xff494d64";
