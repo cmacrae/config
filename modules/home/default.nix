@@ -17,6 +17,7 @@ in
 
   home.stateVersion = "24.05";
   home.packages = with pkgs; [
+    _1password-cli
     aspell
     aspellDicts.en
     aspellDicts.en-computers
@@ -48,6 +49,7 @@ in
     up
     wget
     yt-dlp
+    yubikey-manager
   ];
 
   home.sessionVariables = mkMerge [
@@ -58,66 +60,23 @@ in
     (mkIf isDarwin { PATH = "$PATH:/opt/homebrew/bin"; })
   ];
 
+  services.yubikey-agent.enable = true;
+
   programs.git = {
     enable = true;
     userName = osConfig.users.users.cmacrae.description;
     userEmail = "hi@cmacr.ae";
-    signing.key = "CED5DD2923023B37!";
-    signing.signByDefault = true;
-    extraConfig.github.user = "cmacrae";
-  };
-
-  programs.gpg = {
-    enable = true;
-    mutableKeys = false;
-    mutableTrust = false;
-    publicKeys = [{
-      trust = 5;
-      source = builtins.fetchurl {
-        url = "https://github.com/cmacrae.gpg";
-        sha256 = "0s9qs9r85mrhjs360zzra5ig93rrkbaqqx4ws3xx6mnkxryp7yis";
-      };
-    }];
-    settings = {
-      personal-cipher-preferences = "AES256 AES192 AES";
-      personal-compress-preferences = "ZLIB BZIP2 ZIP Uncompressed";
-      default-preference-list = "SHA512 SHA384 SHA256 AES256 AES192 AES ZLIB BZIP2 ZIP Uncompressed";
-      cert-digest-algo = "SHA512";
-      s2k-digest-algo = "SHA512";
-      s2k-cipher-algo = "AES256";
-      charset = "utf-8";
-      fixed-list-mode = "";
-      no-comments = "";
-      no-emit-version = "";
-      no-greeting = "";
-      keyid-format = "0xlong";
-      list-options = "show-uid-validity";
-      verify-options = "show-uid-validity";
-      with-fingerprint = "";
-      require-cross-certification = "";
-      no-symkey-cache = "";
-      use-agent = "";
-      throw-keyids = "";
-    };
-    scdaemonSettings = {
-      pcsc-driver = "${pkgs.pcsclite.lib}/lib/libpcsclite.so";
-      card-timeout = "5";
-      disable-ccid = "";
-      pcsc-shared = "";
+    extraConfig = {
+      github.user = "cmacrae";
+      commit.gpgsign = true;
+      gpg.format = "ssh";
+      gpg.ssh.allowedSignersFile = "~/.ssh/allowed_signers";
+      user.signingkey = "key::ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBHiZYIZ2NSdSvI2aZKDSv1OV9NiXRkQmagsW59vl+/WzObf16IbQLfCmtZePt6rdW7584xgdoZos4ivSk/g+Fdk=";
     };
   };
 
-  services.gpg-agent = {
-    enable = true;
-    enableZshIntegration = true;
-    enableSshSupport = true;
-    sshKeys = [ "4F39E235299187ED7B9A8049A85F3EE3488CF521" ];
-    pinentryPackage = if isDarwin then pkgs.pinentry_mac else pkgs.pinentry-qt;
-    extraConfig = ''
-      allow-emacs-pinentry
-      allow-loopback-pinentry
-    '';
-  };
+  home.file.".ssh/allowed_signers".text =
+    "* ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBHiZYIZ2NSdSvI2aZKDSv1OV9NiXRkQmagsW59vl+/WzObf16IbQLfCmtZePt6rdW7584xgdoZos4ivSk/g+Fdk=";
 
   programs.direnv.enable = true;
   programs.direnv.nix-direnv.enable = true;
@@ -139,10 +98,12 @@ in
       {
         id = 0;
         extensions = with inputs.firefox-addons.packages.${pkgs.stdenv.system}; [
-          browserpass
           consent-o-matic
           metamask
           multi-account-containers
+          # FIXME: cannot get unfree working with flakes
+          #        manually installing for now...
+          # onepassword-password-manager #1password
           reddit-enhancement-suite
           ublock-origin
           vimium
@@ -210,9 +171,6 @@ in
 
   programs.fzf.enable = true;
   programs.fzf.enableZshIntegration = true;
-
-  programs.browserpass.enable = true;
-  programs.browserpass.browsers = [ "firefox" ];
 
   programs.zsh = {
     enable = true;

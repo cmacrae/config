@@ -84,6 +84,7 @@ in
   homebrew.caskArgs.language = "en-GB";
 
   homebrew.casks = [
+    "1password"
     "claude"
     "discord"
     "element"
@@ -92,6 +93,7 @@ in
     "keepingyouawake"
     "notion"
     "spotify"
+    "yubico-yubikey-manager"
   ];
 
   # TODO: previously used this to keep casks up to date
