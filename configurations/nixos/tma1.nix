@@ -32,6 +32,37 @@
     "mt76"
   ];
 
+  # Disable PCIe power management
+  # Causes issues with I225-V network controller
+  boot.kernelParams = [ "pcie_aspm=off" ];
+
+  # Driver options for igc (Intel I225-V driver)
+  # Use legacy interrupt mode instead of MSI-X
+  boot.extraModprobeConfig = ''
+    options igc IntMode=1
+  '';
+
+  # Fix Intel I225-V network dropout issues
+  systemd.services.fix-i225v = {
+    description = "Disable problematic offload features on Intel I225-V";
+    after = [ "network-pre.target" ];
+    before = [ "network.target" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = pkgs.writeShellScript "fix-i225v" ''
+        # Disable UDP segmentation offloads that cause issues on I225-V
+        ${pkgs.ethtool}/bin/ethtool -K eno1 tx-udp-segmentation off
+        ${pkgs.ethtool}/bin/ethtool -K eno1 tx-udp_tnl-segmentation off
+        ${pkgs.ethtool}/bin/ethtool -K eno1 tx-udp_tnl-csum-segmentation off
+        # Some users also need to disable generic segmentation
+        ${pkgs.ethtool}/bin/ethtool -K eno1 gso off || true
+        ${pkgs.ethtool}/bin/ethtool -K eno1 tso off || true
+      '';
+    };
+  };
+
   # Disable on-board bluetooth controller
   services.udev.extraRules = ''
     ACTION=="add", SUBSYSTEM=="bluetooth", ATTR{address}=="D8:80:83:33:A0:C6", ENV{DEVTYPE}=="bluetooth", TEST=="power/control", ATTR{power/control}="off"
