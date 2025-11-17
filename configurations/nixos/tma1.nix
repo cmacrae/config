@@ -1,4 +1,4 @@
-{ inputs, pkgs, ... }:
+{ inputs, pkgs, osConfig, ... }:
 {
   nixpkgs.hostPlatform = "x86_64-linux";
   networking.hostName = "tma1";
@@ -185,5 +185,71 @@
       media_player_color = "ffffff";
       network_color = "ffffff";
     };
+
+    programs.firefox.enable = true;
+    programs.firefox.languagePacks = [ "en-GB" ];
+    programs.firefox.profiles.home = pkgs.lib.mkMerge
+      [
+        {
+          id = 0;
+          extensions = with inputs.firefox-addons.packages.${pkgs.stdenv.system}; [
+            browserpass
+            consent-o-matic
+            metamask
+            multi-account-containers
+            reddit-enhancement-suite
+            ublock-origin
+            vimium
+          ];
+
+          search.default = "DuckDuckGo";
+          search.force = true;
+
+          settings = {
+            "app.update.auto" = false;
+            "app.normandy.enabled" = false;
+            "beacon.enabled" = false;
+            "browser.startup.homepage" = "https://lobste.rs";
+            "browser.search.region" = "GB";
+            "browser.search.countryCode" = "GB";
+            "browser.search.hiddenOneOffs" = "Google,Amazon.com,Bing";
+            "browser.search.isUS" = false;
+            "browser.ctrlTab.recentlyUsedOrder" = false;
+            "browser.newtabpage.enabled" = false;
+            "browser.bookmarks.showMobileBookmarks" = true;
+            "browser.uidensity" = 1;
+            "browser.urlbar.update" = true;
+            "datareporting.healthreport.service.enabled" = false;
+            "datareporting.healthreport.uploadEnabled" = false;
+            "datareporting.policy.dataSubmissionEnabled" = false;
+            "distribution.searchplugins.defaultLocale" = "en-GB";
+            "extensions.getAddons.cache.enabled" = false;
+            "extensions.getAddons.showPane" = false;
+            "extensions.pocket.enabled" = false;
+            "extensions.webservice.discoverURL" = "";
+            "general.useragent.locale" = "en-GB";
+            "identity.fxaccounts.account.device.name" = osConfig.networking.hostName;
+            "privacy.donottrackheader.enabled" = true;
+            "privacy.donottrackheader.value" = 1;
+            "privacy.trackingprotection.enabled" = true;
+            "privacy.trackingprotection.cryptomining.enabled" = true;
+            "privacy.trackingprotection.fingerprinting.enabled" = true;
+            "privacy.trackingprotection.socialtracking.enabled" = true;
+            "privacy.trackingprotection.socialtracking.annotate.enabled" = true;
+            "reader.color_scheme" = "auto";
+            "services.sync.declinedEngines" = "addons,passwords,prefs";
+            "services.sync.engine.addons" = false;
+            "services.sync.engineStatusChanged.addons" = true;
+            "services.sync.engine.passwords" = false;
+            "services.sync.engine.prefs" = false;
+            "services.sync.engineStatusChanged.prefs" = true;
+            "signon.rememberSignons" = false;
+            "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+            "toolkit.telemetry.enabled" = false;
+            "toolkit.telemetry.rejected" = true;
+            "toolkit.telemetry.updatePing.enabled" = false;
+          };
+        }
+      ];
   };
 }
