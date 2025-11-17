@@ -115,11 +115,11 @@
   };
 
   stylix.image = builtins.fetchurl {
-    url = "https://w.wallhaven.cc/full/d6/wallhaven-d6mg33.png";
-    sha256 = "01vhwfx2qsvxgcrhbyx5d0c6c0ahjp50qy147638m7zfinhk70vx";
+    url = "https://gruvbox-wallpapers.pages.dev/wallpapers/minimalistic/light/gruv-buildings.png";
+    sha256 = "0jh6l3crk49wdsfg88xq8xr26z33nz2jlwscvxlcnpl5qb5nqfm9";
   };
 
-  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/rose-pine.yaml";
+  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-light-soft.yaml";
 
   programs.gamemode.enable = true;
   programs.gamemode.settings = {

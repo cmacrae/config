@@ -1,8 +1,7 @@
-{
-  config,
-  pkgs,
-  inputs,
-  ...
+{ config
+, pkgs
+, inputs
+, ...
 }:
 
 let
@@ -64,6 +63,8 @@ in
     auth include system-auth
   '';
 
+  qt.enable = true;
+
   # Storage Management
   services.udisks2.enable = true;
 
@@ -90,27 +91,27 @@ in
 
   home-manager.users.cmacrae =
     let
-      rose-pine = with config.lib.stylix.colors; {
-        base = base00;
-        surface = base01;
-        overlay = base02;
-        muted = base03;
-        subtle = base04;
-        text = base05;
-        love = base08;
-        gold = base09;
-        rose = base0A;
-        pine = base0B;
-        foam = base0C;
-        iris = base0D;
+      theme = {
+        inherit (config.lib.stylix.colors)
+          base00
+          base01
+          base02
+          base03
+          base04
+          base05
+          base08
+          base09
+          base0A
+          base0B
+          base0C
+          base0D
+          ;
       };
 
-      cssWithRosePine =
-        file:
-        pkgs.lib.concatStringsSep "\n" (
-          pkgs.lib.mapAttrsToList (name: value: "@define-color ${name} #${value};") rose-pine
-        )
-        + builtins.readFile file;
+      cssWithTheme = file: pkgs.lib.concatStringsSep "\n"
+        (pkgs.lib.mapAttrsToList
+          (name: value: "@define-color ${name} #${value};")
+          theme) + builtins.readFile file;
     in
     {
       imports = [ inputs.self.homeModules.swaync ];
@@ -138,6 +139,7 @@ in
       };
 
       home.packages = with pkgs; [
+        _1password-gui
         chatterino2
         discord
         emacs-all-the-icons-fonts
@@ -190,17 +192,12 @@ in
             gaps_in = 5;
             gaps_out = 12;
             border_size = 3;
-            "col.active_border" = "0xff${rose-pine.iris}";
-            "col.inactive_border" = "0xff${rose-pine.muted}";
+            "col.active_border" = "0xff${theme.base0D}";
+            "col.inactive_border" = "0xff${theme.base03}";
           };
 
           decoration = {
             rounding = 0;
-            drop_shadow = true;
-            shadow_range = 100;
-            shadow_render_power = 5;
-            "col.shadow" = "0x33000000";
-            "col.shadow_inactive" = "0x22000000";
           };
 
           animations = {
@@ -295,22 +292,24 @@ in
           ++ (
             (
               flr: ceil:
-              with builtins;
-              concatLists (
-                genList (
-                  n:
-                  let
-                    i = toString (flr + n);
-                  in
-                  [
-                    "$mainMod,${i},workspace,${i}"
-                    "$mainMod SHIFT,${i},movetoworkspace,${i}"
-                  ]
-                ) (ceil - flr + 1)
-              )
+                with builtins;
+                concatLists (
+                  genList
+                    (
+                      n:
+                      let
+                        i = toString (flr + n);
+                      in
+                      [
+                        "$mainMod,${i},workspace,${i}"
+                        "$mainMod SHIFT,${i},movetoworkspace,${i}"
+                      ]
+                    )
+                    (ceil - flr + 1)
+                )
             )
-            1
-            9
+              1
+              9
           );
 
           submap.qwerty.bind = [
@@ -335,7 +334,7 @@ in
         main.term = "xterm-256color";
         main.font = with config.stylix.fonts; "${monospace.name}:size=${builtins.toString sizes.terminal}";
         mouse.hide-when-typing = "yes";
-        cursor.color = "${rose-pine.base} ${rose-pine.text}";
+        cursor.color = "${theme.base00} ${theme.base05}";
       };
 
       programs.fuzzel = {
@@ -467,7 +466,7 @@ in
                   <span rise='-2000'>
                 '';
                 dot = ''
-                  <span foreground='#${rose-pine.love}'><sup></sup></span></span>
+                  <span foreground='#${theme.base08}'><sup></sup></span></span>
                 '';
               in
               {
@@ -503,24 +502,22 @@ in
               min-length = 33;
               max-length = 33;
               format =
-                with rose-pine;
-                "{status_icon}  <span foreground='#${iris}'>{artist}</span> ࢇ <span foreground='#${foam}'> {title}</span>";
+                "{status_icon}  <span foreground='#${theme.base0D}'>{artist}</span> ࢇ <span foreground='#${theme.base0C}'> {title}</span>";
               dynamic-len = 30;
               player-icons.default = "▶";
-              player-icons.firefox = "";
               status-icons.playing = "";
               status-icons.paused = "⏸";
             };
           };
 
-        style = cssWithRosePine ./waybar.css;
+        style = cssWithTheme ./waybar.css;
       };
 
       services.playerctld.enable = true;
 
       programs.swaync.enable = true;
       programs.swaync.systemd.enable = true;
-      programs.swaync.style = cssWithRosePine ./swaync.css;
+      programs.swaync.style = cssWithTheme ./swaync.css;
 
       programs.swaync.settings = {
         notification-icon-size = 44;

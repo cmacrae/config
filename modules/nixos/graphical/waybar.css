@@ -4,9 +4,9 @@
 }
 
 window#waybar {
-   background-color: @base;
+   background-color: @base00;
    border: none;
-   color: @text;
+   color: @base05;
    transition-property: background-color;
    transition-duration: .5s;
 }
@@ -34,17 +34,17 @@ button {
 #scratchpad,
 #mpd {
     padding: 0 10px;
-    color: @text;
+    color: @base05;
 }
 
 #workspaces button {
     background: transparent;
-    color: @muted;
+    color: @base03;
 }
 
 #workspaces button.active {
     background: transparent;
-    color: @love;
+    color: @base08;
 }
 
 .modules-left > widget:first-child > #workspaces {
@@ -64,59 +64,59 @@ button {
 #cava {
     padding: 0 20px;
     font-size: 10px;
-    color: @muted;
+    color: @base03;
     margin-left: 30px;
 }
        
 #mpris {
     margin-left: 5px;
-    color: @pine;
+    color: @base0B;
 }
 
 #custom-notifications {
-  color: @subtle;
+  color: @base04;
   font-size: 10px;
 }
 
 #bluetooth.disabled, #bluetooth.on {
-    color: @muted;
+    color: @base03;
 }
 
 #bluetooth.connected {
-    color: @foam;
+    color: @base0C;
 }
 
 #network.disabled, #network.disconnected {
-    color: @muted;
+    color: @base03;
 }
 
 #network.wifi {
-    color: @pine;
+    color: @base0B;
 }
 
 #wireplumber {
-    color: @rose;
+    color: @base0A;
 }
 
-#wireplumber.muted {
-    color: @muted;
+#wireplumber.base03 {
+    color: @base03;
 }
 
 #battery {
-    color: @foam;
+    color: @base0C;
 }
 
 #battery.full.charging {
 }
 
 #battery.warning:not(.charging) {
-    color: @gold;
+    color: @base09;
 }
 
 #battery.critical:not(.charging) {
-    color: @love;
+    color: @base08;
 }
 
 #clock {
-   color: @iris;
+   color: @base0D;
 }
