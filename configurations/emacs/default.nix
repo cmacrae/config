@@ -1,9 +1,12 @@
-{ inputs, pkgs }:
+{
+  inputs,
+  pkgs,
+}:
 let
   inherit (pkgs) lib;
   inherit (inputs) self;
   org = inputs.org-babel.lib;
-  emacsPackage = pkgs.emacs-pgtk;
+  emacsPackage = pkgs.emacs-git-pgtk;
 
   treeSitterLoadPath = lib.pipe pkgs.tree-sitter-grammars [
     (lib.filterAttrs (name: _: name != "recurseForDerivations"))
@@ -12,11 +15,11 @@ let
       # Some grammars don't contain "tree-sitter-" as the prefix,
       # so add it explicitly.
       name = "libtree-sitter-${
-          lib.pipe (lib.getName drv) [
-            (lib.removeSuffix "-grammar")
-            (lib.removePrefix "tree-sitter-")
-          ]
-        }${pkgs.stdenv.targetPlatform.extensions.sharedLibrary}";
+        lib.pipe (lib.getName drv) [
+          (lib.removeSuffix "-grammar")
+          (lib.removePrefix "tree-sitter-")
+        ]
+      }${pkgs.stdenv.targetPlatform.extensions.sharedLibrary}";
       path = "${drv}/parser";
     }))
     (pkgs.linkFarm "treesit-grammars")
@@ -43,7 +46,9 @@ in
         "dirty.${substring 0 7 (hashFile "sha256" ./README.org)}"
     }";
 
-  inputOverrides = import ./input-overrides.nix { inherit (pkgs) lib; };
+  inputOverrides = import ./input-overrides.nix {
+    inherit (pkgs) lib;
+  };
 
   extraSiteStartElisp = ''
     (add-to-list 'treesit-extra-load-path "${treeSitterLoadPath}/")
@@ -53,10 +58,13 @@ in
     inherit inputs;
     emacsSrc = emacsPackage.src;
   };
-}).overrideScope (
-  _: prev': {
-    elispPackages = prev'.elispPackages.overrideScope (
-      pkgs.callPackage ./package-overrides.nix { inherit (prev') emacs; }
-    );
-  }
-)
+}).overrideScope
+  (
+    _: prev': {
+      elispPackages = prev'.elispPackages.overrideScope (
+        pkgs.callPackage ./package-overrides.nix {
+          inherit (prev') emacs;
+        }
+      );
+    }
+  )

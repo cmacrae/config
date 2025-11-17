@@ -16,7 +16,12 @@
     shell = pkgs.zsh;
     home = "/home/cmacrae";
     isNormalUser = true;
-    extraGroups = [ "input" "tty" "video" "wheel" ];
+    extraGroups = [
+      "input"
+      "tty"
+      "video"
+      "wheel"
+    ];
   };
 
   home-manager = {
@@ -24,7 +29,9 @@
     useGlobalPkgs = true;
     useUserPackages = true;
     users.cmacrae = {
-      imports = [ inputs.self.homeModules.default ];
+      imports = [
+        inputs.self.homeModules.default
+      ];
     };
   };
 }

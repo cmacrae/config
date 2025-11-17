@@ -9,7 +9,14 @@
     inputs.self.nixosModules.graphical
   ];
 
-  boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
+  boot.initrd.availableKernelModules = [
+    "nvme"
+    "xhci_pci"
+    "ahci"
+    "usbhid"
+    "usb_storage"
+    "sd_mod"
+  ];
   boot.initrd.kernelModules = [ "amdgpu" ];
   boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
@@ -65,10 +72,14 @@
 
   services.pipewire.wireplumber.extraConfig = {
     "99-disable-scuf-controller" = {
-      "monitor.alsa.rules" = [{
-        matches = [{ "device.nick" = "~SCUF.*"; }];
-        actions.update-props = { "device.disabled" = true; };
-      }];
+      "monitor.alsa.rules" = [
+        {
+          matches = [ { "device.nick" = "~SCUF.*"; } ];
+          actions.update-props = {
+            "device.disabled" = true;
+          };
+        }
+      ];
     };
   };
 
@@ -101,7 +112,6 @@
       pkgs.bottles
       pkgs.dolphin-emu
     ];
-
 
     stylix.targets.mangohud.enable = false;
     programs.mangohud.enable = true;

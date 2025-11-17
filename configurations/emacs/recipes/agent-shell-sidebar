@@ -1,0 +1,3 @@
+(agent-shell-sidebar :fetcher github
+               :repo "cmacrae/agent-shell-sidebar"
+               :branch "main")

@@ -3,11 +3,9 @@
 
   nixConfig = {
     extra-substituters = [
-      "https://cmacrae.cachix.org"
       "https://nix-community.cachix.org"
     ];
     extra-trusted-public-keys = [
-      "cmacrae.cachix.org-1:5Mp1lhT/6baI3eAqnEvruhLrrXE9CKe27SbnXqjwXfg="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
     ];
   };
@@ -25,19 +23,12 @@
     darwin.url = "github:lnl7/nix-darwin/master";
     darwin.inputs.nixpkgs.follows = "nixpkgs";
 
-    # FIXME: tracking a fork until issues discussed here are addressed 
-    #        https://github.com/nix-community/home-manager/issues/3864
     home-manager.url = "github:nix-community/home-manager";
-    home-manager-darwin.url = "github:cmacrae/home-manager/fix/gpg-agent_launchd";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    home-manager-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
     # NOTE: currently private, working on releasing soon :)
     limani.url = "github:cmacrae/limani";
     limani.inputs.nixpkgs.follows = "nixpkgs";
-
-    firefox-addons.url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
-    firefox-addons.inputs.nixpkgs.follows = "nixpkgs";
 
     disko.url = "github:nix-community/disko/latest";
     disko.inputs.nixpkgs.follows = "nixpkgs";
@@ -46,6 +37,8 @@
     stylix.inputs.nixpkgs.follows = "nixpkgs";
 
     # Emacs
+    # TODO: switch back to upstream once PR is accepted:
+    #       https://github.com/emacs-twist/twist.nix/pull/192
     twist.url = "github:emacs-twist/twist.nix";
     org-babel.url = "github:emacs-twist/org-babel";
     emacs.url = "github:emacs-mirror/emacs";
@@ -60,7 +53,8 @@
     emacs-overlay.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs@{ flake-parts, ... }:
+  outputs =
+    inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [ inputs.ez-configs.flakeModule ];
 
@@ -70,51 +64,74 @@
         "x86_64-linux"
       ];
 
-      perSystem = { config, pkgs, system, emacs-env, emacs-early-init, ... }: {
-        _module.args = {
-          pkgs = import inputs.nixpkgs {
-            inherit system;
-            overlays = [
-              inputs.emacs-overlay.overlays.emacs
-              inputs.org-babel.overlays.default
-            ];
+      perSystem =
+        {
+          config,
+          pkgs,
+          system,
+          emacs-env,
+          emacs-early-init,
+          ...
+        }:
+        {
+          _module.args = {
+            pkgs = import inputs.nixpkgs {
+              inherit system;
+              config = {
+                allowUnfree = true;
+                allowUnfreePredicate = _: true;
+              };
+              overlays = [
+                inputs.emacs-overlay.overlays.emacs
+                inputs.org-babel.overlays.default
+              ];
+            };
+
+            emacs-env = import ./configurations/emacs {
+              inherit inputs pkgs;
+            };
+
+            emacs-early-init =
+              let
+                org = inputs.org-babel.lib;
+              in
+              (pkgs.tangleOrgBabelFile "early-init.el" ./configurations/emacs/README.org {
+                processLines = org.selectHeadlines (org.tag "early");
+              });
+
+            config.extraSpecialArgs = {
+              inherit emacs-env emacs-early-init;
+            };
           };
 
-          emacs-env = import ./configurations/emacs {
-            inherit inputs pkgs;
-          };
-
-          emacs-early-init =
-            let
-              org = inputs.org-babel.lib;
-            in
-            (pkgs.tangleOrgBabelFile "early-init.el" ./configurations/emacs/README.org {
-              processLines = org.selectHeadlines (org.tag "early");
-            });
-
-          config.extraSpecialArgs = {
+          packages = {
             inherit emacs-env emacs-early-init;
           };
-        };
 
-        packages = {
-          inherit emacs-env emacs-early-init;
-        };
+          apps = emacs-env.makeApps {
+            lockDirName = "configurations/emacs/.lock";
+          };
 
-        apps = emacs-env.makeApps {
-          lockDirName = "configurations/emacs/.lock";
+          formatter = pkgs.nixfmt-tree;
         };
-      };
 
       ezConfigs = {
         globalArgs = { inherit inputs; };
-      } // builtins.listToAttrs (map
-        (name: {
-          inherit name;
-          value = {
-            modulesDirectory = ./. + "/modules/${name}";
-            configurationsDirectory = ./. + "/configurations/${name}";
-          };
-        }) [ "home" "darwin" "nixos" ]);
+      }
+      // builtins.listToAttrs (
+        map
+          (name: {
+            inherit name;
+            value = {
+              modulesDirectory = ./. + "/modules/${name}";
+              configurationsDirectory = ./. + "/configurations/${name}";
+            };
+          })
+          [
+            "home"
+            "darwin"
+            "nixos"
+          ]
+      );
     };
 }

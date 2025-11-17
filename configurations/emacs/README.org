@@ -13,6 +13,7 @@ This block is tangled and propagated to =early-init.el= using twist's [[https://
 *** Startup
 [[https://github.com/emacs-twist/twist.nix][twist.nix]] requires each =use-package= statement to have =:ensure t= set explicitly. In order to prevent =use-package= from trying to fulfill these requests, since package requirements are already satisfied through twist's =load-path= injection, we have to patch the fulfillment function to be a no-op.
 #+begin_src emacs-lisp :early:
+(setq warning-suppress-log-types '((lexical-binding)))
 (advice-add 'use-package-ensure-elpa :override (lambda (&rest _) nil))
 #+end_src
 
@@ -435,12 +436,13 @@ A port of vim easymotion. Buffer movement using character hints
 For using the Colemak-DH layout with Evil bindings.
 #+begin_src emacs-lisp
 (use-package evil-colemak-basics
-  :ensure t
-  :after (evil evil-snipe evil-collection)
-  :custom
-  (evil-colemak-basics-layout-mod 'mod-dh)
-  (evil-colemak-basics-char-jump-commands 'evil-snipe)
-  :commands global-evil-colemak-basics-mode)
+   :ensure t
+   :after (evil evil-collection)  ; Must load after evil-collection
+   :custom
+   (evil-colemak-basics-layout-mod 'mod-dh)
+   (evil-colemak-basics-char-jump-commands 'evil-snipe)
+   :config
+   (global-evil-colemak-basics-mode))
 #+end_src
 
 **** Evil Collection
@@ -449,10 +451,14 @@ A collection of Evil bindings, for the parts of Emacs that Evil does not cover p
 (use-package evil-collection
   :ensure t
   :after evil
+  :demand t  ; Force immediate loading
   :custom
   (evil-collection-outline-bind-tab-p t)
   (forge-add-default-bindings nil)
-  :hook (evil-mode . evil-collection-init))
+  :init
+  (setq evil-want-keybinding nil)  ; Required before loading evil
+  :config
+  (evil-collection-init))
 #+end_src
 
 **** Commentary
@@ -769,12 +775,7 @@ Various pieces of configuration for the mighty org-mode.
   (org-fontify-quote-and-verse-blocks  t)
   (org-src-tab-acts-natively           t)
   (org-edit-src-content-indentation    0)
-  (org-src-preserve-indentation        t))
-
-(use-package org-modern
-  :ensure t
-  :hook (org-mode . org-modern-mode)
-  :custom
+  (org-src-preserve-indentation        t)
   (org-auto-align-tags                 nil)
   (org-tags-column                     0)
   (org-catch-invisible-edits           'show-and-error)
@@ -872,6 +873,29 @@ Developer documentation in Emacs
   :bind ("C-h D" . devdocs-lookup))
 #+end_src
 
+*** LLM stuff
+#+begin_src emacs-lisp
+(use-package mcp
+  :ensure t)
+
+(use-package agent-shell
+  :ensure t)
+
+(use-package agent-shell-sidebar
+  :ensure t
+  :after agent-shell
+  :bind ("C-5" . agent-shell-sidebar-toggle)
+  :custom
+  (agent-shell-sidebar-width "35%")
+  (agent-shell-sidebar-default-config
+         (agent-shell-anthropic-make-claude-code-config)))
+
+(use-package agent-shell-follow-edits
+  :ensure t
+  :after agent-shell
+  :hook (agent-shell-mode . agent-shell-follow-edits-mode))
+#+end_src
+
 ** Appearance
 *** Font
 On Linux, use Roboto fonts
@@ -894,22 +918,6 @@ Currently, I'm enjoying doom-one :)
   :ensure t
   :hook
   (after-init . (lambda () (load-theme 'doom-one :no-confirm))))
-#+end_src
-
-*** spacious-padding
-Make things a little comfier
-#+begin_src emacs-lisp
-(use-package spacious-padding
-  :ensure t
-  :hook (after-init . spacious-padding-mode)
-  :custom
-  (spacious-padding-widths
-   '( :internal-border-width 15
-      :header-line-width     4
-      :mode-line-width       6
-      :tab-width             4
-      :right-divider-width   30
-      :scroll-bar-width      8)))
 #+end_src
 
 *** all-the-icons
@@ -963,17 +971,23 @@ Language Server Protocol integration
   :after inheritenv
   :hook
   (prog-mode . eglot-ensure)
-  (prog-mode . (lambda () (add-hook 'before-save-hook 'eglot-format nil t)))
+  ;; NOTE: We set up python formatting in the `python-ts-mode` config
+  (prog-mode . (lambda ()
+                 (unless (derived-mode-p 'python-mode 'python-ts-mode)
+                   (add-hook 'before-save-hook 'eglot-format-buffer nil t))))
   :custom
   (eglot-autoshutdown           t)
   (eglot-confirm-server-edits nil)
   (eglot-sync-connect         nil)
   :config
   (with-eval-after-load 'eglot
-    (dolist (mode '((nix-mode       . ("nil" :initializationOptions
-                                             (:formatting (:command [ "nixpkgs-fmt" ]))))
+    (dolist (mode '((nix-mode       . ("nixd" :initializationOptions
+                                             (:formatting (:command [ "nixfmt" ]))))
+                    ;; (python-mode    . ("ty" "server"))
+                    ;; (python-ts-mode . ("ty" "server"))
                     (python-mode    . ("pylsp"))
-		    (swift-mode     . ("sourcekit-lsp"))
+                    (python-ts-mode . ("pyslp"))
+                    (swift-mode     . ("sourcekit-lsp"))
                     (terraform-mode . ("terraform-ls"))
                     (rust-mode      . ("rust-analyzer"))))
       (add-to-list 'eglot-server-programs mode))))
@@ -1018,9 +1032,22 @@ Language Server Protocol integration
 #+begin_src emacs-lisp
 (use-package python-ts-mode
   :mode "\\.py\\'"
+  :preface
+  (defun cm/python-format-buffer ()
+    "Format the current Python buffer with ruff."
+    (when (and (derived-mode-p 'python-mode 'python-ts-mode)
+               (buffer-file-name))
+      (let ((original-point (point)))
+        (call-process "ruff" nil nil nil "format" (buffer-file-name))
+        (call-process "ruff" nil nil nil "check" "--fix" (buffer-file-name))
+        (revert-buffer t t t)
+        (goto-char original-point))))
+  :hook
+  (python-ts-mode . (lambda ()
+                      (add-hook 'after-save-hook #'cm/python-format-buffer nil t)))
   :init
   (with-eval-after-load 'org
-    (cl-pushnew '("python" . python-ts-mode) org-src-lang-modes :test #'equal)))
+    (add-to-list 'org-src-lang-modes '("python" . python-ts))))
 #+end_src
 
 *** JSON

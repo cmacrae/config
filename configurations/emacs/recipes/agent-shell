@@ -1,0 +1,3 @@
+(agent-shell :fetcher github
+             :repo "cmacrae/agent-shell"
+             :branch "feat/extensions_api")

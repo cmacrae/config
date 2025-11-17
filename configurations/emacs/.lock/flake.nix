@@ -7,6 +7,33 @@
       repo = "ace-window";
       type = "github";
     };
+    acp = {
+      flake = false;
+      owner = "xenodium";
+      repo = "acp.el";
+      type = "github";
+    };
+    agent-shell = {
+      flake = false;
+      owner = "cmacrae";
+      ref = "feat/extensions_api";
+      repo = "agent-shell";
+      type = "github";
+    };
+    agent-shell-follow-edits = {
+      flake = false;
+      owner = "cmacrae";
+      ref = "main";
+      repo = "agent-shell-follow-edits";
+      type = "github";
+    };
+    agent-shell-sidebar = {
+      flake = false;
+      owner = "cmacrae";
+      ref = "main";
+      repo = "agent-shell-sidebar";
+      type = "github";
+    };
     all-the-icons = {
       flake = false;
       owner = "domtronn";
@@ -53,6 +80,12 @@
       flake = false;
       owner = "emacs-compat";
       repo = "compat";
+      type = "github";
+    };
+    cond-let = {
+      flake = false;
+      owner = "tarsius";
+      repo = "cond-let";
       type = "github";
     };
     consult = {
@@ -265,6 +298,12 @@
       repo = "just-mode.el";
       type = "github";
     };
+    llama = {
+      flake = false;
+      owner = "tarsius";
+      repo = "llama";
+      type = "github";
+    };
     lv = {
       flake = false;
       owner = "abo-abo";
@@ -293,6 +332,12 @@
       flake = false;
       owner = "jrblevin";
       repo = "markdown-mode";
+      type = "github";
+    };
+    mcp = {
+      flake = false;
+      owner = "lizqwerscott";
+      repo = "mcp.el";
       type = "github";
     };
     mood-line = {
@@ -337,12 +382,6 @@
       repo = "org-appear";
       type = "github";
     };
-    org-modern = {
-      flake = false;
-      owner = "minad";
-      repo = "org-modern";
-      type = "github";
-    };
     password-store = {
       flake = false;
       owner = "zx2c4";
@@ -385,10 +424,10 @@
       repo = "s.el";
       type = "github";
     };
-    spacious-padding = {
+    shell-maker = {
       flake = false;
-      owner = "protesilaos";
-      repo = "spacious-padding";
+      owner = "xenodium";
+      repo = "shell-maker";
       type = "github";
     };
     swift-mode = {

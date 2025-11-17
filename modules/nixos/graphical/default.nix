@@ -1,4 +1,9 @@
-{ config, pkgs, inputs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 
 let
   inherit (pkgs.lib) optionals;
@@ -59,9 +64,6 @@ in
     auth include system-auth
   '';
 
-  qt.enable = true;
-  qt.platformTheme = "gtk2";
-
   # Storage Management
   services.udisks2.enable = true;
 
@@ -103,10 +105,12 @@ in
         iris = base0D;
       };
 
-      cssWithRosePine = file: pkgs.lib.concatStringsSep "\n"
-        (pkgs.lib.mapAttrsToList
-          (name: value: "@define-color ${name} #${value};")
-          rose-pine) + builtins.readFile file;
+      cssWithRosePine =
+        file:
+        pkgs.lib.concatStringsSep "\n" (
+          pkgs.lib.mapAttrsToList (name: value: "@define-color ${name} #${value};") rose-pine
+        )
+        + builtins.readFile file;
     in
     {
       imports = [ inputs.self.homeModules.swaync ];
@@ -128,7 +132,9 @@ in
           Restart = "on-failure";
         };
 
-        Install = { WantedBy = [ "hyprland-session.target" ]; };
+        Install = {
+          WantedBy = [ "hyprland-session.target" ];
+        };
       };
 
       home.packages = with pkgs; [
@@ -166,11 +172,7 @@ in
         systemd.enable = true;
         systemd.variables = [ "--all" ];
         settings = {
-          monitor =
-            if isMacBook then
-              "eDP-1,highres,auto,1.600000"
-            else
-              "DP-1,3840x2160@240,auto,1";
+          monitor = if isMacBook then "eDP-1,highres,auto,1.600000" else "DP-1,3840x2160@240,auto,1";
 
           input = {
             follow_mouse = 1;
@@ -248,7 +250,8 @@ in
             ", XF86AudioPrev, exec, playerctl previous"
             ", XF86AudioNext, exec, playerctl next"
             ", XF86Sleep, exec, swaync-client --toggle-dnd"
-          ] ++ optionals (config.hardware.brillo.enable) [
+          ]
+          ++ optionals (config.hardware.brillo.enable) [
             ", XF86MonBrightnessUp, exec, brillo -A 5"
             ", XF86MonBrightnessDown, exec, brillo -U 5"
             "$mainMod, XF86MonBrightnessUp, exec, brillo -k -A 5"
@@ -288,17 +291,26 @@ in
             "$mainMod,tab,changegroupactive"
 
             "$mainMod,grave,submap,qwerty"
-          ] ++ (
-            (flr: ceil:
+          ]
+          ++ (
+            (
+              flr: ceil:
               with builtins;
-              concatLists (genList
-                (n:
-                  let i = toString (flr + n); in [
+              concatLists (
+                genList (
+                  n:
+                  let
+                    i = toString (flr + n);
+                  in
+                  [
                     "$mainMod,${i},workspace,${i}"
                     "$mainMod SHIFT,${i},movetoworkspace,${i}"
                   ]
-                )
-                (ceil - flr + 1))) 1 9
+                ) (ceil - flr + 1)
+              )
+            )
+            1
+            9
           );
 
           submap.qwerty.bind = [
@@ -321,9 +333,7 @@ in
       programs.foot.settings = {
         main.pad = "15x15";
         main.term = "xterm-256color";
-        main.font =
-          with config.stylix.fonts;
-          "${monospace.name}:size=${builtins.toString sizes.terminal}";
+        main.font = with config.stylix.fonts; "${monospace.name}:size=${builtins.toString sizes.terminal}";
         mouse.hide-when-typing = "yes";
         cursor.color = "${rose-pine.base} ${rose-pine.text}";
       };
@@ -355,7 +365,9 @@ in
           KillMode = "mixed";
         };
 
-        Install = { WantedBy = [ "hyprland-session.target" ]; };
+        Install = {
+          WantedBy = [ "hyprland-session.target" ];
+        };
       };
 
       programs.waybar = {
@@ -376,7 +388,7 @@ in
             ];
 
             modules-center =
-              optionals (isMacBook) [ "custom/notch" ]
+              optionals isMacBook [ "custom/notch" ]
               ++ optionals (config.home-manager.users.cmacrae.services.playerctld.enable) [ "mpris" ];
 
             modules-right = [
@@ -384,7 +396,7 @@ in
               # "idle_inhibitor"
               "custom/notifications"
             ]
-            ++ optionals (isMacBook) [ "battery" ]
+            ++ optionals isMacBook [ "battery" ]
             ++ optionals (config.hardware.bluetooth.enable) [ "bluetooth" ]
             ++ optionals (config.networking.wireless.enable) [ "network" ]
             ++ optionals (config.services.pipewire.enable) [ "wireplumber" ]
@@ -406,7 +418,11 @@ in
 
             network = {
               format-wifi = "{icon}";
-              format-icons = [ "󰢼" "󰢽" "󰢾" ];
+              format-icons = [
+                "󰢼"
+                "󰢽"
+                "󰢾"
+              ];
               format-disconnected = "󰞃";
               tooltip-format-wifi = ''
                 {essid}
@@ -420,7 +436,13 @@ in
 
             battery = {
               format = "{icon}  {capacity}%";
-              format-icons = [ "" "" "" "" "" ];
+              format-icons = [
+                ""
+                ""
+                ""
+                ""
+                ""
+              ];
               format-charging-full = "";
               full-at = 100;
               states.full = 100;
@@ -432,7 +454,11 @@ in
 
             wireplumber.format = "{icon}  {volume}%";
             wireplumber.format-muted = "󰖁";
-            wireplumber.format-icons = [ "" "" "" ];
+            wireplumber.format-icons = [
+              ""
+              ""
+              ""
+            ];
             wireplumber.scroll-step = "1.5";
 
             "custom/notifications" =
@@ -520,7 +546,13 @@ in
             app-name = "Spotify";
           };
         };
-        widgets = [ "inhibitors" "dnd" "mpris" "title" "notifications" ];
+        widgets = [
+          "inhibitors"
+          "dnd"
+          "mpris"
+          "title"
+          "notifications"
+        ];
         widget-config = {
           inhibitors.text = "Inhibitors";
           inhibitors.button-text = "clear";
@@ -537,13 +569,15 @@ in
         };
       };
 
-
       xdg.enable = true;
       xdg.userDirs.enable = true;
       xdg.userDirs.createDirectories = true;
       xdg.portal = {
         enable = true;
-        config.hyprland.default = [ "gtk" "hyprland" ];
+        config.hyprland.default = [
+          "gtk"
+          "hyprland"
+        ];
         extraPortals = [
           pkgs.xdg-desktop-portal-gtk
           pkgs.xdg-desktop-portal-hyprland

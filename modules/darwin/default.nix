@@ -1,4 +1,9 @@
-{ config, pkgs, inputs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 
 let
   inherit (config.networking) hostName;
@@ -8,16 +13,12 @@ in
 
   imports = with inputs; [
     "${self}/modules/shared"
-    home-manager-darwin.darwinModules.home-manager
+    home-manager.darwinModules.home-manager
   ];
-
-  # Recreate /run/current-system symlink after boot
-  services.activate-system.enable = true;
-
-  services.nix-daemon.enable = true;
 
   system.stateVersion = 5;
 
+  system.primaryUser = "cmacrae";
   users.users.cmacrae = {
     description = "Calum MacRae";
     shell = pkgs.zsh;
@@ -27,11 +28,9 @@ in
   networking.computerName = hostName;
   networking.localHostName = hostName;
 
-  nix.configureBuildUsers = true;
-
   programs.bash.enable = false;
 
-  security.pam.enableSudoTouchIdAuth = true;
+  security.pam.services.sudo_local.touchIdAuth = true;
 
   system.defaults = {
     dock.autohide = true;
@@ -85,14 +84,19 @@ in
 
   homebrew.casks = [
     "1password"
+    "arc"
     "claude"
     "discord"
-    "element"
-    "figma"
-    "firefox"
+    "ghostty"
     "keepingyouawake"
+    # FIXME: can't install on macOS beta at the moment
+    #        once Tahoe becomes stable, uninstall the manually
+    #        installed UI and use this
+    # "netbirdio/tap/netbird-ui"
     "notion"
+    "raycast"
     "spotify"
+    "tigervnc-viewer"
     "yubico-yubikey-manager"
   ];
 
@@ -117,136 +121,9 @@ in
     users.cmacrae = {
       imports = [
         inputs.self.homeModules.default
-        inputs.self.homeModules.aerospace
-        inputs.self.homeModules.jankyborders
       ];
-
-      programs.aerospace.enable = pkgs.lib.mkDefault true;
-      programs.aerospace.config = {
-        enable-normalization-flatten-containers = true;
-        enable-normalization-opposite-orientation-for-nested-containers = true;
-        accordion-padding = 30;
-        default-root-container-layout = "tiles";
-        default-root-container-orientation = "auto";
-        on-focused-monitor-changed = [ "move-mouse monitor-lazy-center" ];
-        automatically-unhide-macos-hidden-apps = true;
-
-        key-mapping = {
-          preset = "qwerty";
-        };
-
-        gaps =
-          let
-            pad = 15;
-          in
-          {
-            inner.horizontal = pad;
-            inner.vertical = pad;
-            outer = {
-              left = pad;
-              bottom = pad;
-              top = pad;
-              right = pad;
-            };
-          };
-
-        mode =
-          let
-            mkWorkspaceBindings = prefix: action:
-              builtins.listToAttrs (map
-                (i: {
-                  name = "${prefix}${toString i}";
-                  value = "${action} ${toString i}";
-                })
-                (builtins.genList (x: x + 1) 9));
-
-            commonBindings = {
-              "cmd-ctrl-slash" = "layout tiles horizontal vertical";
-              "cmd-ctrl-comma" = "layout accordion horizontal vertical";
-              "cmd-ctrl-n" = "workspace next";
-              "cmd-ctrl-p" = "workspace prev";
-              "cmd-ctrl-shift-n" = "move-node-to-workspace next";
-              "cmd-ctrl-shift-p" = "move-node-to-workspace prev";
-              "cmd-ctrl-minus" = "resize smart -50";
-              "cmd-ctrl-equal" = "resize smart +50";
-              "cmd-ctrl-tab" = "workspace-back-and-forth";
-              "cmd-ctrl-shift-tab" = "move-workspace-to-monitor --wrap-around next";
-              "cmd-ctrl-f" = "layout floating tiling";
-              "cmd-ctrl-semicolon" = "mode service";
-              "cmd-ctrl-a" = "mode apps";
-              "cmd-ctrl-r" = "mode resize";
-              "cmd-ctrl-backtick" = "mode colemak";
-            };
-
-            layouts = {
-              qwerty = [
-                { key = "h"; dir = "left"; }
-                { key = "j"; dir = "down"; }
-                { key = "k"; dir = "up"; }
-                { key = "l"; dir = "right"; }
-              ];
-              colemak = [
-                { key = "m"; dir = "left"; }
-                { key = "n"; dir = "down"; }
-                { key = "e"; dir = "up"; }
-                { key = "i"; dir = "right"; }
-              ];
-            };
-
-            makeDirectionBindings = directions:
-              builtins.listToAttrs (builtins.concatMap
-                (d: [
-                  { name = "cmd-ctrl-${d.key}"; value = "focus ${d.dir}"; }
-                  { name = "cmd-ctrl-shift-${d.key}"; value = "move ${d.dir}"; }
-                ])
-                directions);
-          in
-          {
-            main.binding = commonBindings //
-              (makeDirectionBindings layouts.qwerty) //
-              mkWorkspaceBindings "cmd-ctrl-" "workspace" //
-              mkWorkspaceBindings "cmd-ctrl-shift-" "move-node-to-workspace";
-
-            colemak.binding = commonBindings //
-              (makeDirectionBindings layouts.colemak) //
-              mkWorkspaceBindings "cmd-ctrl-" "workspace" //
-              mkWorkspaceBindings "cmd-ctrl-shift-" "move-node-to-workspace" //
-              { "cmd-ctrl-backtick" = "mode main"; };
-
-            apps.binding = {
-              "e" = [ "exec-and-forget zsh -c /etc/profiles/per-user/cmacrae/bin/emacs" "mode main" ];
-              "f" = [ "exec-and-forget open -a /Applications/Firefox.app --args '--profile ~/Library/Application\ Support/Firefox/Profiles/home'" "mode main" ];
-            };
-
-            service.binding = {
-              "a" = [ "layout accordion" "mode main" ];
-              "r" = [ "flatten-workspace-tree" "mode main" ];
-              "f" = [ "layout floating tiling" "mode main" ];
-              "backspace" = [ "close-all-windows-but-current" "mode main" ];
-              "cmd-ctrl-shift-h" = [ "join-with left" "mode main" ];
-              "cmd-ctrl-shift-j" = [ "join-with down" "mode main" ];
-              "cmd-ctrl-shift-k" = [ "join-with up" "mode main" ];
-              "cmd-ctrl-shift-l" = [ "join-with right" "mode main" ];
-            };
-
-            resize.binding = {
-              h = "resize width -50";
-              j = "resize height +50";
-              k = "resize height -50";
-              l = "resize width +50";
-              b = [ "balance-sizes" "mode main" ];
-              enter = "mode main";
-              esc = "mode main";
-            };
-          };
-      };
-
-      programs.jankyborders.enable = pkgs.lib.mkDefault true;
-      programs.jankyborders.config = {
-        active_color = "0xffcdedfd";
-        inactive_color = "0xff494d64";
-        width = 8.0;
-      };
     };
   };
+
+  fonts.packages = [ pkgs.emacs-all-the-icons-fonts ];
 }

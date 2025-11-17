@@ -1,0 +1,3 @@
+(agent-shell-follow-edits :fetcher github
+                          :repo "cmacrae/agent-shell-follow-edits"
+                          :branch "main")

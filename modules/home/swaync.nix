@@ -1,8 +1,16 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   inherit (lib)
-    isStorePath literalExpression types;
+    isStorePath
+    literalExpression
+    types
+    ;
   inherit (lib.options) mkEnableOption mkOption;
   inherit (lib.modules) mkIf mkMerge;
 
@@ -108,16 +116,18 @@ in
 
   config =
     let
-      configSource = jsonFormat.generate "swaync-config.json" ({
-        "$schema" = "${cfg.package}/etc/xdg/swaync/configSchema.json";
-      } // cfg.settings);
+      configSource = jsonFormat.generate "swaync-config.json" (
+        {
+          "$schema" = "${cfg.package}/etc/xdg/swaync/configSchema.json";
+        }
+        // cfg.settings
+      );
 
     in
     mkIf cfg.enable (mkMerge [
       {
         assertions = [
-          (lib.hm.assertions.assertPlatform "programs.swaync" pkgs
-            lib.platforms.linux)
+          (lib.hm.assertions.assertPlatform "programs.swaync" pkgs lib.platforms.linux)
         ];
 
         home.packages = [ cfg.package ];
@@ -144,8 +154,7 @@ in
       (mkIf cfg.systemd.enable {
         systemd.user.services.swaync = {
           Unit = {
-            Description =
-              "A simple GTK based notification daemon for Wayland compositors.";
+            Description = "A simple GTK based notification daemon for Wayland compositors.";
             Documentation = "https://github.com/ErikReider/SwayNotificationCenter";
             ConditionEnvironment = "WAYLAND_DISPLAY";
             PartOf = [ "graphical-session.target" ];
@@ -159,7 +168,9 @@ in
             KillMode = "mixed";
           };
 
-          Install = { WantedBy = [ cfg.systemd.target ]; };
+          Install = {
+            WantedBy = [ cfg.systemd.target ];
+          };
         };
       })
     ]);

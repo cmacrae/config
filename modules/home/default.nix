@@ -1,4 +1,10 @@
-{ osConfig, pkgs, lib, inputs, ... }:
+{
+  osConfig,
+  pkgs,
+  lib,
+  inputs,
+  ...
+}:
 
 let
   inherit (lib) mkIf mkMerge;
@@ -22,18 +28,19 @@ in
     aspellDicts.en
     aspellDicts.en-computers
     bc
+    claude-code
+    claude-code-acp
+    cocoapods
     ffmpeg
     gnumake
     gnupg
     gnused
     htop
-    ipcalc
     jq
     just
     mpv
     nixd
-    nil
-    nixpkgs-fmt
+    nixfmt-rfc-style
     nix-prefetch-git
     nmap
     pass
@@ -44,7 +51,10 @@ in
     ranger
     ripgrep
     rsync
+    ruby
+    ruff
     sourcekit-lsp
+    ty
     unzip
     up
     wget
@@ -52,18 +62,25 @@ in
     yubikey-manager
   ];
 
+  home.shell.enableBashIntegration = true;
+  home.shell.enableZshIntegration = true;
+
   home.sessionVariables = mkMerge [
     {
-      PAGER = "less -R";
+      PAGER = "less -FR";
       EDITOR = "emacsclient";
     }
-    (mkIf isDarwin { PATH = "$PATH:/opt/homebrew/bin"; })
+    (mkIf isDarwin {
+      PATH = "$PATH:/opt/homebrew/bin";
+      LC_ALL = "en_GB.UTF-8";
+    })
   ];
 
   services.yubikey-agent.enable = true;
 
   programs.git = {
     enable = true;
+    lfs.enable = true;
     userName = osConfig.users.users.cmacrae.description;
     userEmail = "hi@cmacr.ae";
     extraConfig = {
@@ -80,84 +97,40 @@ in
 
   programs.direnv.enable = true;
   programs.direnv.nix-direnv.enable = true;
-  programs.direnv.enableZshIntegration = true;
 
-  programs.firefox.enable = true;
-  programs.firefox.package =
-    if isDarwin then
-    # NOTE: firefox install is handled via homebrew
-      pkgs.runCommand
-        "firefox-0.0.0"
-        { }
-        "mkdir $out"
-    else
-      pkgs.firefox;
-  programs.firefox.languagePacks = [ "en-GB" ];
-  programs.firefox.profiles.home = mkMerge
-    [
-      {
-        id = 0;
-        extensions = with inputs.firefox-addons.packages.${pkgs.stdenv.system}; [
-          consent-o-matic
-          metamask
-          multi-account-containers
-          # FIXME: cannot get unfree working with flakes
-          #        manually installing for now...
-          # onepassword-password-manager #1password
-          reddit-enhancement-suite
-          ublock-origin
-          vimium
-        ];
+  programs.ghostty = {
+    enable = true;
+    package =
+      # NOTE: ghostty install is handled via homebrew since it's not
+      #       packaged for aarch64-darwin yet
+      if isDarwin then null else pkgs.ghostty;
 
-        search.default = "DuckDuckGo";
-        search.force = true;
+    settings = {
+      theme = "light:dawnfox,dark:duskfox";
+      cursor-style = "block";
+      macos-option-as-alt = true;
+      mouse-hide-while-typing = true;
+      macos-auto-secure-input = true;
+      macos-titlebar-style = "hidden";
+      auto-update = "off";
+      shell-integration = "detect";
+      quick-terminal-position = "center";
+      quick-terminal-animation-duration = 0;
+      quick-terminal-size = "80%";
+      clipboard-read = "allow";
+      clipboard-write = "allow";
+      window-padding-x = 20;
+      window-padding-y = 10;
+      initial-window = false;
+      quit-after-last-window-closed = false;
+      background-opacity = 0.85;
+      background-blur = true;
 
-        settings = {
-          "app.update.auto" = false;
-          "app.normandy.enabled" = false;
-          "beacon.enabled" = false;
-          "browser.startup.homepage" = "https://lobste.rs";
-          "browser.search.region" = "GB";
-          "browser.search.countryCode" = "GB";
-          "browser.search.hiddenOneOffs" = "Google,Amazon.com,Bing";
-          "browser.search.isUS" = false;
-          "browser.ctrlTab.recentlyUsedOrder" = false;
-          "browser.newtabpage.enabled" = false;
-          "browser.bookmarks.showMobileBookmarks" = true;
-          "browser.uidensity" = 1;
-          "browser.urlbar.update" = true;
-          "datareporting.healthreport.service.enabled" = false;
-          "datareporting.healthreport.uploadEnabled" = false;
-          "datareporting.policy.dataSubmissionEnabled" = false;
-          "distribution.searchplugins.defaultLocale" = "en-GB";
-          "extensions.getAddons.cache.enabled" = false;
-          "extensions.getAddons.showPane" = false;
-          "extensions.pocket.enabled" = false;
-          "extensions.webservice.discoverURL" = "";
-          "general.useragent.locale" = "en-GB";
-          "identity.fxaccounts.account.device.name" = osConfig.networking.hostName;
-          "privacy.donottrackheader.enabled" = true;
-          "privacy.donottrackheader.value" = 1;
-          "privacy.trackingprotection.enabled" = true;
-          "privacy.trackingprotection.cryptomining.enabled" = true;
-          "privacy.trackingprotection.fingerprinting.enabled" = true;
-          "privacy.trackingprotection.socialtracking.enabled" = true;
-          "privacy.trackingprotection.socialtracking.annotate.enabled" = true;
-          "reader.color_scheme" = "auto";
-          "services.sync.declinedEngines" = "addons,passwords,prefs";
-          "services.sync.engine.addons" = false;
-          "services.sync.engineStatusChanged.addons" = true;
-          "services.sync.engine.passwords" = false;
-          "services.sync.engine.prefs" = false;
-          "services.sync.engineStatusChanged.prefs" = true;
-          "signon.rememberSignons" = false;
-          "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
-          "toolkit.telemetry.enabled" = false;
-          "toolkit.telemetry.rejected" = true;
-          "toolkit.telemetry.updatePing.enabled" = false;
-        };
-      }
-    ];
+      keybind = [
+        "global:cmd+ctrl+grave_accent=toggle_quick_terminal"
+      ];
+    };
+  };
 
   programs.emacs-twist = {
     enable = true;
@@ -168,9 +141,6 @@ in
     createManifestFile = true;
     icons.enable = false;
   };
-
-  programs.fzf.enable = true;
-  programs.fzf.enableZshIntegration = true;
 
   programs.zsh = {
     enable = true;
@@ -198,46 +168,37 @@ in
         file = "share/zsh/site-functions/fast-syntax-highlighting.plugin.zsh";
         src = pkgs.zsh-fast-syntax-highlighting;
       }
-      {
-        name = "z";
-        file = "share/zsh-z/zsh-z.plugin.zsh";
-        src = pkgs.zsh-z;
-      }
     ];
+  };
 
-    initExtra = ''
-      PROMPT='%{$fg_bold[blue]%}$(get_pwd)%{$reset_color%} ''${prompt_suffix}'
-      local prompt_suffix="%(?:%{$fg_bold[green]%}❯ :%{$fg_bold[red]%}❯%{$reset_color%} "
-      RPROMPT=
+  programs.zoxide.enable = true;
 
-      function get_pwd(){
-          git_root=$PWD
-          while [[ $git_root != / && ! -e $git_root/.git ]]; do
-              git_root=$git_root:h
-          done
-          if [[ $git_root = / ]]; then
-              unset git_root
-              prompt_short_dir=%~
-          else
-              parent=''${git_root%\/*}
-              prompt_short_dir=''${PWD#$parent/}
-          fi
-          echo $prompt_short_dir
-      }
+  programs.carapace.enable = true;
 
-      vterm_printf(){
-          if [ -n "$TMUX" ]; then
-              # Tell tmux to pass the escape sequences through
-              # (Source: http://permalink.gmane.org/gmane.comp.terminal-emulators.tmux.user/1324)
-              printf "\ePtmux;\e\e]%s\007\e\\" "$1"
-          elif [ "''${TERM%%-*}" = "screen" ]; then
-              # GNU screen (screen, screen-256color, screen-256color-bce)
-              printf "\eP\e]%s\007\e\\" "$1"
-          else
-              printf "\e]%s\e\\" "$1"
-          fi
-      }
-    '';
+  programs.starship = {
+    enable = true;
+    settings = {
+      format = "$directory$character";
+
+      directory = {
+        style = "bold blue";
+        truncation_length = 0;
+        truncate_to_repo = true;
+        home_symbol = "~";
+      };
+
+      character = {
+        success_symbol = "[❯](bold green)";
+        error_symbol = "[❯](bold red)";
+      };
+
+      git_branch.disabled = true;
+      git_status.disabled = true;
+      package.disabled = true;
+      nodejs.disabled = true;
+      python.disabled = true;
+      rust.disabled = true;
+    };
   };
 
   programs.tmux = {

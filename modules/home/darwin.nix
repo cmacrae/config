@@ -1,7 +1,6 @@
-{ inputs, ... }: {
-
+{
   home = {
     sessionPath = [ "/opt/homebrew/bin" ];
-    file.".hushlogin".text = "";
+    file."hushlogin".text = "";
   };
 }
